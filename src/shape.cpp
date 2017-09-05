@@ -3,7 +3,7 @@
 #include <iostream>
 
 
-shape::shape(char* line) {
+shape::shape(const char* line) {
 	uint8_t i = 0;
 	move	m;
 	do {
@@ -21,6 +21,24 @@ shape::shape(char* line) {
 shape::~shape() {
 }
 
+int shape::getWidth() {
+	int trace = 0;
+	int farRight = 0;
+	int farLeft = 0;
+	for (std::vector<move>::iterator it = moves.begin(); it != moves.end(); ++it) {
+		if ((*it).direction == LEFT) {
+			trace -= (*it).distance;
+			if (trace < farLeft)
+				farLeft = trace;
+		}
+		else if ((*it).direction == RIGHT) {
+			trace += (*it).distance;
+			if (trace > farRight)
+				farRight = trace;
+		}
+	}
+	return (farRight - farLeft + 1);
+}
 
 void shape::print() {
 	for (std::vector<move>::iterator it = moves.begin(); it != moves.end(); ++it) {

@@ -6,10 +6,10 @@
 #include <vector>
 
 
-#define UP			("U")
-#define DOWN		("D")
-#define LEFT		("L")
-#define RIGHT		("R")
+#define UP			('U')
+#define DOWN		('D')
+#define LEFT		('L')
+#define RIGHT		('R')
 
 
 struct move {
@@ -18,17 +18,21 @@ struct move {
 };
 
 
-class shape
-{
+class shape {
 private:
 	std::vector<move> moves;
-	uint8_t x;
-	uint8_t y;
-	uint8_t rot;
 public:
-	shape(char* line);
+	shape::shape(const char* line);
 	~shape();
+	int getWidth();
 	void print();
+};
+
+struct shape_layout {
+	shape*	shape;
+	uint8_t	x;
+	uint8_t	y;
+	uint8_t	rot;
 };
 
 
