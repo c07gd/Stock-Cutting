@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Patterns">
+      <UniqueIdentifier>{bdd5100e-c4f7-421e-b0e9-967004d5fdc1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="pattern\50Shapes.txt">
+      <Filter>Patterns</Filter>
+    </Text>
+    <Text Include="pattern\100Shapes.txt">
+      <Filter>Patterns</Filter>
+    </Text>
+    <Text Include="pattern\100ShapesComplex.txt">
+      <Filter>Patterns</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\shape.cpp" />
+    <ClCompile Include="src\state.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\shape.h" />
+    <ClInclude Include="src\state.h" />
+  </ItemGroup>
+</Project>
