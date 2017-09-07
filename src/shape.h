@@ -11,6 +11,14 @@
 #define LEFT		('L')
 #define RIGHT		('R')
 
+enum {
+	ROT_0_DEG,
+	ROT_90_DEG,
+	ROT_180_DEG,
+	ROT_270_DEG,
+	NUM_ROTS
+};
+
 
 struct move {
 	uint8_t distance;
@@ -26,6 +34,7 @@ public:
 	~shape();
 	int getWidth();
 	void print();
+	inline std::vector<move>* getMoves() { return &moves; };
 };
 
 struct shape_layout {

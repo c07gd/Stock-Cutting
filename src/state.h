@@ -15,9 +15,13 @@ private:
 	uint8_t			m_numShapes;
 	shape_layout*	m_shapes;
 public:
-	state(uint8_t width, uint8_t numShapes);
 	state::state(std::string filename);
 	~state();
+	void randomize(unsigned int seed);
+	bool placementIsValid(shape* s, int x, int y, int rot);
+	void placeShape(int i, int x, int y, int rot);
+	void printSolution(std::string filename);
+	void printLayout(std::string filename);
 };
 
 
