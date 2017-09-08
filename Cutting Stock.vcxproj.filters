@@ -4,6 +4,9 @@
     <Filter Include="Patterns">
       <UniqueIdentifier>{bdd5100e-c4f7-421e-b0e9-967004d5fdc1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Config">
+      <UniqueIdentifier>{61401a53-b2fd-4e73-980b-d159a9b2b4ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="pattern\50Shapes.txt">
@@ -14,6 +17,9 @@
     </Text>
     <Text Include="pattern\100ShapesComplex.txt">
       <Filter>Patterns</Filter>
+    </Text>
+    <Text Include="config.txt">
+      <Filter>Config</Filter>
     </Text>
   </ItemGroup>
   <ItemGroup>

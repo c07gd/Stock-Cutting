@@ -18,10 +18,7 @@ shape::shape(const char* line) {
 }
 
 
-shape::~shape() {
-}
-
-int shape::getWidth() {
+int shape::getLength() {
 	int trace = 0;
 	int farRight = 0;
 	int farLeft = 0;

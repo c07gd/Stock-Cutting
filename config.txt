@@ -2,7 +2,7 @@
 seedFromTime=false
 
 # Seed for non-time-based random generations. This is ignored if seedFromTime is true
-seed=123456
+seed=897459283
 
 # All black-box search algorithm parameters (E.g. Random Search, EA)
 #algorithmParams=

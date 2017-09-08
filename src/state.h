@@ -9,16 +9,19 @@
 
 class state {
 private:
-	uint8_t			m_width;
-	uint8_t			m_length;
-	bool**			m_layout;
-	uint8_t			m_numShapes;
-	shape_layout*	m_shapes;
+	int			m_width;
+	int			m_length;
+	bool**		m_layout;
+	int			m_numShapes;
+	shape*		m_shapes;
+	int*		m_x;
+	int*		m_y;
+	int*		m_rot;
 public:
-	state::state(std::string filename);
+	state::state(shape* shapes, int width, int numShapes);
 	~state();
 	void randomize(unsigned int seed);
-	bool placementIsValid(shape* s, int x, int y, int rot);
+	bool placementIsValid(int i, int x, int y, int rot);
 	void placeShape(int i, int x, int y, int rot);
 	void printSolution(std::string filename);
 	void printLayout(std::string filename);

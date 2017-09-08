@@ -30,9 +30,10 @@ class shape {
 private:
 	std::vector<move> moves;
 public:
+	shape::shape() {};
 	shape::shape(const char* line);
-	~shape();
-	int getWidth();
+	~shape() {};
+	int getLength();
 	void print();
 	inline std::vector<move>* getMoves() { return &moves; };
 };

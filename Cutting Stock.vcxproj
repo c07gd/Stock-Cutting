@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <Text Include="config.txt" />
     <Text Include="pattern\100Shapes.txt" />
     <Text Include="pattern\100ShapesComplex.txt" />
     <Text Include="pattern\50Shapes.txt" />
