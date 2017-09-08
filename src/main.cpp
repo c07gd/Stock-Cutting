@@ -1,14 +1,17 @@
 #include <iostream>
 #include "shape.h"
 #include "state.h"
+#include "cfgParse.h"
 
 
 int main(int argc, char *argv[]) {
 
-	state test("./pattern/100shapes.txt");
-	test.randomize(2461032);
-	test.printSolution("./output.txt");
-	test.printLayout("./layout.txt");
+	config cfg = getConfig(argv[1]);
+		
+	state test(cfg.inputFile);
+	test.randomize(cfg.seed);
+	test.printSolution(cfg.solutionFile);
+	test.printLayout("./layout.txt");	
 
 	return 0;
 }

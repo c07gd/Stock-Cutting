@@ -1,0 +1,23 @@
+# An indicator specifying whether the random number generator should be initialized based on time in microseconds
+seedFromTime=false
+
+# Seed for non-time-based random generations. This is ignored if seedFromTime is true
+seed=123456
+
+# All black-box search algorithm parameters (E.g. Random Search, EA)
+#algorithmParams=
+
+# The number of runs a single experiment consists of
+runs=1
+
+# The number of fitness evaluations each run is allotted
+#fitnessEvals=
+
+# The relative file path+name of the log file
+logFile=logs/log.txt
+
+# The relative file path+name of the solution file
+solutionFile=solutions/solution.txt
+
+# The relative file path+name of the input file
+inputFile=patterns/50shapes.txt

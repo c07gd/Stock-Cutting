@@ -29,6 +29,7 @@
     <ClCompile Include="src\state.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\cfgParse.h" />
     <ClInclude Include="src\shape.h" />
     <ClInclude Include="src\state.h" />
   </ItemGroup>
@@ -40,6 +41,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <LocalDebuggerCommandArguments>config.txt</LocalDebuggerCommandArguments>
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
@@ -53,6 +55,7 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <LocalDebuggerCommandArguments>config.txt</LocalDebuggerCommandArguments>
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
