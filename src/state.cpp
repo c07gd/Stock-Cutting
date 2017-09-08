@@ -63,17 +63,17 @@ bool state::placementIsValid(int i, int x, int y, int rot) {
 	moves = m_shapes[i].getMoves();
 	for (std::vector<move>::iterator it = moves->begin(); it != moves->end(); ++it) {
 		for (int j = 0; j < (*it).distance; j++) {
-			switch ((*it).direction) {
-			case UP:
+			switch (rotate((*it).direction, rot)) {
+			case DIR_UP:
 				traceX++;
 				break;
-			case DOWN:
+			case DIR_DOWN:
 				traceX--;
 				break;
-			case LEFT:
+			case DIR_LEFT:
 				traceY--;
 				break;
-			case RIGHT:
+			case DIR_RIGHT:
 				traceY++;
 				break;
 			}
@@ -101,17 +101,17 @@ void state::placeShape(int i, int x, int y, int rot) {
 	m_layout[traceX][traceY] = true;
 	for (std::vector<move>::iterator it = moves->begin(); it != moves->end(); ++it) {
 		for (int j = 0; j < (*it).distance; j++) {
-			switch ((*it).direction) {
-			case UP:
+			switch (rotate((*it).direction, rot)) {
+			case DIR_UP:
 				traceX++;
 				break;
-			case DOWN:
+			case DIR_DOWN:
 				traceX--;
 				break;
-			case LEFT:
+			case DIR_LEFT:
 				traceY--;
 				break;
-			case RIGHT:
+			case DIR_RIGHT:
 				traceY++;
 				break;
 			}
@@ -135,7 +135,7 @@ void state::randomize(unsigned int seed) {
 		do {
 			x = rand() % m_width;
 			y = rand() % m_length;
-			rot = 0;// rand() % NUM_ROTS;
+			rot = rand() % NUM_ROTS;
 		} while (!placementIsValid(i, x, y, rot));
 		placeShape(i, x, y, rot);
 	}

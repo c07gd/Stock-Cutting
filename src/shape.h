@@ -5,11 +5,15 @@
 #include <cstdint>
 #include <vector>
 
+#define rotate(dir, rots) ((dir + rots) % NUM_DIRS)
 
-#define UP			('U')
-#define DOWN		('D')
-#define LEFT		('L')
-#define RIGHT		('R')
+enum {
+	DIR_UP,
+	DIR_RIGHT,
+	DIR_DOWN,
+	DIR_LEFT,
+	NUM_DIRS
+};
 
 enum {
 	ROT_0_DEG,
@@ -25,6 +29,7 @@ struct move {
 	char	direction;
 };
 
+int mutateDirection(int direction);
 
 class shape {
 private:

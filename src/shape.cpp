@@ -9,7 +9,24 @@ shape::shape(const char* line) {
 	do {
 		while (line[i] == ' ')
 			i++;
-		m.direction = line[i];
+		switch (line[i]) {
+		case 'U':
+		case 'u':
+			m.direction = DIR_UP;
+			break;
+		case 'R':
+		case 'r':
+			m.direction = DIR_RIGHT;
+			break;
+		case 'D':
+		case 'd':
+			m.direction = DIR_DOWN;
+			break;
+		case 'L':
+		case 'l':
+			m.direction = DIR_LEFT;
+			break;
+		}
 		i++;
 		m.distance = line[i] - '0';	// TODO: handling for two-digit distances
 		i++;
@@ -23,12 +40,12 @@ int shape::getLength() {
 	int farRight = 0;
 	int farLeft = 0;
 	for (std::vector<move>::iterator it = moves.begin(); it != moves.end(); ++it) {
-		if ((*it).direction == LEFT) {
+		if ((*it).direction == DIR_LEFT) {
 			trace -= (*it).distance;
 			if (trace < farLeft)
 				farLeft = trace;
 		}
-		else if ((*it).direction == RIGHT) {
+		else if ((*it).direction == DIR_RIGHT) {
 			trace += (*it).distance;
 			if (trace > farRight)
 				farRight = trace;
