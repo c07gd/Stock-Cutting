@@ -5,3 +5,5 @@ x64/*
 solutions/*
 logs/*
 !.gitkeep
+*.o
+*.exe
