@@ -1,3 +1,17 @@
+/******************************************************************************
+*	main.cpp
+*
+*	Main file for the Stock Cutting Problem.
+*
+*	Stuart Miller
+*	Missouri S&T CS 5401
+*	Fall 2017
+******************************************************************************/
+
+
+/**********************************************************
+*	Headers
+**********************************************************/
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -7,8 +21,15 @@
 #include "cfgParse.h"
 
 
+/**********************************************************
+*	Local Funtions
+**********************************************************/
 void readInputFile(std::string filename, shape*& shapes, int& width, int& numShapes);
 
+
+/**********************************************************
+*	Main
+**********************************************************/
 int main(int argc, char *argv[]) {
 
 	// Variables
@@ -87,6 +108,14 @@ int main(int argc, char *argv[]) {
 }
 
 
+/**********************************************************
+*	readInputFile(std::string filename, shape*& shapes, int& width, int& numShapes)
+*	Parses shape input file
+*	 @param filename name of the shape input file
+*	 @param shapes pointer to the shapes array
+*	 @param width width value to be written to
+*	 @param numShapes numShapes value to be written to
+**********************************************************/
 void readInputFile(std::string filename, shape*& shapes, int& width, int& numShapes) {
 	
 	// Variables

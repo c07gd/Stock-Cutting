@@ -1,3 +1,13 @@
+###############################################################################
+#	config.txt
+#
+#	Configuration file for the Stock Cutting Problem.
+#
+#	Stuart Miller
+#	Missouri S&T CS 5401
+#	Fall 2017
+###############################################################################
+
 # An indicator specifying whether the random number generator should be initialized based on time in microseconds
 seedFromTime=true
 

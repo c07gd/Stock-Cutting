@@ -1,10 +1,30 @@
+/******************************************************************************
+*	state.cpp
+*
+*	Definitions for the state class for the Stock Cutting Problem.
+*
+*	Stuart Miller
+*	Missouri S&T CS 5401
+*	Fall 2017
+******************************************************************************/
+
+
+/**********************************************************
+*	Headers
+**********************************************************/
 #include "state.h"
 #include <iostream>
 #include <fstream>
 #include <stdlib.h>
 
 
+/**********************************************************
+*	state()
+*	Default constructor
+**********************************************************/
 state::state() {
+	
+	// Assign default values
 	m_width = 0;
 	m_length = 0;
 	m_fitness = -1;
@@ -14,8 +34,18 @@ state::state() {
 	m_x = NULL;
 	m_y = NULL;
 	m_rot = NULL;
+
+	return;
 }
 
+
+/**********************************************************
+*	state(shape* shapes, int width, int numShapes)
+*	Custom constructor
+*	 @param shapes pointer to an array of shapes
+*	 @param width width of the stock
+*	 @param numShapes length of the shapes array
+**********************************************************/
 state::state(shape* shapes, int width, int numShapes) {
 	
 	// Copy data over to members
@@ -34,6 +64,12 @@ state::state(shape* shapes, int width, int numShapes) {
 	return;
 }
 
+
+/**********************************************************
+*	state(const state& rhs)
+*	Copy constructor
+*	 @param rhs state to be copied
+**********************************************************/
 state::state(const state& rhs) {
 
 	// Copy data over
@@ -56,6 +92,13 @@ state::state(const state& rhs) {
 	return;
 }
 
+
+/**********************************************************
+*	operator=(const state &rhs)
+*	Assignment operator
+*	 @param rhs state to be copied
+*	 @return state being copied into
+**********************************************************/
 state& state::operator=(const state &rhs) {
 	
 	// Test for self assignment
@@ -82,6 +125,11 @@ state& state::operator=(const state &rhs) {
 	return *this;
 }
 
+
+/**********************************************************
+*	~state()
+*	Destructor
+**********************************************************/
 state::~state() {
 	for (int i = 0; i < m_width; i++)
 		delete[] m_layout[i];
@@ -91,6 +139,11 @@ state::~state() {
 	delete[] m_rot;
 }
 
+
+/**********************************************************
+*	constructArrays()
+*	Allocates memory for arrays. Only called statically.
+**********************************************************/
 void state::constructArrays() {
 
 	// Construct layout array
@@ -115,6 +168,16 @@ void state::constructArrays() {
 	}
 }
 
+
+/**********************************************************
+*	placementIsValid(int i, int x, int y, int rot)
+*	Checks if given shape placement is valid
+*	 @param i the index of the shape in member array
+*	 @param x the given x coordinate
+*	 @param y the given y coordinate
+*	 @param rot the given rotation
+*	 @return true if placement is valid
+**********************************************************/
 bool state::placementIsValid(int i, int x, int y, int rot) {
 	
 	// Variables
@@ -151,6 +214,15 @@ bool state::placementIsValid(int i, int x, int y, int rot) {
 	return true;
 }
 
+
+/**********************************************************
+*	placeShape(int i, int x, int y, int rot)
+*	Marks a shape as placed on layout and data arrays
+*	 @param i the index of the shape in member array
+*	 @param x the given x coordinate
+*	 @param y the given y coordinate
+*	 @param rot the given rotation
+**********************************************************/
 void state::placeShape(int i, int x, int y, int rot) {
 	
 	// Variables
@@ -185,8 +257,16 @@ void state::placeShape(int i, int x, int y, int rot) {
 			m_layout[traceX][traceY] = true;
 		}
 	}
+
+	return;
 }
 
+
+/**********************************************************
+*	randomize(unsigned int seed)
+*	Places all shapes in a random valid spot on the layout
+*	 @param seed seed for the random number generator
+**********************************************************/
 void state::randomize(unsigned int seed) {
 	
 	// Variables
@@ -226,6 +306,12 @@ void state::randomize(unsigned int seed) {
 }
 
 
+/**********************************************************
+*	printSolution(std::string filename)
+*	Prints a solution file with one line for each shape
+*	Format is <x>,<y>,<rot>
+*	 @param filename name of the solution file to write
+**********************************************************/
 void state::printSolution(std::string filename) {
 
 	// Variables
@@ -248,6 +334,12 @@ void state::printSolution(std::string filename) {
 	return;
 }
 
+
+/**********************************************************
+*	printLayout(std::string filename)
+*	Prints the layout to a file
+*	 @param filename name of the layout file to write
+**********************************************************/
 void state::printLayout(std::string filename) {
 
 	// Variables
