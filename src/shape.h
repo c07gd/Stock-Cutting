@@ -2,7 +2,6 @@
 #define SHAPE_H
 
 
-#include <cstdint>
 #include <vector>
 
 #define rotate(dir, rots) ((dir + rots) % NUM_DIRS)
@@ -25,30 +24,21 @@ enum {
 
 
 struct move {
-	uint8_t distance;
+	char	distance;
 	char	direction;
 };
 
-int mutateDirection(int direction);
 
 class shape {
 private:
 	std::vector<move> moves;
 public:
-	shape::shape() {};
-	shape::shape(const char* line);
+	shape() {};
+	shape(const char* line);
 	~shape() {};
 	int getLength();
 	void print();
 	inline std::vector<move>* getMoves() { return &moves; };
 };
-
-struct shape_layout {
-	shape*	shape;
-	uint8_t	x;
-	uint8_t	y;
-	uint8_t	rot;
-};
-
 
 #endif

@@ -20,7 +20,7 @@ struct config {
 	unsigned int	seed;
 	//int			algorithmParams;
 	int				runs;
-	//int			fitnessEvals;
+	int				fitnessEvals;
 	std::string		logFile;
 	std::string		solutionFile;
 	std::string		inputFile;
@@ -30,7 +30,9 @@ inline config getConfig(std::string filename) {
 	config cfg;
 	std::string line, lhs, rhs;
 	std::size_t split;
-	std::ifstream in(filename, std::ios_base::in);
+	std::ifstream in;
+	
+	in.open(filename);
 	if (!in.is_open()) {
 		std::cout << "Error: Unable to open config file" << std::endl;
 		return cfg;
@@ -38,6 +40,8 @@ inline config getConfig(std::string filename) {
 	while (getline(in, line)) {
 		if (line[0] == COMMENT_CHAR)
 			continue;
+		if (line.length() > 1 && line[line.length() - 1] == '\r')
+			line.pop_back();
 		split = line.find("=");
 		if (split != std::string::npos) {
 			lhs = line.substr(0, split);
@@ -48,6 +52,8 @@ inline config getConfig(std::string filename) {
 				cfg.seed = (unsigned int)atoll(rhs.c_str());
 			else if (lhs == LABEL_RUNS)
 				cfg.runs = atoi(rhs.c_str());
+			else if (lhs == LABEL_FITNESSEVALS)
+				cfg.fitnessEvals = atoi(rhs.c_str());
 			else if (lhs == LABEL_LOGFILE)
 				cfg.logFile = rhs;
 			else if (lhs == LABEL_SOLUTIONFILE)

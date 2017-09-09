@@ -1,17 +1,18 @@
 # An indicator specifying whether the random number generator should be initialized based on time in microseconds
-seedFromTime=false
+seedFromTime=true
 
-# Seed for non-time-based random generations. This is ignored if seedFromTime is true
+# Seed for the random number generator
+# (This is ignored if seedFromTime is set to true)
 seed=897459283
 
 # All black-box search algorithm parameters (E.g. Random Search, EA)
 #algorithmParams=
 
 # The number of runs a single experiment consists of
-runs=1
+runs=30
 
 # The number of fitness evaluations each run is allotted
-#fitnessEvals=
+fitnessEvals=1000
 
 # The relative file path+name of the log file
 logFile=logs/log.txt

@@ -1,10 +1,9 @@
 #include "shape.h"
-#include <cstdlib>
 #include <iostream>
 
 
 shape::shape(const char* line) {
-	uint8_t i = 0;
+	int i = 0;
 	move	m;
 	do {
 		while (line[i] == ' ')
@@ -31,7 +30,7 @@ shape::shape(const char* line) {
 		m.distance = line[i] - '0';	// TODO: handling for two-digit distances
 		i++;
 		moves.push_back(m);
-	} while (line[i] != '\n' && line[i] != '\0');
+	} while (line[i] != '\n' && line[i] != '\0' && line[i] != '\r');
 }
 
 
