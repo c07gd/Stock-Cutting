@@ -274,18 +274,32 @@ void state::randomize(unsigned int seed) {
 	int y;
 	int rot;
 	int layoutLength;
+	int count;
 
 	// Seed randomizer
 	srand(seed);
 
 	// Walk down shape array choosing and verifying random layouts
 	for (int i = 0; i < m_numShapes; i++) {
+		count = 0;
 		do {
 			x = rand() % m_width;
 			y = rand() % m_length;
 			rot = rand() % NUM_ROTS;
-		} while (!placementIsValid(i, x, y, rot));
-		placeShape(i, x, y, rot);
+			count++;
+		} while (!placementIsValid(i, x, y, rot) && count < RANDOM_MAX_TRIES);
+
+		// If no valid placement found within max tries, restart layout
+		if (count >= RANDOM_MAX_TRIES) {
+			for (int i = 0; i < m_width; i++) {
+				for (int j = 0; j < m_length; j++)
+					m_layout[i][j] = false;
+			}
+			i = 0;
+		}
+		else {
+			placeShape(i, x, y, rot);
+		}
 	}
 
 	// Calculate length used
