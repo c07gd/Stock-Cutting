@@ -19,12 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="config.txt" />
-    <Text Include="pattern\100Shapes.txt" />
-    <Text Include="pattern\100ShapesComplex.txt" />
-    <Text Include="pattern\50Shapes.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\shape.cpp" />
     <ClCompile Include="src\state.cpp" />
@@ -42,7 +36,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <LocalDebuggerCommandArguments>config.txt</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>instance1.cfg</LocalDebuggerCommandArguments>
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
@@ -56,7 +50,7 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <LocalDebuggerCommandArguments>config.txt</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>instance1.cfg</LocalDebuggerCommandArguments>
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>

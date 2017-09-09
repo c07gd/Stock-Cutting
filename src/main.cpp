@@ -60,6 +60,7 @@ int main(int argc, char *argv[]) {
 		std::cout << "Error: Unable to write log file" << std::endl;
 		exit(1);
 	}
+	log << "Result Log" << std::endl << std::endl;
 
 	// Run specified algorithm
 	switch (cfg.algorithm) {
@@ -90,6 +91,7 @@ int main(int argc, char *argv[]) {
 					runBest = eval;
 				}
 			}
+			log << std::endl;
 
 			// Check if best overall
 			if (runBest.getFitness() > overallBest.getFitness())
