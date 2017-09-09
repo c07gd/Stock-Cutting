@@ -7,3 +7,10 @@ logs/*
 !.gitkeep
 *.o
 *.exe
+
+# LaTeX files
+doc/*.aux
+doc/*.bbl
+doc/*.blg
+doc/*.log
+doc/*.out
