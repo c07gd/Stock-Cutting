@@ -6,6 +6,7 @@
 #include "state.h"
 #include "cfgParse.h"
 
+
 void readInputFile(std::string filename, shape*& shapes, int& width, int& numShapes);
 
 int main(int argc, char *argv[]) {
@@ -21,8 +22,8 @@ int main(int argc, char *argv[]) {
 
 	// Get configuration
 	if (argc <= 1) {
-		std::cout << "Error: please supply config filename as argument" << std::endl;
-		return 0;
+		std::cout << "Error: Please supply config filename as argument" << std::endl;
+		exit(1);
 	}
 	cfg = getConfig(argv[1]);
 
@@ -35,39 +36,44 @@ int main(int argc, char *argv[]) {
 	// Open log file
 	log.open(cfg.logFile);
 	if (!log.is_open()) {
-		std::cout << "Error: Unable to write to log file" << std::endl;
-		return 0;
+		std::cout << "Error: Unable to write log file" << std::endl;
+		exit(1);
 	}
 
-	// Loop for the specified number of runs
-	for (int i = 1; i <= cfg.runs; i++) {
-		state runBest;
+	// Run specified algorithm
+	switch (cfg.algorithm) {
+	case RANDOM_SEARCH:
 
-		// Loop for the specified number of fitness evals
-		for (int j = 1; j <= cfg.fitnessEvals; j++) {
+		// Loop for the specified number of runs
+		for (int i = 1; i <= cfg.runs; i++) {
+			state runBest;
 
-			// Generate new random state and test its fitness
-			state eval = initial;
-			if (cfg.seedFromTime) {
-				std::chrono::time_point<std::chrono::system_clock, std::chrono::microseconds> time = std::chrono::time_point_cast<std::chrono::microseconds>(std::chrono::system_clock::now()); // Good lord, <chrono> types are awful aren't they??
-				seed = (unsigned int)time.time_since_epoch().count();
-			}
-			else {
-				seed = cfg.seed * i * j;
-			}
-			eval.randomize(seed);
-			if (eval.getFitness() > runBest.getFitness()) {
+			// Loop for the specified number of fitness evals
+			for (int j = 1; j <= cfg.fitnessEvals; j++) {
 
-				// Write to log if best fitness for this run
-				log << "Run " << i << ":\t" << j << "\t" << eval.getFitness() << std::endl;
-				std::cout << "Run " << i << ":\t" << j << "\t" << eval.getFitness() << std::endl;
-				runBest = eval;
+				// Generate new random state and test its fitness
+				state eval = initial;
+				if (cfg.seedFromTime) {
+					std::chrono::time_point<std::chrono::system_clock, std::chrono::microseconds> time = std::chrono::time_point_cast<std::chrono::microseconds>(std::chrono::system_clock::now()); // Good lord, <chrono> types are awful aren't they??
+					seed = (unsigned int)time.time_since_epoch().count();
+				}
+				else {
+					seed = cfg.seed * i * j;
+				}
+				eval.randomize(seed);
+				if (eval.getFitness() > runBest.getFitness()) {
+
+					// Write to log if best fitness for this run
+					log << "Run " << i << ":\t" << j << "\t" << eval.getFitness() << std::endl;
+					std::cout << "Run " << i << ":\t" << j << "\t" << eval.getFitness() << std::endl;
+					runBest = eval;
+				}
 			}
+
+			// Check if best overall
+			if (runBest.getFitness() > overallBest.getFitness())
+				overallBest = runBest;
 		}
-
-		// Check if best overall
-		if (runBest.getFitness() > overallBest.getFitness())
-			overallBest = runBest;
 	}
 
 	// Print best solution
@@ -91,8 +97,8 @@ void readInputFile(std::string filename, shape*& shapes, int& width, int& numSha
 	// Open input file
 	in.open(filename);
 	if (!in.is_open()) {
-		std::cout << "Error: Unable to open shape input file" << std::endl;
-		return;
+		std::cout << "Error: Unable to read shape input file" << std::endl;
+		exit(1);
 	}
 
 	// Read first line (width & numShapes)

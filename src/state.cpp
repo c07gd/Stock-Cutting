@@ -234,8 +234,8 @@ void state::printSolution(std::string filename) {
 	// Open output file
 	out.open(filename);
 	if (!out.is_open()) {
-		std::cout << "Error: Unable to write output file";
-		return;
+		std::cout << "Error: Unable to write solution file" << std::endl;
+		exit(1);
 	}
 
 	// Walk down shapes array and output data
@@ -261,8 +261,8 @@ void state::printLayout(std::string filename) {
 	// Open output file
 	out.open(filename);
 	if (!out.is_open()) {
-		std::cout << "Error: Unable to write output file";
-		return;
+		std::cout << "Error: Unable to write layout file" << std::endl;;
+		exit(1);
 	}
 
 	// Print out layout array

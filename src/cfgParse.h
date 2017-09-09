@@ -8,17 +8,24 @@
 #define COMMENT_CHAR			('#')
 #define LABEL_SEEDFROMTIME		("seedFromTime")
 #define LABEL_SEED				("seed")
-#define LABEL_ALGORITHMPARAMS	("algorithmParams")
+#define LABEL_ALGORITHM			("algorithm")
 #define LABEL_RUNS				("runs")
 #define LABEL_FITNESSEVALS		("fitnessEvals")
 #define LABEL_LOGFILE			("logFile")
 #define LABEL_SOLUTIONFILE		("solutionFile")
 #define LABEL_INPUTFILE			("inputFile")
 
+enum {
+	RANDOM_SEARCH,
+	// more search types to be added later...
+	INVALID
+};
+
+
 struct config {
 	bool			seedFromTime;
 	unsigned int	seed;
-	//int			algorithmParams;
+	char			algorithm;
 	int				runs;
 	int				fitnessEvals;
 	std::string		logFile;
@@ -35,7 +42,7 @@ inline config getConfig(std::string filename) {
 	in.open(filename);
 	if (!in.is_open()) {
 		std::cout << "Error: Unable to open config file" << std::endl;
-		return cfg;
+		exit(1);
 	}
 	while (getline(in, line)) {
 		if (line[0] == COMMENT_CHAR)
@@ -60,6 +67,17 @@ inline config getConfig(std::string filename) {
 				cfg.solutionFile = rhs;
 			else if (lhs == LABEL_INPUTFILE)
 				cfg.inputFile = rhs;
+			else if (lhs == LABEL_ALGORITHM) {
+				switch (rhs[0]) {
+				case 'R':
+				case 'r':
+					cfg.algorithm = RANDOM_SEARCH;
+					break;
+				default:
+					cfg.algorithm = INVALID;
+					break;
+				}
+			}
 		}
 	}
 	return cfg;

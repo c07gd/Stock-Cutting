@@ -5,8 +5,10 @@ seedFromTime=true
 # (This is ignored if seedFromTime is set to true)
 seed=897459283
 
-# All black-box search algorithm parameters (E.g. Random Search, EA)
-#algorithmParams=
+# All black-box search algorithm parameters
+# R for random search
+# (others to be added here later)
+algorithm=R
 
 # The number of runs a single experiment consists of
 runs=30
