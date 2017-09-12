@@ -10,10 +10,10 @@ This program makes use of C++11 in order to access the high_resolution_clock in 
 
 ### Running
 
-Use the included run.sh to compile and run the program. You will need to supply the configuration file as an argument.
+Use the included ```run.sh``` to compile and run the program. You will need to supply the configuration file and problem instance as arguments. Problem instances are taken directly from Dr. T's website [here](http://web.mst.edu/~tauritzd/courses/ec/cs5401fs2017/).
 
 ```bash
-./run.sh instance1.cfg
+./run.sh instance1.cfg problem1
 ```
 
 ### Input
@@ -21,7 +21,7 @@ Use the included run.sh to compile and run the program. You will need to supply 
 The program expects the following files as inputs.
 
 * Config File - Contains configurable parameters. See instance1.cfg for an example.
-* Shape File - List of shapes to be processed. A series of tokens tracing the area of the shape. Each token is in the form of \<direction\>\<distance\>.
+* Shape File - List of shapes to be processed. A series of tokens tracing the area of the shape. Each token is in the form of \<direction\>\<distance\>. Each problem instance is automatically configured to pull its corresponding shape file.
 
 
 ### Output
@@ -30,7 +30,7 @@ The program will output the following. The filepath of each in configurable in t
 
 * Log File - Prints each row that improves on the best fitness found for that run.
 * Standard Out - Mirrors the logfile.
-* Solution File - Prints the layout of the best fitness for all runs. Each line is in the form of <x><y><rotation>
+* Solution File - Prints the layout of the best fitness for all runs. Each line is in the form of \<x\>\<y\>\<rotation\>
 * Layout File (optional) - For debugging only. Prints the layout of shapes on the stock.
 
 ### Author
