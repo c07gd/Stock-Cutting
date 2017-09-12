@@ -1,0 +1,171 @@
+Result Log
+
+Run 1:	1	2
+Run 1:	10	3
+Run 1:	22	4
+
+Run 2:	1	0
+Run 2:	5	1
+Run 2:	6	2
+Run 2:	19	3
+Run 2:	171	4
+Run 2:	781	5
+Run 2:	972	6
+
+Run 3:	1	0
+Run 3:	6	1
+Run 3:	11	2
+Run 3:	74	3
+Run 3:	90	5
+Run 3:	117	6
+Run 3:	348	7
+
+Run 4:	1	0
+Run 4:	2	1
+Run 4:	4	2
+Run 4:	106	4
+
+Run 5:	1	0
+Run 5:	2	3
+Run 5:	63	5
+
+Run 6:	1	0
+Run 6:	5	1
+Run 6:	7	2
+Run 6:	47	3
+Run 6:	99	5
+Run 6:	842	7
+
+Run 7:	1	1
+Run 7:	2	2
+Run 7:	108	3
+Run 7:	206	5
+
+Run 8:	1	0
+Run 8:	4	2
+Run 8:	64	6
+
+Run 9:	1	0
+Run 9:	4	1
+Run 9:	5	3
+Run 9:	6	4
+Run 9:	102	6
+
+Run 10:	1	1
+Run 10:	7	2
+Run 10:	16	3
+Run 10:	57	4
+
+Run 11:	1	1
+Run 11:	12	2
+Run 11:	42	3
+Run 11:	355	4
+Run 11:	731	5
+
+Run 12:	1	2
+Run 12:	20	3
+Run 12:	200	4
+Run 12:	543	6
+
+Run 13:	1	0
+Run 13:	4	1
+Run 13:	9	2
+Run 13:	37	3
+Run 13:	43	5
+
+Run 14:	1	1
+Run 14:	32	2
+Run 14:	43	4
+Run 14:	269	5
+Run 14:	562	6
+
+Run 15:	1	0
+Run 15:	4	1
+Run 15:	10	2
+Run 15:	136	3
+Run 15:	197	4
+Run 15:	662	5
+
+Run 16:	1	0
+Run 16:	2	3
+Run 16:	146	4
+Run 16:	174	5
+
+Run 17:	1	1
+Run 17:	2	2
+Run 17:	91	3
+Run 17:	131	5
+
+Run 18:	1	0
+Run 18:	3	1
+Run 18:	17	3
+Run 18:	424	4
+Run 18:	715	5
+Run 18:	962	6
+
+Run 19:	1	0
+Run 19:	2	2
+Run 19:	49	3
+Run 19:	288	4
+Run 19:	793	5
+
+Run 20:	1	0
+Run 20:	2	2
+Run 20:	6	3
+Run 20:	414	6
+
+Run 21:	1	0
+Run 21:	4	1
+Run 21:	6	2
+Run 21:	8	3
+Run 21:	219	4
+Run 21:	965	7
+
+Run 22:	1	0
+Run 22:	6	3
+Run 22:	175	4
+Run 22:	680	5
+
+Run 23:	1	2
+Run 23:	109	3
+Run 23:	185	4
+
+Run 24:	1	0
+Run 24:	2	2
+Run 24:	48	3
+Run 24:	70	4
+Run 24:	758	6
+
+Run 25:	1	0
+Run 25:	3	2
+Run 25:	25	3
+Run 25:	203	4
+Run 25:	442	5
+Run 25:	704	6
+
+Run 26:	1	0
+Run 26:	4	1
+Run 26:	7	2
+Run 26:	23	3
+Run 26:	99	4
+Run 26:	910	5
+
+Run 27:	1	0
+Run 27:	3	1
+Run 27:	4	2
+Run 27:	94	4
+Run 27:	613	7
+
+Run 28:	1	3
+Run 28:	233	4
+
+Run 29:	1	0
+Run 29:	4	2
+Run 29:	26	3
+Run 29:	103	4
+Run 29:	128	5
+
+Run 30:	1	0
+Run 30:	3	1
+Run 30:	10	6
+
