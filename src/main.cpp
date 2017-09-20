@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <iostream>
 #include <fstream>
+#include <cmath>
 #include <string>
 #include <chrono>
 #include "pool.h"
@@ -22,6 +23,11 @@
 #include "state.h"
 #include "cfgParse.h"
 
+
+/**********************************************************
+*	Compiler Constants
+**********************************************************/
+#define GEN_SCALED_PROB(k) ((float)(rand() % (int)std::pow(10.0,k)) / std::pow(10.0,k))
 
 /**********************************************************
 *	Local Funtions
@@ -69,8 +75,9 @@ int main(int argc, char *argv[]) {
 
 
 	int mu = 100;
-	int lambda = 100;
-	int crossovers = 4;
+	int lambda = 80;
+	float mutationRate = 0.20;
+	int crossovers = 1;
 
 	// Randomly generate a start population
 	pool population;
@@ -89,7 +96,8 @@ int main(int argc, char *argv[]) {
 		for (int j = 0; j < lambda; j++) {
 			state* temp = new state(initial);
 			temp->nPointCrossOver(population.chooseFpParent(), population.chooseFpParent(), crossovers);
-			temp->mutate();
+			if (GEN_SCALED_PROB(4) <= mutationRate)
+				temp->mutate();
 			temp->calcFitness();
 			offspring.add(temp);
 		}
