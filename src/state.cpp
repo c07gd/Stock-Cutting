@@ -322,9 +322,6 @@ void state::randomize() {
 			placeShape(i, x, y, rot);
 	}
 
-	// Calculate fitness for our new layout
-	calcFitness();
-
 	return;
 }
 
@@ -363,11 +360,39 @@ void state::nPointCrossOver(state* parent1, state* parent2, int n) {
 		placeShape(i, m_x[i], m_y[i], m_rot[i]);
 	}
 
-	// Calculate fitness for our new layout
-	calcFitness();
-
 	// Clean up
 	delete[] crossoverPts;
+	return;
+}
+
+void state::mutate() {
+
+	// Variables
+	int x;
+	int y;
+	int rot;
+	int count;
+	int idx;
+
+	do {
+
+		// Pick a random gene
+		idx = rand() % m_numShapes;
+
+		// Assign new random coordinates until valid
+		count = 0;
+		do {
+			x = rand() % m_width;
+			y = rand() % m_length;
+			rot = rand() % NUM_ROTS;
+			count++;
+		} while (!placementIsValid(idx, x, y, rot) && count < RANDOM_MAX_TRIES);
+
+	// If we couldn't find a valid assignment after max tries, pick a new gene to mutate
+	} while (count >= RANDOM_MAX_TRIES);
+
+	placeShape(idx, x, y, rot);
+
 	return;
 }
 

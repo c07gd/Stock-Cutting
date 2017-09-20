@@ -26,8 +26,10 @@ void pool::create(int size, state* initial) {
 }
 
 void pool::randomizeAll() {
-	for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it)
+	for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it) {
 		(*it)->randomize();
+		(*it)->calcFitness();
+	}
 
 	return;
 }

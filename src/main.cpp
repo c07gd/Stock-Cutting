@@ -69,8 +69,8 @@ int main(int argc, char *argv[]) {
 
 
 	int mu = 100;
-	int lambda = 50;
-	int crossovers = 5;
+	int lambda = 100;
+	int crossovers = 4;
 
 	// Randomly generate a start population
 	pool population;
@@ -89,6 +89,8 @@ int main(int argc, char *argv[]) {
 		for (int j = 0; j < lambda; j++) {
 			state* temp = new state(initial);
 			temp->nPointCrossOver(population.chooseFpParent(), population.chooseFpParent(), crossovers);
+			temp->mutate();
+			temp->calcFitness();
 			offspring.add(temp);
 		}
 
