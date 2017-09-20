@@ -47,6 +47,7 @@
 **********************************************************/
 enum {
 	RANDOM_SEARCH,
+	SIMPLE_EA_SEARCH,
 	// more search types to be added later...
 	INVALID
 };
@@ -133,6 +134,10 @@ inline config getConfig(std::string filename) {
 				case 'R':
 				case 'r':
 					cfg.algorithm = RANDOM_SEARCH;
+					break;
+				case 'S':
+				case 's':
+					cfg.algorithm = SIMPLE_EA_SEARCH;
 					break;
 				default:
 					cfg.algorithm = INVALID;

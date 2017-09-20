@@ -4,10 +4,12 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\shape.cpp" />
     <ClCompile Include="src\state.cpp" />
+    <ClCompile Include="src\pool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\shape.h" />
     <ClInclude Include="src\state.h" />
     <ClInclude Include="src\cfgParse.h" />
+    <ClInclude Include="src\pool.h" />
   </ItemGroup>
 </Project>

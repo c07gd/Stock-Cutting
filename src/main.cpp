@@ -12,10 +12,12 @@
 /**********************************************************
 *	Headers
 **********************************************************/
+#include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <chrono>
+#include "pool.h"
 #include "shape.h"
 #include "state.h"
 #include "cfgParse.h"
@@ -37,8 +39,7 @@ int main(int argc, char *argv[]) {
 	shape*			shapes = NULL;
 	int				width = 0;
 	int				numShapes = 0;
-	unsigned int	seed;
-	state			overallBest;
+	state*			overallBest;
 	std::ofstream	log;
 
 	// Get configuration
@@ -50,10 +51,13 @@ int main(int argc, char *argv[]) {
 	cfg.inputFile = argv[2];
 
 	// Get shapes
-	readInputFile(cfg.inputFile, shapes, width, numShapes);
+	readInputFile(argv[2], shapes, width, numShapes);
+
+	srand(cfg.seed);
 
 	// Construct initial state
 	state initial(shapes, width, numShapes);
+	initial.randomize();
 
 	// Open log file
 	log.open(cfg.logFile);
@@ -63,48 +67,78 @@ int main(int argc, char *argv[]) {
 	}
 	log << "Result Log" << std::endl << std::endl;
 
-	// Run specified algorithm
-	switch (cfg.algorithm) {
-	case RANDOM_SEARCH:
 
-		// Loop for the specified number of runs
-		for (int i = 1; i <= cfg.runs; i++) {
-			state runBest;
+	int mu = 100;
+	int lambda = 50;
+	int crossovers = 5;
 
-			// Loop for the specified number of fitness evals
-			for (int j = 1; j <= cfg.fitnessEvals; j++) {
+	// Randomly generate a start population
+	pool population;
+	pool offspring;
+	population.create(mu, &initial);
+	population.randomizeAll();
 
-				// Generate new random state and test its fitness
-				state eval = initial;
-				if (cfg.seedFromTime) {
-					std::chrono::time_point<std::chrono::system_clock, std::chrono::microseconds> time = std::chrono::time_point_cast<std::chrono::microseconds>(std::chrono::system_clock::now()); // Good lord, <chrono> types are awful aren't they??
-					seed = (unsigned int)time.time_since_epoch().count();
-				}
-				else {
-					seed = cfg.seed * i * j;
-				}
-				eval.randomize(seed);
-				if (eval.getFitness() > runBest.getFitness()) {
+	// Add offspring to population
+	int bestFitness = 0;
+	for (int i = 0; i < 1000; i++) {
 
-					// Write to log if best fitness for this run
-					log << "Run " << i << ":\t" << j << "\t" << eval.getFitness() << std::endl;
-					std::cout << "Run " << i << ":\t" << j << "\t" << eval.getFitness() << std::endl;
-					runBest = eval;
-				}
-			}
-			log << std::endl;
+		// Calculate fitness proportional probabilities for parent selection
+		population.setFpProbability();
 
-			// Check if best overall
-			if (runBest.getFitness() > overallBest.getFitness())
-				overallBest = runBest;
+		// Create lambda offspring
+		for (int j = 0; j < lambda; j++) {
+			state* temp = new state(initial);
+			temp->nPointCrossOver(population.chooseFpParent(), population.chooseFpParent(), crossovers);
+			offspring.add(temp);
 		}
+
+		// Add offspring to population
+
+		// If more offspring were generated...
+		// ...we need to narrow the offspring pool to make the next generation
+		if (mu <= lambda) {
+			offspring.truncate(mu);
+			population.empty();
+			for (int j = 0; j < mu; j++)
+				population.add(offspring.get(j));
+		}
+
+		// If fewer offspring were generated...
+		// ...we need to choose which of the original population will survive
+		else { // (mu > lambda)
+			population.truncate(mu - offspring.getSize());
+			for (int j = 0; j < lambda; j++)
+				population.add(offspring.get(j));
+		}
+
+		// Empty the offspring pool
+		offspring.empty();
+
+		// Find the best fitness value to see if we're improving
+		bestFitness = -1;
+		for (int j = 0; j < mu; j++) {
+			if (population.get(j)->getFitness() > bestFitness) {
+				bestFitness = population.get(j)->getFitness();
+			}
+		}
+
+		std::cout << "Iteration:\t" << i << "\t" << bestFitness << std::endl;
+	}
+
+	// Now that we're done, find the best member of our final population
+	overallBest = &initial;
+	for (int j = 0; j < mu; j++) {
+		if (population.get(j)->getFitness() > overallBest->getFitness())
+			overallBest = population.get(j);
 	}
 
 	// Print best solution
-	overallBest.printSolution(cfg.solutionFile);
-	overallBest.printLayout("solutions/layout.txt");
-	
+	overallBest->printSolution(cfg.solutionFile);
+	overallBest->printLayout("solutions/layout.txt");
+
 	// Clean up
+	population.empty();
+	offspring.empty();
 	delete[] shapes;
 
 	return 0;

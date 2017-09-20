@@ -13,6 +13,7 @@
 *	Headers
 **********************************************************/
 #include "state.h"
+#include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <stdlib.h>
@@ -261,23 +262,41 @@ void state::placeShape(int i, int x, int y, int rot) {
 	return;
 }
 
+void state::calcFitness() {
+
+	// Variables
+	bool exit;
+	
+	// Walk down the layout starting at the far end
+	exit = false;
+	for (int i = m_length - 1; i >= 0 && !exit; i--) {
+		for (int j = 0; j < m_width && !exit; j++) {
+
+			// When we hit a marked square, we're done
+			// Calculate and assign fitness (total length - used length)
+			if (m_layout[j][i]) {
+				m_fitness = m_length - i - 1;
+				exit = true;
+			}
+		}
+	}
+
+	return;
+}
+
 
 /**********************************************************
 *	randomize(unsigned int seed)
 *	Places all shapes in a random valid spot on the layout
 *	 @param seed seed for the random number generator
 **********************************************************/
-void state::randomize(unsigned int seed) {
+void state::randomize() {
 	
 	// Variables
 	int x;
 	int y;
 	int rot;
-	int layoutLength;
 	int count;
-
-	// Seed randomizer
-	srand(seed);
 
 	// Walk down shape array choosing and verifying random layouts
 	for (int i = 0; i < m_numShapes; i++) {
@@ -297,25 +316,58 @@ void state::randomize(unsigned int seed) {
 			}
 			i = 0;
 		}
-		else {
+
+		// Otherwise placement is valid and we can assign
+		else
 			placeShape(i, x, y, rot);
-		}
 	}
 
-	// Calculate length used
-	bool exit = false;
-	for (int i = m_length - 1; i >= 0 && !exit; i--) {
-		for (int j = 0; j < m_width && !exit; j++) {
-			if (m_layout[j][i]) {
-				layoutLength = i + 1;
-				exit = true;
-			}
+	// Calculate fitness for our new layout
+	calcFitness();
+
+	return;
+}
+
+void state::nPointCrossOver(state* parent1, state* parent2, int n) {
+
+	// Variables
+	int*	crossoverPts = new int[n];
+
+	// Generate swap points
+	if (n > m_numShapes)
+		n = m_numShapes;
+	for (int i = 0; i < n; i++)
+		crossoverPts[i] = rand() % m_numShapes;
+	std::sort(crossoverPts, crossoverPts + n);
+
+	// Walk down chromosome and copy genes into offspring
+	int j = 0;
+	for (int i = 0; i < m_numShapes; i++) {
+
+		// Every time we hit a crossover point, swap parents
+		if (i >= crossoverPts[j] && j < n) {
+			std::swap(parent1, parent2);
+			j++;
 		}
+
+		// Check validity of new placement
+		// If invalid, randomize until valid
+		m_x[i] = parent1->m_x[i];
+		m_y[i] = parent1->m_y[i];
+		m_rot[i] = parent1->m_rot[i];
+		while (!placementIsValid(i, m_x[i], m_y[i], m_rot[i])) {
+			m_x[i] = rand() % m_width;
+			m_y[i] = rand() % m_length;
+			m_rot[i] = rand() % NUM_ROTS;
+		}
+		placeShape(i, m_x[i], m_y[i], m_rot[i]);
 	}
 
-	// Calculate fitness
-	m_fitness = m_length - layoutLength;
+	// Calculate fitness for our new layout
+	calcFitness();
 
+	// Clean up
+	delete[] crossoverPts;
 	return;
 }
 
