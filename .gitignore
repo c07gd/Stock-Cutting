@@ -7,6 +7,7 @@ logs/*
 !.gitkeep
 *.o
 *.exe
+*.user
 
 # LaTeX files
 doc/*.aux
