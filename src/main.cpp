@@ -47,6 +47,7 @@ int main(int argc, char *argv[]) {
 		exit(1);
 	}
 	cfg = getConfig(argv[1]);
+	cfg.inputFile = argv[2];
 
 	// Get shapes
 	readInputFile(cfg.inputFile, shapes, width, numShapes);
