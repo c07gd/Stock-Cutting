@@ -22,8 +22,6 @@
 *	Compiler Constants
 **********************************************************/
 #define RANDOM_MAX_TRIES	(10000)
-#define MAX(x,y)			(x>y?x:y)
-#define MIN(x,y)			(x<y?x:y)
 #define ELEMENT_IS_EQUAL(e1,idx1,e2,idx2) \
 							(e1->m_x[idx1] == e2->m_x[idx2] &&  \
 							 e1->m_y[idx1] == e2->m_y[idx2] &&  \
@@ -81,6 +79,6 @@ public:
 *	State Compare Function
 *	Returns true if s1 has a higher fitness value
 **********************************************************/
-inline bool compareState(state* s1, state* s2) { return(s1->getFitness() > s2->getFitness()); };
+inline bool compareState(state* s1, state* s2) { return(s1->getFitness() > s2->getFitness()); }
 
 #endif

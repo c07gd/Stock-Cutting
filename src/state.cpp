@@ -194,7 +194,7 @@ bool state::placementIsValid(int i, int x, int y, int rot) {
 	moves = m_shapes[i].getMoves();
 	for (std::vector<move>::iterator it = moves->begin(); it != moves->end(); ++it) {
 		for (int j = 0; j < (*it).distance; j++) {
-			switch (rotate((*it).direction, rot)) {
+			switch (rotateShape((*it).direction, rot)) {
 			case DIR_UP:
 				traceX++;
 				break;
@@ -241,7 +241,7 @@ void state::placeShape(int i, int x, int y, int rot) {
 	m_layout[traceX][traceY] = true;
 	for (std::vector<move>::iterator it = moves->begin(); it != moves->end(); ++it) {
 		for (int j = 0; j < (*it).distance; j++) {
-			switch (rotate((*it).direction, rot)) {
+			switch (rotateShape((*it).direction, rot)) {
 			case DIR_UP:
 				traceX++;
 				break;
