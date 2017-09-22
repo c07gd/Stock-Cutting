@@ -13,6 +13,7 @@
 *	Headers
 **********************************************************/
 #include "shape.h"
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -70,27 +71,40 @@ shape::shape(const char* line) {
 int shape::getLength() {
 
 	// Variables
-	int		trace = 0;
+	int		traceLR = 0;
+	int		traceUD = 0;
 	int		farRight = 0;
 	int		farLeft = 0;
+	int		farUp = 0;
+	int		farDown = 0;
 
 	// Iterate down moves vector, tracing shape
 	// Mark furthest left and right positions
 	for (std::vector<move>::iterator it = m_moves.begin(); it != m_moves.end(); ++it) {
 		if ((*it).direction == DIR_LEFT) {
-			trace -= (*it).distance;
-			if (trace < farLeft)
-				farLeft = trace;
+			traceLR -= (*it).distance;
+			if (traceLR < farLeft)
+				farLeft = traceLR;
 		}
 		else if ((*it).direction == DIR_RIGHT) {
-			trace += (*it).distance;
-			if (trace > farRight)
-				farRight = trace;
+			traceLR += (*it).distance;
+			if (traceLR > farRight)
+				farRight = traceLR;
+		}
+		else if ((*it).direction == DIR_UP) {
+			traceUD += (*it).distance;
+			if (traceUD > farUp)
+				farUp = traceUD;
+		}
+		else if ((*it).direction == DIR_DOWN) {
+			traceUD -= (*it).distance;
+			if (traceUD > farDown)
+				farDown = traceUD;
 		}
 	}
 
 	// Length is difference + 1 for start location
-	return (farRight - farLeft + 1);
+	return std::max((farRight - farLeft + 1), (farUp - farDown + 1));
 }
 
 
