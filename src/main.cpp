@@ -87,7 +87,9 @@ int main(int argc, char *argv[]) {
 
 	// Add offspring to population
 	int bestFitness = 0;
-	for (int i = 0; i < 1000; i++) {
+	int i = 0;
+	do {
+		i++;
 
 		// Calculate fitness proportional probabilities for parent selection
 		population.setFpProbability();
@@ -133,7 +135,8 @@ int main(int argc, char *argv[]) {
 		}
 
 		std::cout << "Iteration:\t" << i << "\t" << bestFitness << std::endl;
-	}
+
+	} while (!population.termTestBestFitness(200));
 
 	// Now that we're done, find the best member of our final population
 	overallBest = &initial;

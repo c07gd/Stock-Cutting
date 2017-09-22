@@ -20,6 +20,11 @@ enum {
 	LOWEST
 };
 
+static int numEvals = 0;
+static int lastBestFitness = -1;
+static float lastAvgFitness = -1.0f;
+static int numGensUnchanged = 0;
+
 
 void pool::create(int size, state* initial) {
 	for (int i = 0; i < size; i++) {
@@ -124,4 +129,69 @@ int pool::kTournament(int k, int type) {
 	}
 
 	return bestIdx;
+}
+
+bool pool::termTestNumEvals(int targetEvals) {
+	if (numEvals >= targetEvals) {
+		numEvals = 0;
+		return true;
+	}
+	numEvals++;
+	return false;
+}
+
+bool pool::termTestAvgFitness(int targetGensUnchanged, float unchangedVariance) {
+
+	// Variables
+	int		totalFitness = 0;
+	float	avgFitness;
+	
+	// Calculate average fitness
+	for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it)
+		totalFitness += (*it)->getFitness();
+	avgFitness = (float)totalFitness / (float)m_states.size();
+
+	// If unchanged, increment counter
+	if (abs(avgFitness - lastAvgFitness) < unchangedVariance)
+		numGensUnchanged++;
+	else
+		numGensUnchanged = 0;
+	lastAvgFitness = avgFitness;
+
+	// Return false unless we hit our target
+	if (numGensUnchanged < targetGensUnchanged)
+		return false;
+
+	// Clean up
+	numGensUnchanged = 0;
+	lastAvgFitness = -1;
+	return true;
+}
+
+bool pool::termTestBestFitness(int targetGensUnchanged) {
+
+	// Variables
+	int	bestFitness = -1;
+
+	// Find best fitness
+	for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it) {
+		if ((*it)->getFitness() > bestFitness)
+			bestFitness = (*it)->getFitness();
+	}
+	
+	// If unchanged, increment counter
+	if (bestFitness == lastBestFitness)
+		numGensUnchanged++;
+	else
+		numGensUnchanged = 0;
+	lastBestFitness = bestFitness;
+
+	// Return false unless we hit our target
+	if (numGensUnchanged < targetGensUnchanged)
+		return false;
+	
+	// Clean up
+	numGensUnchanged = 0;
+	lastBestFitness = -1;
+	return true;
 }

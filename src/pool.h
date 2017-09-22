@@ -53,6 +53,9 @@ public:
 	state* chooseParentKTourn(int k);
 	void reduceByTruncation(int size);
 	void reduceByKTourn(int size, int k);	
+	bool termTestNumEvals(int targetEvals);
+	bool termTestAvgFitness(int targetGensUnchanged, float unchangedVariance);
+	bool termTestBestFitness(int targetGensUnchanged);
 
 	// Accessors, Mutators
 	inline void add(state* x) { m_states.push_back(x); };
