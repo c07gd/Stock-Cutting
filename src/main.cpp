@@ -47,6 +47,10 @@ int main(int argc, char *argv[]) {
 	int				numShapes = 0;
 	state*			overallBest;
 	std::ofstream	log;
+	pool			population;
+	pool			offspring;
+	int				run;
+	bool			terminate = false;
 
 	// Get configuration
 	if (argc <= 1) {
@@ -63,7 +67,6 @@ int main(int argc, char *argv[]) {
 
 	// Construct initial state
 	state initial(shapes, width, numShapes);
-	initial.randomize();
 
 	// Open log file
 	log.open(cfg.logFile);
@@ -73,81 +76,63 @@ int main(int argc, char *argv[]) {
 	}
 	log << "Result Log" << std::endl << std::endl;
 
-
-	int mu = 100;
-	int lambda = 80;
-	float mutationRate = 0.20f;
-	int crossovers = 1;
-
 	// Randomly generate a start population
-	pool population;
-	pool offspring;
-	population.create(mu, &initial);
+	population.create(cfg.mu, &initial);
 	population.randomizeAll();
 
 	// Add offspring to population
-	int bestFitness = 0;
-	int i = 0;
+	run = 0;
 	do {
-		i++;
+		run++;
 
 		// Calculate fitness proportional probabilities for parent selection
 		population.setFpProbability();
 
 		// Create lambda offspring
-		for (int j = 0; j < lambda; j++) {
+		for (int i = 0; i < cfg.lambda; i++) {
 			state* temp = new state(initial);
-			temp->nPointCrossOver(population.chooseParentKTourn(9), population.chooseParentKTourn(9), crossovers);
-			if (GEN_SCALED_PROB(4) <= mutationRate)
+			temp->nPointCrossOver(population.chooseParentKTourn(cfg.parentSelTournSize), population.chooseParentKTourn(cfg.parentSelTournSize), cfg.crossovers);
+			if (GEN_SCALED_PROB(4) <= cfg.mutationRate)
 				temp->mutate();
 			temp->calcFitness();
 			offspring.add(temp);
 		}
 
 		// Add offspring to population
-
-		// If more offspring were generated...
-		// ...we need to narrow the offspring pool to make the next generation
-		if (mu <= lambda) {
-			offspring.reduceByTruncation(mu);
-			population.empty();
-			for (int j = 0; j < mu; j++)
-				population.add(offspring.get(j));
-		}
-
-		// If fewer offspring were generated...
-		// ...we need to choose which of the original population will survive
-		else { // (mu > lambda)
-			population.reduceByTruncation(mu - offspring.getSize());
-			for (int j = 0; j < lambda; j++)
-				population.add(offspring.get(j));
-		}
-
-		// Empty the offspring pool
+		for (int i = 0; i < offspring.getSize(); i++)
+			population.add(offspring.get(i));
 		offspring.empty();
 
-		// Find the best fitness value to see if we're improving
-		bestFitness = -1;
-		for (int j = 0; j < mu; j++) {
-			if (population.get(j)->getFitness() > bestFitness) {
-				bestFitness = population.get(j)->getFitness();
-			}
+		// Reduce population size
+		switch(cfg.survivorSel) {
+		case SURVIVORSEL_TRUNCATION:
+				population.reduceByTruncation(cfg.mu - offspring.getSize());
+				break;
+		case SURVIVORSEL_KTOURNAMENT:
+			default:
+				population.reduceByKTourn(cfg.mu - offspring.getSize(), cfg.survivorSelTournSize);
+				break;
 		}
 
-		std::cout << "Iteration:\t" << i << "\t" << bestFitness << std::endl;
+		std::cout << "Iteration:\t" << run << "\t" << population.getFittestState()->getFitness() << std::endl;
 
-	} while (!population.termTestBestFitness(200));
+		// Run termination test
+		switch (cfg.termType) {
+		case TERMTYPE_AVGFITNESS:
+			terminate = population.termTestAvgFitness(cfg.termGensUnchanged, 2.0);
+			break;
+		case TERMTYPE_BESTFITNESS:
+			terminate = population.termTestBestFitness(cfg.termGensUnchanged);
+			break;
+		}
 
-	// Now that we're done, find the best member of our final population
-	overallBest = &initial;
-	for (int j = 0; j < mu; j++) {
-		if (population.get(j)->getFitness() > overallBest->getFitness())
-			overallBest = population.get(j);
-	}
+	// End loop when termination test returns true of we hit our max number of evals
+	} while (!terminate && !population.termTestNumEvals(cfg.termEvals));
 
 	// Print best solution
-	overallBest->printSolution(cfg.solutionFile);
-	overallBest->printLayout("solutions/layout.txt");
+	state* best = population.getFittestState();
+	best->printSolution(cfg.solutionFile);
+	best->printLayout("solutions/layout.txt");
 
 	// Clean up
 	population.empty();

@@ -8,13 +8,14 @@
 *	Missouri S&T CS 5401
 *	Fall 2017
 ******************************************************************************/
-#ifndef PARSECONFIG_H
-#define PARSECONFIG_H
+#ifndef CFGPARSE_H
+#define CFGPARSE_H
 
 
 /**********************************************************
 *	Headers
 **********************************************************/
+#include "cfgDefault.h"
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -23,35 +24,31 @@
 /**********************************************************
 *	Compiler Constants
 **********************************************************/
-#define COMMENT_CHAR			('#')
-#define LABEL_SEEDFROMTIME		("seedFromTime")
-#define LABEL_SEED				("seed")
-#define LABEL_ALGORITHM			("algorithm")
-#define LABEL_RUNS				("runs")
-#define LABEL_FITNESSEVALS		("fitnessEvals")
-#define LABEL_LOGFILE			("logFile")
-#define LABEL_SOLUTIONFILE		("solutionFile")
-#define LABEL_INPUTFILE			("inputFile")
-#define DEFAULT_SEEDFROMTIME	(false)
-#define DEFAULT_SEED			(123456789)
-#define	DEFAULT_ALGORITHM		('R')
-#define DEFAULT_RUNS			(1)
-#define DEFAULT_FITNESSEVALS	(1)
-#define DEFAULT_LOGFILE			("logs/default.txt")
-#define DEFAULT_SOLUTIONFILE	("solutions/default.txt")
-#define DEFAULT_INPUTFILE		("patterns/default.txt")
+#define COMMENT_CHAR				('#')
+#define LABEL_SEEDFROMTIME			("seedFromTime")
+#define LABEL_SEED					("seed")
+#define LABEL_ALGORITHM				("algorithm")
+#define LABEL_RUNS					("runs")
+#define LABEL_FITNESSEVALS			("fitnessEvals")
+#define LABEL_LOGFILE				("logFile")
+#define LABEL_SOLUTIONFILE			("solutionFile")
+#define LABEL_INPUTFILE				("inputFile")
+#define LABEL_MU					("mu")
+#define LABEL_LAMBDA				("lambda")
+#define LABEL_PARENTSEL				("parentSel")
+#define LABEL_PARENTSELTOURNSIZE	("parentSelTournSize")
+#define LABEL_SURVIVORSEL			("survivorSel")
+#define LABEL_SURVIVORSELTOURNSIZE	("survivorSelTournSize")
+#define LABEL_MUTATIONRATE			("mutationRate")
+#define LABEL_CROSSOVERS			("crossovers")
+#define LABEL_TERMEVALS				("termEvals")
+#define LABEL_TERMTYPE				("termType")
+#define LABEL_TERMGENSUNCHANGED		("termGensUnchanged")
 
 
 /**********************************************************
 *	Types, Etc.
 **********************************************************/
-enum {
-	RANDOM_SEARCH,
-	SIMPLE_EA_SEARCH,
-	// more search types to be added later...
-	INVALID
-};
-
 struct config {
 	bool			seedFromTime;
 	unsigned int	seed;
@@ -61,8 +58,34 @@ struct config {
 	std::string		logFile;
 	std::string		solutionFile;
 	std::string		inputFile;
+	int				mu;
+	int				lambda;
+	int				parentSel;
+	int				parentSelTournSize;
+	int				survivorSel;
+	int				survivorSelTournSize;
+	float			mutationRate;
+	int				crossovers;
+	int				termEvals;
+	int				termType;
+	int				termGensUnchanged;
 };
 
+enum {
+	PARENTSEL_FITNESSPROPOTIONAL,
+	PARENTSEL_KTOURNAMENT
+} parentSelection;
+
+enum {
+	SURVIVORSEL_TRUNCATION,
+	SURVIVORSEL_KTOURNAMENT
+} survivorSelection;
+
+enum {
+	TERMTYPE_NUMEVALS,
+	TERMTYPE_AVGFITNESS,
+	TERMTYPE_BESTFITNESS
+} termType;
 
 /**********************************************************
 *	getConfig(std::string filename)
@@ -81,14 +104,25 @@ inline config getConfig(std::string filename) {
 	std::ifstream	in;
 
 	// Assign default values
-	cfg.seedFromTime	= DEFAULT_SEEDFROMTIME;
-	cfg.seed			= DEFAULT_SEED;
-	cfg.algorithm		= DEFAULT_ALGORITHM;
-	cfg.runs			= DEFAULT_RUNS;
-	cfg.fitnessEvals	= DEFAULT_FITNESSEVALS;
-	cfg.logFile			= DEFAULT_LOGFILE;
-	cfg.solutionFile	= DEFAULT_SOLUTIONFILE;
-	cfg.inputFile		= DEFAULT_INPUTFILE;
+	cfg.seedFromTime		= DEFAULT_SEEDFROMTIME;
+	cfg.seed				= DEFAULT_SEED;
+	cfg.algorithm			= DEFAULT_ALGORITHM;
+	cfg.runs				= DEFAULT_RUNS;
+	cfg.fitnessEvals		= DEFAULT_FITNESSEVALS;
+	cfg.logFile				= DEFAULT_LOGFILE;
+	cfg.solutionFile		= DEFAULT_SOLUTIONFILE;
+	cfg.inputFile			= DEFAULT_INPUTFILE;
+	cfg.mu					= DEFAULT_MU;
+	cfg.lambda				= DEFAULT_LAMBDA;
+	cfg.parentSel			= DEFAULT_PARENTSEL;
+	cfg.parentSelTournSize	= DEFAULT_PARENTSELTOURNSIZE;
+	cfg.survivorSel			= DEFAULT_SURVIVORSEL;
+	cfg.survivorSelTournSize= DEFAULT_SURVIVORSELTOURNSIZE;
+	cfg.mutationRate		= DEFAULT_MUTATIONRATE;
+	cfg.crossovers			= DEFAULT_CROSSOVERS;
+	cfg.termEvals			= DEFAULT_TERMEVALS;
+	cfg.termType			= DEFAULT_TERMTYPE;
+	cfg.termGensUnchanged	= DEFAULT_TERMGENSUNCHANGED;
 	
 	// Open configuration file
 	in.open(filename);
@@ -129,21 +163,28 @@ inline config getConfig(std::string filename) {
 				cfg.solutionFile = rhs;
 			else if (lhs == LABEL_INPUTFILE)
 				cfg.inputFile = rhs;
-			else if (lhs == LABEL_ALGORITHM) {
-				switch (rhs[0]) {
-				case 'R':
-				case 'r':
-					cfg.algorithm = RANDOM_SEARCH;
-					break;
-				case 'S':
-				case 's':
-					cfg.algorithm = SIMPLE_EA_SEARCH;
-					break;
-				default:
-					cfg.algorithm = INVALID;
-					break;
-				}
-			}
+			else if (lhs == LABEL_MU)
+				cfg.mu = atoi(rhs.c_str());
+			else if (lhs == LABEL_LAMBDA)
+				cfg.lambda = atoi(rhs.c_str());
+			else if (lhs == LABEL_PARENTSEL)
+				cfg.parentSel = atoi(rhs.c_str());
+			else if (lhs == LABEL_PARENTSELTOURNSIZE)
+				cfg.parentSelTournSize = atoi(rhs.c_str());
+			else if (lhs == LABEL_SURVIVORSEL)
+				cfg.survivorSel = atoi(rhs.c_str());
+			else if (lhs == LABEL_SURVIVORSELTOURNSIZE)
+				cfg.survivorSelTournSize = atoi(rhs.c_str());
+			else if (lhs == LABEL_CROSSOVERS)
+				cfg.crossovers = atoi(rhs.c_str());
+			else if (lhs == LABEL_MUTATIONRATE)
+				cfg.mutationRate = (float)atof(rhs.c_str());
+			else if (lhs == LABEL_TERMEVALS)
+				cfg.termEvals = atoi(rhs.c_str());
+			else if (lhs == LABEL_TERMTYPE)
+				cfg.termType = atoi(rhs.c_str());
+			else if (lhs == LABEL_TERMGENSUNCHANGED)
+				cfg.termGensUnchanged = atoi(rhs.c_str());
 		}
 	}
 

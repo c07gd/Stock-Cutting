@@ -62,6 +62,7 @@ public:
 	inline state* get(size_t i) const { return m_states[i]; };
 	inline void empty() { m_states.clear(); };
 	inline int getSize() const { return m_states.size(); };
+	state* getFittestState();
 
 };
 

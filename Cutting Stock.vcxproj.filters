@@ -11,5 +11,6 @@
     <ClInclude Include="src\state.h" />
     <ClInclude Include="src\cfgParse.h" />
     <ClInclude Include="src\pool.h" />
+    <ClInclude Include="src\cfgDefault.h" />
   </ItemGroup>
 </Project>

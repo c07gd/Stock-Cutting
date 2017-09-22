@@ -170,14 +170,7 @@ bool pool::termTestAvgFitness(int targetGensUnchanged, float unchangedVariance) 
 
 bool pool::termTestBestFitness(int targetGensUnchanged) {
 
-	// Variables
-	int	bestFitness = -1;
-
-	// Find best fitness
-	for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it) {
-		if ((*it)->getFitness() > bestFitness)
-			bestFitness = (*it)->getFitness();
-	}
+	int bestFitness = getFittestState()->getFitness();
 	
 	// If unchanged, increment counter
 	if (bestFitness == lastBestFitness)
@@ -194,4 +187,22 @@ bool pool::termTestBestFitness(int targetGensUnchanged) {
 	numGensUnchanged = 0;
 	lastBestFitness = -1;
 	return true;
+}
+
+
+state* pool::getFittestState() {
+	
+	// Variables
+	int		bestFitness = -1;
+	state*	bestFitnessPtr;
+
+	// Find best fitness
+	for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it) {
+		if ((*it)->getFitness() > bestFitness) {
+			bestFitness = (*it)->getFitness();
+			bestFitnessPtr = (*it);
+		}
+	}
+
+	return bestFitnessPtr;
 }
