@@ -29,11 +29,6 @@
 **********************************************************/
 #define GEN_SCALED_PROB(k) ((float)(rand() % (int)std::pow(10.0,k)) / std::pow(10.0,k))
 
-/**********************************************************
-*	Local Funtions
-**********************************************************/
-void readInputFile(std::string filename, shape*& shapes, int& width, int& numShapes);
-
 
 /**********************************************************
 *	Main
@@ -45,12 +40,13 @@ int main(int argc, char *argv[]) {
 	shape*			shapes = NULL;
 	int				width = 0;
 	int				numShapes = 0;
-	state*			overallBest;
 	std::ofstream	log;
 	pool			population;
 	pool			offspring;
 	int				run;
 	bool			terminate = false;
+	state*			parent1;
+	state*			parent2;
 
 	// Get configuration
 	if (argc <= 1) {
@@ -85,13 +81,21 @@ int main(int argc, char *argv[]) {
 	do {
 		run++;
 
-		// Calculate fitness proportional probabilities for parent selection
-		population.setFpProbability();
-
 		// Create lambda offspring
 		for (int i = 0; i < cfg.lambda; i++) {
 			state* temp = new state(initial);
-			temp->nPointCrossOver(population.chooseParentKTourn(cfg.parentSelTournSize), population.chooseParentKTourn(cfg.parentSelTournSize), cfg.crossovers);
+			switch (cfg.parentSel) {
+			case PARENTSEL_FITNESSPROPOTIONAL:
+				population.setFpProbability();
+				parent1 = population.chooseParentFP();
+				parent2 = population.chooseParentFP();
+			case PARENTSEL_KTOURNAMENT:
+			default:
+				parent1 = population.chooseParentKTourn(cfg.parentSelTournSize);
+				parent2 = population.chooseParentKTourn(cfg.parentSelTournSize);
+				break;
+			}
+			temp->nPointCrossOver(parent1, parent2, cfg.crossovers);
 			if (GEN_SCALED_PROB(4) <= cfg.mutationRate)
 				temp->mutate();
 			temp->calcFitness();
@@ -140,48 +144,4 @@ int main(int argc, char *argv[]) {
 	delete[] shapes;
 
 	return 0;
-}
-
-
-/**********************************************************
-*	readInputFile(std::string filename, shape*& shapes, int& width, int& numShapes)
-*	Parses shape input file
-*	 @param filename name of the shape input file
-*	 @param shapes pointer to the shapes array
-*	 @param width width value to be written to
-*	 @param numShapes numShapes value to be written to
-**********************************************************/
-void readInputFile(std::string filename, shape*& shapes, int& width, int& numShapes) {
-	
-	// Variables
-	std::ifstream	in;
-	std::string		line;
-	int				i;
-
-	// Open input file
-	in.open(filename);
-	if (!in.is_open()) {
-		std::cout << "Error: Unable to read shape input file" << std::endl;
-		exit(1);
-	}
-
-	// Read first line (width & numShapes)
-	in >> width;
-	in >> numShapes;
-	in.ignore(64, '\n');
-
-	// Construct shapes array
-	shapes = new shape[numShapes];
-	
-	// Read in file line-by-line and assign moves
-	i = 0;
-	while (getline(in, line)) {
-		shapes[i] = shape(line.c_str());
-		i++;
-	}
-
-	// Clean up
-	in.close();
-
-	return;
 }

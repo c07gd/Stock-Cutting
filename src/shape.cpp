@@ -13,7 +13,9 @@
 *	Headers
 **********************************************************/
 #include "shape.h"
+#include <fstream>
 #include <iostream>
+#include <string>
 
 
 /**********************************************************
@@ -100,5 +102,48 @@ int shape::getLength() {
 void shape::print() {
 	for (std::vector<move>::iterator it = m_moves.begin(); it != m_moves.end(); ++it)
 		std::cout << (*it).direction << (int)(*it).distance << " ";
+	return;
+}
+
+/**********************************************************
+*	readInputFile(std::string filename, shape*& shapes, int& width, int& numShapes)
+*	Parses shape input file
+*	 @param filename name of the shape input file
+*	 @param shapes pointer to the shapes array
+*	 @param width width value to be written to
+*	 @param numShapes numShapes value to be written to
+**********************************************************/
+void readInputFile(std::string filename, shape*& shapes, int& width, int& numShapes) {
+
+	// Variables
+	std::ifstream	in;
+	std::string		line;
+	int				i;
+
+	// Open input file
+	in.open(filename);
+	if (!in.is_open()) {
+		std::cout << "Error: Unable to read shape input file" << std::endl;
+		exit(1);
+	}
+
+	// Read first line (width & numShapes)
+	in >> width;
+	in >> numShapes;
+	in.ignore(64, '\n');
+
+	// Construct shapes array
+	shapes = new shape[numShapes];
+
+	// Read in file line-by-line and assign moves
+	i = 0;
+	while (getline(in, line)) {
+		shapes[i] = shape(line.c_str());
+		i++;
+	}
+
+	// Clean up
+	in.close();
+
 	return;
 }
