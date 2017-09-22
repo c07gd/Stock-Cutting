@@ -20,12 +20,6 @@ enum {
 	LOWEST
 };
 
-static int numEvals = 0;
-static int lastBestFitness = -1;
-static float lastAvgFitness = -1.0f;
-static int numGensUnchanged = 0;
-
-
 void pool::create(int size, state* initial) {
 	for (int i = 0; i < size; i++) {
 		state* temp = new state(*initial);
@@ -33,6 +27,13 @@ void pool::create(int size, state* initial) {
 	}
 
 	return;
+}
+
+void pool::empty(){
+	m_states.clear();
+	m_lastAvgFitness = 0.0f;
+	m_lastBestFitness = 0;
+	m_numGensUnchanged = 0;
 }
 
 void pool::randomizeAll() {
@@ -137,19 +138,19 @@ bool pool::termTestAvgFitness(int targetGensUnchanged, float unchangedVariance) 
 	float avgFitness = getAverageFitness();
 
 	// If unchanged, increment counter
-	if (abs(avgFitness - lastAvgFitness) < unchangedVariance)
-		numGensUnchanged++;
+	if (abs(avgFitness - m_lastAvgFitness) < unchangedVariance)
+		m_numGensUnchanged++;
 	else
-		numGensUnchanged = 0;
-	lastAvgFitness = avgFitness;
+		m_numGensUnchanged = 0;
+	m_lastAvgFitness = avgFitness;
 
 	// Return false unless we hit our target
-	if (numGensUnchanged < targetGensUnchanged)
+	if (m_numGensUnchanged < targetGensUnchanged)
 		return false;
 
 	// Clean up
-	numGensUnchanged = 0;
-	lastAvgFitness = -1;
+	m_numGensUnchanged = 0;
+	m_lastAvgFitness = -1;
 	return true;
 }
 
@@ -158,19 +159,19 @@ bool pool::termTestBestFitness(int targetGensUnchanged) {
 	int bestFitness = getFittestState()->getFitness();
 	
 	// If unchanged, increment counter
-	if (bestFitness == lastBestFitness)
-		numGensUnchanged++;
+	if (bestFitness == m_lastBestFitness)
+		m_numGensUnchanged++;
 	else
-		numGensUnchanged = 0;
-	lastBestFitness = bestFitness;
+		m_numGensUnchanged = 0;
+	m_lastBestFitness = bestFitness;
 
 	// Return false unless we hit our target
-	if (numGensUnchanged < targetGensUnchanged)
+	if (m_numGensUnchanged < targetGensUnchanged)
 		return false;
 	
 	// Clean up
-	numGensUnchanged = 0;
-	lastBestFitness = -1;
+	m_numGensUnchanged = 0;
+	m_lastBestFitness = -1;
 	return true;
 }
 

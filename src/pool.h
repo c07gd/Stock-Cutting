@@ -36,6 +36,9 @@ class pool {
 private:
 	std::vector<state*> m_states;
 	std::vector<float>	m_fpProbability;
+	int					m_lastBestFitness;
+	float				m_lastAvgFitness;
+	int					m_numGensUnchanged;
 
 	int kTournament(int k, int type);
 
@@ -59,7 +62,7 @@ public:
 	// Accessors, Mutators
 	inline void add(state* x) { m_states.push_back(x); };
 	inline state* get(size_t i) const { return m_states[i]; };
-	inline void empty() { m_states.clear(); };
+	void empty();
 	inline int getSize() const { return m_states.size(); };
 	state* getFittestState();
 	float getAverageFitness();
