@@ -53,7 +53,6 @@ public:
 	state* chooseParentKTourn(int k);
 	void reduceByTruncation(int size);
 	void reduceByKTourn(int size, int k);	
-	bool termTestNumEvals(int targetEvals);
 	bool termTestAvgFitness(int targetGensUnchanged, float unchangedVariance);
 	bool termTestBestFitness(int targetGensUnchanged);
 
@@ -63,6 +62,7 @@ public:
 	inline void empty() { m_states.clear(); };
 	inline int getSize() const { return m_states.size(); };
 	state* getFittestState();
+	float getAverageFitness();
 
 };
 

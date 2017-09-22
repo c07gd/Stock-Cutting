@@ -131,25 +131,10 @@ int pool::kTournament(int k, int type) {
 	return bestIdx;
 }
 
-bool pool::termTestNumEvals(int targetEvals) {
-	if (numEvals >= targetEvals) {
-		numEvals = 0;
-		return true;
-	}
-	numEvals++;
-	return false;
-}
 
 bool pool::termTestAvgFitness(int targetGensUnchanged, float unchangedVariance) {
 
-	// Variables
-	int		totalFitness = 0;
-	float	avgFitness;
-	
-	// Calculate average fitness
-	for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it)
-		totalFitness += (*it)->getFitness();
-	avgFitness = (float)totalFitness / (float)m_states.size();
+	float avgFitness = getAverageFitness();
 
 	// If unchanged, increment counter
 	if (abs(avgFitness - lastAvgFitness) < unchangedVariance)
@@ -205,4 +190,17 @@ state* pool::getFittestState() {
 	}
 
 	return bestFitnessPtr;
+}
+
+float pool::getAverageFitness() {
+
+	// Variables
+	int		totalFitness = 0;
+
+	// Calculate total fitness
+	for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it)
+		totalFitness += (*it)->getFitness();
+
+	// Return average
+	return (float)totalFitness / (float)m_states.size();
 }

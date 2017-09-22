@@ -120,7 +120,6 @@ inline config getConfig(std::string filename) {
 	cfg.survivorSelTournSize= DEFAULT_SURVIVORSELTOURNSIZE;
 	cfg.mutationRate		= DEFAULT_MUTATIONRATE;
 	cfg.crossovers			= DEFAULT_CROSSOVERS;
-	cfg.termEvals			= DEFAULT_TERMEVALS;
 	cfg.termType			= DEFAULT_TERMTYPE;
 	cfg.termGensUnchanged	= DEFAULT_TERMGENSUNCHANGED;
 	
@@ -179,8 +178,6 @@ inline config getConfig(std::string filename) {
 				cfg.crossovers = atoi(rhs.c_str());
 			else if (lhs == LABEL_MUTATIONRATE)
 				cfg.mutationRate = (float)atof(rhs.c_str());
-			else if (lhs == LABEL_TERMEVALS)
-				cfg.termEvals = atoi(rhs.c_str());
 			else if (lhs == LABEL_TERMTYPE)
 				cfg.termType = atoi(rhs.c_str());
 			else if (lhs == LABEL_TERMGENSUNCHANGED)

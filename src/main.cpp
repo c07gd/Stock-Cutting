@@ -18,6 +18,7 @@
 #include <cmath>
 #include <string>
 #include <chrono>
+#include <iomanip>
 #include "pool.h"
 #include "shape.h"
 #include "state.h"
@@ -44,9 +45,12 @@ int main(int argc, char *argv[]) {
 	pool			population;
 	pool			offspring;
 	int				run;
+	int				evals;
 	bool			terminate = false;
 	state*			parent1;
 	state*			parent2;
+	state			overallBest;
+	int				overallBestFitness = -1;
 
 	// Get configuration
 	if (argc <= 1) {
@@ -63,6 +67,7 @@ int main(int argc, char *argv[]) {
 
 	// Construct initial state
 	state initial(shapes, width, numShapes);
+	overallBest = initial;
 
 	// Open log file
 	log.open(cfg.logFile);
@@ -70,77 +75,93 @@ int main(int argc, char *argv[]) {
 		std::cout << "Error: Unable to write log file" << std::endl;
 		exit(1);
 	}
-	log << "Result Log" << std::endl << std::endl;
-
-	// Randomly generate a start population
-	population.create(cfg.mu, &initial);
-	population.randomizeAll();
+	log << "Result Log" << std::endl;
 
 	// Add offspring to population
 	run = 0;
-	do {
-		run++;
+	for (int run = 0; run < cfg.runs; run++) {
 
-		// Create lambda offspring
-		for (int i = 0; i < cfg.lambda; i++) {
-			state* temp = new state(initial);
-			switch (cfg.parentSel) {
-			case PARENTSEL_FITNESSPROPOTIONAL:
-				population.setFpProbability();
-				parent1 = population.chooseParentFP();
-				parent2 = population.chooseParentFP();
-			case PARENTSEL_KTOURNAMENT:
-			default:
-				parent1 = population.chooseParentKTourn(cfg.parentSelTournSize);
-				parent2 = population.chooseParentKTourn(cfg.parentSelTournSize);
-				break;
+		log << std::endl << "Run " << run << std::endl;
+		std::cout << std::endl << "Run " << run << std::endl;
+
+		// Randomly generate a start population
+		population.create(cfg.mu, &initial);
+		population.randomizeAll();
+		evals = population.getSize();
+
+		do {
+
+			// Create lambda offsprsing
+			for (int i = 0; i < cfg.lambda; i++) {
+				state* temp = new state(initial);
+				switch (cfg.parentSel) {
+				case PARENTSEL_FITNESSPROPOTIONAL:
+					population.setFpProbability();
+					parent1 = population.chooseParentFP();
+					parent2 = population.chooseParentFP();
+				case PARENTSEL_KTOURNAMENT:
+				default:
+					parent1 = population.chooseParentKTourn(cfg.parentSelTournSize);
+					parent2 = population.chooseParentKTourn(cfg.parentSelTournSize);
+					break;
+				}
+				temp->nPointCrossOver(parent1, parent2, cfg.crossovers);
+				if (GEN_SCALED_PROB(4) <= cfg.mutationRate)
+					temp->mutate();
+				temp->calcFitness();
+				offspring.add(temp);
+				evals++;
 			}
-			temp->nPointCrossOver(parent1, parent2, cfg.crossovers);
-			if (GEN_SCALED_PROB(4) <= cfg.mutationRate)
-				temp->mutate();
-			temp->calcFitness();
-			offspring.add(temp);
-		}
 
-		// Add offspring to population
-		for (int i = 0; i < offspring.getSize(); i++)
-			population.add(offspring.get(i));
-		offspring.empty();
+			// Add offspring to population
+			for (int i = 0; i < offspring.getSize(); i++)
+				population.add(offspring.get(i));
+			offspring.empty();
 
-		// Reduce population size
-		switch(cfg.survivorSel) {
-		case SURVIVORSEL_TRUNCATION:
+			// Reduce population size
+			switch (cfg.survivorSel) {
+			case SURVIVORSEL_TRUNCATION:
 				population.reduceByTruncation(cfg.mu - offspring.getSize());
 				break;
-		case SURVIVORSEL_KTOURNAMENT:
+			case SURVIVORSEL_KTOURNAMENT:
 			default:
 				population.reduceByKTourn(cfg.mu - offspring.getSize(), cfg.survivorSelTournSize);
 				break;
-		}
+			}
 
-		std::cout << "Iteration:\t" << run << "\t" << population.getFittestState()->getFitness() << std::endl;
+			// Run termination test
+			switch (cfg.termType) {
+			case TERMTYPE_AVGFITNESS:
+				terminate = population.termTestAvgFitness(cfg.termGensUnchanged, 2.0);
+				break;
+			case TERMTYPE_BESTFITNESS:
+				terminate = population.termTestBestFitness(cfg.termGensUnchanged);
+				break;
+			}
 
-		// Run termination test
-		switch (cfg.termType) {
-		case TERMTYPE_AVGFITNESS:
-			terminate = population.termTestAvgFitness(cfg.termGensUnchanged, 2.0);
-			break;
-		case TERMTYPE_BESTFITNESS:
-			terminate = population.termTestBestFitness(cfg.termGensUnchanged);
-			break;
-		}
+			state* fittest = population.getFittestState();
+			log << evals << "\t" << std::fixed << std::setprecision(3) << std::setfill('0') << population.getAverageFitness() << "\t" << fittest->getFitness() << std::endl;
+			std::cout << evals << "\t" << std::fixed << std::setprecision(3) << std::setfill('0') << population.getAverageFitness() << "\t" << fittest->getFitness() << std::endl;
 
-	// End loop when termination test returns true of we hit our max number of evals
-	} while (!terminate && !population.termTestNumEvals(cfg.termEvals));
+			// Keep track of overall best
+			if (fittest->getFitness() > overallBestFitness) {
+				overallBest = *fittest;
+				overallBestFitness = fittest->getFitness();
+			}
+
+		// End loop when termination test returns true of we hit our max number of evals
+		} while (!terminate && (evals < cfg.fitnessEvals));
+
+		// Clean up
+		population.empty();
+		offspring.empty();
+	}
 
 	// Print best solution
-	state* best = population.getFittestState();
-	best->printSolution(cfg.solutionFile);
-	best->printLayout("solutions/layout.txt");
+	overallBest.printSolution(cfg.solutionFile);
+	overallBest.printLayout("solutions/layout.txt");
 
 	// Clean up
-	population.empty();
-	offspring.empty();
 	delete[] shapes;
 
 	return 0;
