@@ -15,6 +15,11 @@
 #include "pool.h"
 #include <algorithm>
 
+enum {
+	HIGHEST,
+	LOWEST
+};
+
 
 void pool::create(int size, state* initial) {
 	for (int i = 0; i < size; i++) {
@@ -56,7 +61,7 @@ void pool::setFpProbability() {
 	return;
 }
 
-state* pool::chooseFpParent() {
+state* pool::chooseParentFP() {
 
 	// Choose a random value [0.0 - 1.0]
 	float value = (float)(rand() % 100000)  / 100000;
@@ -70,8 +75,12 @@ state* pool::chooseFpParent() {
 	return m_states[i];
 }
 
+state* pool::chooseParentKTourn(int k) {
+	return m_states[kTournament(k, HIGHEST)];
+}
 
-void pool::truncate(int size) {
+
+void pool::reduceByTruncation(int size) {
 
 	// Sort pool
 	std::sort(m_states.begin(), m_states.end(), compareState);
@@ -80,4 +89,39 @@ void pool::truncate(int size) {
 	m_states.resize(size);
 
 	return;
+}
+
+void pool::reduceByKTourn(int size, int k) {
+	
+	// Variables
+	int idx;
+
+	// Run tournaments until we've shrunk to desired size
+	while (m_states.size() > (size_t)size) {
+
+		// Randomly pick k members of the pool, keeping track of the one with the best fitness 
+		idx = kTournament(k, LOWEST);
+		m_states.erase(m_states.begin() + idx);
+
+	}
+
+	return;
+}
+
+int pool::kTournament(int k, int type) {
+
+	// Variables
+	int idx;
+	int bestIdx = rand() % m_states.size();
+
+	// Randomly pick k members of the pool, keeping track of the one with the best fitness 
+	for (int i = 1; i < k; i++) {
+		idx = rand() % m_states.size();
+		if (type == HIGHEST && m_states[idx]->getFitness() > m_states[bestIdx]->getFitness())
+			bestIdx = idx;
+		else if (type == LOWEST && m_states[idx]->getFitness() < m_states[bestIdx]->getFitness())
+			bestIdx = idx;
+	}
+
+	return bestIdx;
 }

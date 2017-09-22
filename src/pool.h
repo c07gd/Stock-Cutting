@@ -37,6 +37,8 @@ private:
 	std::vector<state*> m_states;
 	std::vector<float>	m_fpProbability;
 
+	int kTournament(int k, int type);
+
 public:
 
 	// Constructors, Destructors, Etc.
@@ -47,8 +49,10 @@ public:
 	void create(int size, state* initial);
 	void randomizeAll();
 	void setFpProbability();
-	state* chooseFpParent();
-	void truncate(int size);
+	state* chooseParentFP();
+	state* chooseParentKTourn(int k);
+	void reduceByTruncation(int size);
+	void reduceByKTourn(int size, int k);	
 
 	// Accessors, Mutators
 	inline void add(state* x) { m_states.push_back(x); };

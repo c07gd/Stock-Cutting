@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
 
 	int mu = 100;
 	int lambda = 80;
-	float mutationRate = 0.20;
+	float mutationRate = 0.20f;
 	int crossovers = 1;
 
 	// Randomly generate a start population
@@ -95,7 +95,7 @@ int main(int argc, char *argv[]) {
 		// Create lambda offspring
 		for (int j = 0; j < lambda; j++) {
 			state* temp = new state(initial);
-			temp->nPointCrossOver(population.chooseFpParent(), population.chooseFpParent(), crossovers);
+			temp->nPointCrossOver(population.chooseParentKTourn(9), population.chooseParentKTourn(9), crossovers);
 			if (GEN_SCALED_PROB(4) <= mutationRate)
 				temp->mutate();
 			temp->calcFitness();
@@ -107,7 +107,7 @@ int main(int argc, char *argv[]) {
 		// If more offspring were generated...
 		// ...we need to narrow the offspring pool to make the next generation
 		if (mu <= lambda) {
-			offspring.truncate(mu);
+			offspring.reduceByTruncation(mu);
 			population.empty();
 			for (int j = 0; j < mu; j++)
 				population.add(offspring.get(j));
@@ -116,7 +116,7 @@ int main(int argc, char *argv[]) {
 		// If fewer offspring were generated...
 		// ...we need to choose which of the original population will survive
 		else { // (mu > lambda)
-			population.truncate(mu - offspring.getSize());
+			population.reduceByTruncation(mu - offspring.getSize());
 			for (int j = 0; j < lambda; j++)
 				population.add(offspring.get(j));
 		}
