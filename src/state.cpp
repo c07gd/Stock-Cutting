@@ -438,7 +438,7 @@ void state::printSolution(std::string filename) {
 
 	// Walk down shapes array and output data
 	for (int i = 0; i < m_numShapes; i++)
-		out << m_x[i] << "," << m_y[i] << "," << m_rot[i] << std::endl;
+		out << m_y[i] << "," << m_x[i] << "," << m_rot[i] << std::endl;
 
 	// Clean up
 	out.close();
@@ -470,7 +470,7 @@ void state::printLayout(std::string filename) {
 	}
 
 	// Print out layout array
-	for (int i = 0; i < m_width; i++) {
+	for (int i = m_width-1; i >= 0; i--) {
 		for (int j = 0; j < m_length; j++) {
 			if (m_layout[i][j])
 				out << "#";
