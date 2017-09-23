@@ -78,10 +78,12 @@ public:
 
 };
 
+
 /**********************************************************
 *	State Compare Function
 *	Returns true if s1 has a higher fitness value
 **********************************************************/
 inline bool compareState(state* s1, state* s2) { return(s1->getFitness() > s2->getFitness()); }
+
 
 #endif

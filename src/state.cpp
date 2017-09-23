@@ -97,6 +97,8 @@ state::state(const state& rhs) {
 /**********************************************************
 *	operator=(const state &rhs)
 *	Assignment operator
+*	Does not allocate memory for arrays. If allocation is 
+*	needed, call the copy constructor first.
 *	 @param rhs state to be copied
 *	 @return state being copied into
 **********************************************************/
@@ -260,6 +262,15 @@ void state::placeShape(int i, int x, int y, int rot) {
 }
 
 
+/**********************************************************
+*	repair(int& idx, int& x, int& y, int& rot)
+*	Attempts a repair of the given shape placement. Spirals
+*	outward from start location looking for a valid placement.
+*	 @param idx the index of the shape in member array
+*	 @param x the given x coordinate
+*	 @param y the given y coordinate
+*	 @param rot the given rotation
+**********************************************************/
 void state::repair(int& idx, int& x, int& y, int& rot) {
 
 	// Variables
@@ -297,6 +308,11 @@ void state::repair(int& idx, int& x, int& y, int& rot) {
 }
 
 
+/**********************************************************
+*	calcFitness()
+*	Updates the m_fitness member variable. Fitness is defined
+*	as the max length minus the length used.
+**********************************************************/
 void state::calcFitness() {
 
 	// Variables
@@ -360,6 +376,16 @@ void state::randomize() {
 	return;
 }
 
+
+/**********************************************************
+*	nPointCrossover(state* parent1, state* parent2, int n)
+*	Assigns alleles to by choosing from each parents. N
+*	crossover points are randomly selected. Also checks 
+*	validity of the resulting placment and attempts a repair.
+*	 @param parent1 pointer to first parent state
+*	 @param parent2 pointer to second parent state
+*	 @param n number of crossover points
+**********************************************************/
 void state::nPointCrossover(state* parent1, state* parent2, int n) {
 
 	// Variables
@@ -397,6 +423,16 @@ void state::nPointCrossover(state* parent1, state* parent2, int n) {
 	return;
 }
 
+
+/**********************************************************
+*	uniformCrossover(state* parent1, state* parent2, float p)
+*	Assigns each gene by choosing from parents. Each gene has
+*	a "p" change of being chosen from parent1. Also checks
+*	validity of the resulting placment and attempts a repair.
+*	 @param parent1 pointer to first parent state
+*	 @param parent2 pointer to second parent state
+*	 @param p probabilitiy (0.0-1.0) of choosing parent1 vs. parent2
+**********************************************************/
 void state::uniformCrossover(state* parent1, state* parent2, float p) {
 
 	//Variables
@@ -424,6 +460,13 @@ void state::uniformCrossover(state* parent1, state* parent2, float p) {
 	return;
 }
 
+
+/**********************************************************
+*	randResetMutate()
+*	Picks a random gene and assigns it a new random placement.
+*	Also checks	validity of the resulting placment and
+*	attempts a repair.
+**********************************************************/
 void state::randResetMutate() {
 
 	// Variables
@@ -444,6 +487,14 @@ void state::randResetMutate() {
 	return;
 }
 
+
+/**********************************************************
+*	creepMutate(int creepDist)
+*	Picks a random allele on a random gene and moves it by
+*	a small amount. Also checks validity of the resulting
+*	placment and attempts a repair.
+*	 @param creepDist max distance the chosen allele can creep
+**********************************************************/
 void state::creepMutate(int creepDist) {
 
 	// Pick random values

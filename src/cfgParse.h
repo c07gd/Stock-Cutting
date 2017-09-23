@@ -87,6 +87,7 @@ enum {
 	TERMTYPE_BESTFITNESS
 } termType;
 
+
 /**********************************************************
 *	getConfig(std::string filename)
 *	Parses and returns configuration data
