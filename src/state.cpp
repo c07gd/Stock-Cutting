@@ -360,7 +360,7 @@ void state::randomize() {
 	return;
 }
 
-void state::nPointCrossOver(state* parent1, state* parent2, int n) {
+void state::nPointCrossover(state* parent1, state* parent2, int n) {
 
 	// Variables
 	int*	crossoverPts = new int[n];
@@ -394,6 +394,33 @@ void state::nPointCrossOver(state* parent1, state* parent2, int n) {
 
 	// Clean up
 	delete[] crossoverPts;
+	return;
+}
+
+void state::uniformCrossover(state* parent1, state* parent2, float p) {
+
+	//Variables
+	float*	pArray;
+	state*	chosenParent;
+
+	// Generate probability array
+	pArray = new float[m_numShapes];
+	for (int i = 0; i < m_numShapes; i++)
+		pArray[i] = float(rand() % 1000) / 1000.0f;
+
+	// Inherit each gene from chosen parent based on probability
+	for (int i = 0; i < m_numShapes; i++) {
+		if (pArray[i] < p)
+			chosenParent = parent1;
+		else
+			chosenParent = parent2;
+		if (!placementIsValid(i, chosenParent->m_x[i], chosenParent->m_y[i], chosenParent->m_rot[i]))
+			repair(i, chosenParent->m_x[i], chosenParent->m_y[i], chosenParent->m_rot[i]);
+		placeShape(i, chosenParent->m_x[i], chosenParent->m_y[i], chosenParent->m_rot[i]);
+	}
+	
+	// Clean up
+	delete[] pArray;
 	return;
 }
 

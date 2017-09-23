@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
 					parent2 = population.chooseParentKTourn(cfg.parentSelTournSize);
 					break;
 				}
-				temp->nPointCrossOver(parent1, parent2, cfg.crossovers);
+				temp->uniformCrossover(parent1, parent2, 0.50f);
 				if (GEN_SCALED_PROB(4) <= cfg.mutationRate)
 					temp->mutate();
 				temp->calcFitness();

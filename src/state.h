@@ -66,7 +66,8 @@ public:
 	void placeShape(int i, int x, int y, int rot);
 	void repair(int& idx, int& x, int& y, int& rot);
 	void calcFitness();
-	void nPointCrossOver(state* parent1, state* parent2, int n);
+	void nPointCrossover(state* parent1, state* parent2, int n);
+	void uniformCrossover(state* parent1, state* parent2, float p);
 	void mutate();
 	void printSolution(std::string filename);
 	void printLayout(std::string filename);
