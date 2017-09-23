@@ -260,7 +260,7 @@ void state::placeShape(int i, int x, int y, int rot) {
 }
 
 
-bool state::repair(int& idx, int& x, int& y, int& rot) {
+void state::repair(int& idx, int& x, int& y, int& rot) {
 
 	// Variables
 	bool	found = false;

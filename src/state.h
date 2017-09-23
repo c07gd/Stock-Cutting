@@ -64,7 +64,7 @@ public:
 	void randomize();
 	bool placementIsValid(int i, int x, int y, int rot);
 	void placeShape(int i, int x, int y, int rot);
-	bool repair(int& idx, int& x, int& y, int& rot);
+	void repair(int& idx, int& x, int& y, int& rot);
 	void calcFitness();
 	void nPointCrossOver(state* parent1, state* parent2, int n);
 	void mutate();
