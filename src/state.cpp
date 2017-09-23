@@ -424,7 +424,7 @@ void state::uniformCrossover(state* parent1, state* parent2, float p) {
 	return;
 }
 
-void state::mutate() {
+void state::randResetMutate() {
 
 	// Variables
 	int idx;
@@ -437,6 +437,35 @@ void state::mutate() {
 		m_y[idx] = rand() % m_length;
 		m_rot[idx] = rand() % NUM_ROTS;
 	if(!placementIsValid(idx, m_x[idx], m_y[idx], m_rot[idx]))
+		repair(idx, m_x[idx], m_y[idx], m_rot[idx]);
+
+	placeShape(idx, m_x[idx], m_y[idx], m_rot[idx]);
+
+	return;
+}
+
+void state::creepMutate(int creepDist) {
+
+	// Pick random values
+	int idx = rand() % m_numShapes;
+	int attrib = rand() % 3;
+	int creep = rand() % (2 * creepDist) - creepDist;
+	
+	// Apply creep
+	switch (attrib) {
+	case 0:
+		m_x[idx] += creepDist;
+		break;
+	case 1:
+		m_y[idx] += creepDist;
+		break;
+	case 2:
+		m_rot[idx] += abs(creepDist % 4);
+		break;
+	}
+
+	// Place shape
+	if (!placementIsValid(idx, m_x[idx], m_y[idx], m_rot[idx]))
 		repair(idx, m_x[idx], m_y[idx], m_rot[idx]);
 
 	placeShape(idx, m_x[idx], m_y[idx], m_rot[idx]);

@@ -68,7 +68,8 @@ public:
 	void calcFitness();
 	void nPointCrossover(state* parent1, state* parent2, int n);
 	void uniformCrossover(state* parent1, state* parent2, float p);
-	void mutate();
+	void randResetMutate();
+	void creepMutate(int creepDist);
 	void printSolution(std::string filename);
 	void printLayout(std::string filename);
 	

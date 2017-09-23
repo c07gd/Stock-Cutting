@@ -107,7 +107,7 @@ int main(int argc, char *argv[]) {
 				}
 				temp->uniformCrossover(parent1, parent2, 0.50f);
 				if (GEN_SCALED_PROB(4) <= cfg.mutationRate)
-					temp->mutate();
+					temp->randResetMutate();
 				temp->calcFitness();
 				offspring.add(temp);
 				evals++;
