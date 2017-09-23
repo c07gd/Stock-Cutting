@@ -259,6 +259,44 @@ void state::placeShape(int i, int x, int y, int rot) {
 	return;
 }
 
+
+bool state::repair(int& idx, int& x, int& y, int& rot) {
+
+	// Variables
+	bool	found = false;
+
+	// Spiral outward from starting point looking for a valid placement
+	// Pattern is DRUULLDDDRRRUUUULLLL...
+	for (int i = 0; !found; i++) {
+		for (int j = 0; (j < i / 2) && !found; j++) {
+
+			switch (i % NUM_DIRS) {
+			case DIR_UP:
+				x++;
+				break;
+			case DIR_DOWN:
+				x--;
+				break;
+			case DIR_RIGHT:
+				y++;
+				break;
+			case DIR_LEFT:
+				y--;
+				break;
+			}
+
+			// Try each rotation at these coords
+			for (int k = ROT_0_DEG; k < NUM_ROTS && !found; k++) {
+				if (placementIsValid(idx, x, y, rot))
+					found = true;
+			}
+		}
+	}
+
+	return;
+}
+
+
 void state::calcFitness() {
 
 	// Variables
@@ -349,11 +387,8 @@ void state::nPointCrossOver(state* parent1, state* parent2, int n) {
 		m_x[i] = parent1->m_x[i];
 		m_y[i] = parent1->m_y[i];
 		m_rot[i] = parent1->m_rot[i];
-		while (!placementIsValid(i, m_x[i], m_y[i], m_rot[i])) {
-			m_x[i] = rand() % m_width;
-			m_y[i] = rand() % m_length;
-			m_rot[i] = rand() % NUM_ROTS;
-		}
+		if (!placementIsValid(i, m_x[i], m_y[i], m_rot[i]))
+			repair(i, m_x[i], m_y[i], m_rot[i]);
 		placeShape(i, m_x[i], m_y[i], m_rot[i]);
 	}
 
@@ -365,30 +400,19 @@ void state::nPointCrossOver(state* parent1, state* parent2, int n) {
 void state::mutate() {
 
 	// Variables
-	int x;
-	int y;
-	int rot;
-	int count;
 	int idx;
 
-	do {
+	// Pick a random gene
+	idx = rand() % m_numShapes;
 
-		// Pick a random gene
-		idx = rand() % m_numShapes;
+	// Assign new random coordinates
+		m_x[idx] = rand() % m_width;
+		m_y[idx] = rand() % m_length;
+		m_rot[idx] = rand() % NUM_ROTS;
+	if(!placementIsValid(idx, m_x[idx], m_y[idx], m_rot[idx]))
+		repair(idx, m_x[idx], m_y[idx], m_rot[idx]);
 
-		// Assign new random coordinates until valid
-		count = 0;
-		do {
-			x = rand() % m_width;
-			y = rand() % m_length;
-			rot = rand() % NUM_ROTS;
-			count++;
-		} while (!placementIsValid(idx, x, y, rot) && count < RANDOM_MAX_TRIES);
-
-	// If we couldn't find a valid assignment after max tries, pick a new gene to mutate
-	} while (count >= RANDOM_MAX_TRIES);
-
-	placeShape(idx, x, y, rot);
+	placeShape(idx, m_x[idx], m_y[idx], m_rot[idx]);
 
 	return;
 }
