@@ -63,7 +63,17 @@ int main(int argc, char *argv[]) {
 	// Get shapes
 	readInputFile(argv[2], shapes, width, numShapes);
 
-	srand(cfg.seed);
+	// Seed random number generator
+	switch (cfg.seedFromTime) {
+	case SEED_TIME: {
+			std::chrono::time_point<std::chrono::system_clock, std::chrono::microseconds> time = std::chrono::time_point_cast<std::chrono::microseconds>(std::chrono::system_clock::now()); // Good lord, <chrono> types are awful aren't they??
+			srand((unsigned int)time.time_since_epoch().count());
+		}
+		break;
+	case SEED_STATIC:
+		srand(cfg.seed);
+		break;
+	}	
 
 	// Construct initial state
 	state initial(shapes, width, numShapes);

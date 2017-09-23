@@ -80,6 +80,11 @@ struct config {
 };
 
 enum {
+	SEED_STATIC,
+	SEED_TIME	
+} seedType;
+
+enum {
 	RECOMBINATION_NPOINT,
 	RECOMBINATION_UNIFORM
 } recombinationType;
