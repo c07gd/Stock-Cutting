@@ -36,6 +36,14 @@ void pool::empty(){
 	m_numGensUnchanged = 0;
 }
 
+
+void pool::destroy() {
+	for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it) {
+	delete (*it);
+	}
+}
+
+
 void pool::randomizeAll() {
 	for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it) {
 		(*it)->randomize();
@@ -107,6 +115,7 @@ void pool::reduceByKTourn(int size, int k) {
 
 		// Randomly pick k members of the pool, keeping track of the one with the best fitness 
 		idx = kTournament(k, LOWEST);
+		delete m_states[idx];
 		m_states.erase(m_states.begin() + idx);
 
 	}

@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
 	bool			terminate = false;
 	state*			parent1;
 	state*			parent2;
-	state			overallBest;
+	state*			localBest;
 	int				overallBestFitness = -1;
 
 	// Get configuration
@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
 
 	// Construct initial state
 	state initial(shapes, width, numShapes);
-	overallBest = initial;
+	state overallBest(initial);
 
 	// Open log file
 	log.open(cfg.logFile);
@@ -81,8 +81,8 @@ int main(int argc, char *argv[]) {
 	run = 0;
 	for (int run = 0; run < cfg.runs; run++) {
 
-		log << std::endl << "Run " << run << std::endl;
-		std::cout << std::endl << "Run " << run << std::endl;
+		log << std::endl << "Run " << run + 1 << std::endl;
+		std::cout << std::endl << "Run " << run + 1 << std::endl;
 
 		// Randomly generate a start population
 		population.create(cfg.mu, &initial);
@@ -139,21 +139,23 @@ int main(int argc, char *argv[]) {
 				break;
 			}
 
-			state* fittest = population.getFittestState();
-			log << evals << "\t" << std::fixed << std::setprecision(3) << std::setfill('0') << population.getAverageFitness() << "\t" << fittest->getFitness() << std::endl;
-			std::cout << evals << "\t" << std::fixed << std::setprecision(3) << std::setfill('0') << population.getAverageFitness() << "\t" << fittest->getFitness() << std::endl;
+			localBest = population.getFittestState();
+			log << evals << "\t" << std::fixed << std::setprecision(3) << std::setfill('0') << population.getAverageFitness() << "\t" << localBest->getFitness() << std::endl;
+			std::cout << evals << "\t" << std::fixed << std::setprecision(3) << std::setfill('0') << population.getAverageFitness() << "\t" << localBest->getFitness() << std::endl;
 
 			// Keep track of overall best
-			if (fittest->getFitness() > overallBestFitness) {
-				overallBest = *fittest;
-				overallBestFitness = fittest->getFitness();
+			if (localBest->getFitness() > overallBestFitness) {
+				overallBest = *localBest;
+				overallBestFitness = localBest->getFitness();
 			}
 
 		// End loop when termination test returns true of we hit our max number of evals
 		} while (!terminate && (evals < cfg.fitnessEvals));
 
 		// Clean up
+		population.destroy();
 		population.empty();
+		offspring.destroy();
 		offspring.empty();
 	}
 

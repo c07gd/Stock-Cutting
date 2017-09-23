@@ -112,9 +112,6 @@ state& state::operator=(const state &rhs) {
 	m_numShapes = rhs.m_numShapes;
 	m_shapes = rhs.m_shapes;
 	m_fitness = rhs.m_fitness;
-	
-	// Construct arrays
-	constructArrays();
 
 	// Copy array data over
 	for (int i = 0; i < m_numShapes; i++) {

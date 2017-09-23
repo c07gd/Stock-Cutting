@@ -46,7 +46,8 @@ public:
 
 	// Constructors, Destructors, Etc.
 	pool() {};
-	~pool() {};
+	~pool() { destroy(); };
+	void destroy();
 
 	// Member Functions
 	void create(int size, state* initial);
@@ -58,11 +59,11 @@ public:
 	void reduceByKTourn(int size, int k);	
 	bool termTestAvgFitness(int targetGensUnchanged, float unchangedVariance);
 	bool termTestBestFitness(int targetGensUnchanged);
+	void empty();
 
 	// Accessors, Mutators
 	inline void add(state* x) { m_states.push_back(x); };
 	inline state* get(size_t i) const { return m_states[i]; };
-	void empty();
 	inline int getSize() const { return m_states.size(); };
 	state* getFittestState();
 	float getAverageFitness();
