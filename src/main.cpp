@@ -105,9 +105,24 @@ int main(int argc, char *argv[]) {
 					parent2 = population.chooseParentKTourn(cfg.parentSelTournSize);
 					break;
 				}
-				temp->uniformCrossover(parent1, parent2, 0.50f);
-				if (GEN_SCALED_PROB(4) <= cfg.mutationRate)
-					temp->randResetMutate();
+				switch (cfg.recombinationType) {
+				case RECOMBINATION_NPOINT:
+					temp->nPointCrossover(parent1, parent2, cfg.crossovers);
+					break;
+				case RECOMBINATION_UNIFORM:
+					temp->uniformCrossover(parent1, parent2, cfg.uniformProb);
+					break;
+				}				
+				if (GEN_SCALED_PROB(4) <= cfg.mutationRate) {
+					switch (cfg.mutationType) {
+					case MUTATION_RANDOM:
+						temp->randResetMutate();
+						break;
+					case MUTATION_CREEP:
+						temp->creepMutate(cfg.creepDist);
+						break;
+					}
+				}					
 				temp->calcFitness();
 				offspring.add(temp);
 				evals++;

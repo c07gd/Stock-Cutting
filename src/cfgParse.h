@@ -35,12 +35,16 @@
 #define LABEL_INPUTFILE				("inputFile")
 #define LABEL_MU					("mu")
 #define LABEL_LAMBDA				("lambda")
+#define LABEL_RECOMBINATIONTYPE		("recombinationType")
+#define LABEL_CROSSOVERS			("crossovers")
+#define LABEL_UNIFORMPROB			("uniformProb")
+#define LABEL_MUTATIONTYPE			("mutationType")
+#define LABEL_MUTATIONRATE			("mutationRate")
+#define LABEL_CREEPDIST				("creepDist")
 #define LABEL_PARENTSEL				("parentSel")
 #define LABEL_PARENTSELTOURNSIZE	("parentSelTournSize")
 #define LABEL_SURVIVORSEL			("survivorSel")
 #define LABEL_SURVIVORSELTOURNSIZE	("survivorSelTournSize")
-#define LABEL_MUTATIONRATE			("mutationRate")
-#define LABEL_CROSSOVERS			("crossovers")
 #define LABEL_TERMEVALS				("termEvals")
 #define LABEL_TERMTYPE				("termType")
 #define LABEL_TERMGENSUNCHANGED		("termGensUnchanged")
@@ -60,16 +64,30 @@ struct config {
 	std::string		inputFile;
 	int				mu;
 	int				lambda;
+	int				recombinationType;
+	int				crossovers;
+	float			uniformProb;
+	int				mutationType;
+	float			mutationRate;
+	int				creepDist;
 	int				parentSel;
 	int				parentSelTournSize;
 	int				survivorSel;
 	int				survivorSelTournSize;
-	float			mutationRate;
-	int				crossovers;
 	int				termEvals;
 	int				termType;
 	int				termGensUnchanged;
 };
+
+enum {
+	RECOMBINATION_NPOINT,
+	RECOMBINATION_UNIFORM
+} recombinationType;
+
+enum {
+	MUTATION_RANDOM,
+	MUTATION_CREEP
+} mutationType;
 
 enum {
 	PARENTSEL_FITNESSPROPOTIONAL,
@@ -114,13 +132,17 @@ inline config getConfig(std::string filename) {
 	cfg.solutionFile		= DEFAULT_SOLUTIONFILE;
 	cfg.inputFile			= DEFAULT_INPUTFILE;
 	cfg.mu					= DEFAULT_MU;
+	cfg.recombinationType	= DEFAULT_RECOMBINATIONTYPE;
+	cfg.crossovers			= DEFAULT_CROSSOVERS;
+	cfg.uniformProb			= DEFAULT_UNIFORMPROB;
+	cfg.mutationType		= DEFAULT_MUTATIONTYPE;
+	cfg.mutationRate		= DEFAULT_MUTATIONRATE;	
+	cfg.crossovers			= DEFAULT_CREEPDIST;
 	cfg.lambda				= DEFAULT_LAMBDA;
 	cfg.parentSel			= DEFAULT_PARENTSEL;
 	cfg.parentSelTournSize	= DEFAULT_PARENTSELTOURNSIZE;
 	cfg.survivorSel			= DEFAULT_SURVIVORSEL;
 	cfg.survivorSelTournSize= DEFAULT_SURVIVORSELTOURNSIZE;
-	cfg.mutationRate		= DEFAULT_MUTATIONRATE;
-	cfg.crossovers			= DEFAULT_CROSSOVERS;
 	cfg.termType			= DEFAULT_TERMTYPE;
 	cfg.termGensUnchanged	= DEFAULT_TERMGENSUNCHANGED;
 	
@@ -167,6 +189,18 @@ inline config getConfig(std::string filename) {
 				cfg.mu = atoi(rhs.c_str());
 			else if (lhs == LABEL_LAMBDA)
 				cfg.lambda = atoi(rhs.c_str());
+			else if (lhs == LABEL_RECOMBINATIONTYPE)
+				cfg.recombinationType = atoi(rhs.c_str());
+			else if (lhs == LABEL_CROSSOVERS)
+				cfg.crossovers = atoi(rhs.c_str());
+			else if (lhs == LABEL_UNIFORMPROB)
+				cfg.uniformProb = (float)atof(rhs.c_str());
+			else if (lhs == LABEL_MUTATIONTYPE)
+				cfg.mutationType = atoi(rhs.c_str());
+			else if (lhs == LABEL_MUTATIONRATE)
+				cfg.mutationRate = (float)atof(rhs.c_str());
+			else if (lhs == LABEL_CREEPDIST)
+				cfg.creepDist = atoi(rhs.c_str());
 			else if (lhs == LABEL_PARENTSEL)
 				cfg.parentSel = atoi(rhs.c_str());
 			else if (lhs == LABEL_PARENTSELTOURNSIZE)
@@ -175,10 +209,6 @@ inline config getConfig(std::string filename) {
 				cfg.survivorSel = atoi(rhs.c_str());
 			else if (lhs == LABEL_SURVIVORSELTOURNSIZE)
 				cfg.survivorSelTournSize = atoi(rhs.c_str());
-			else if (lhs == LABEL_CROSSOVERS)
-				cfg.crossovers = atoi(rhs.c_str());
-			else if (lhs == LABEL_MUTATIONRATE)
-				cfg.mutationRate = (float)atof(rhs.c_str());
 			else if (lhs == LABEL_TERMTYPE)
 				cfg.termType = atoi(rhs.c_str());
 			else if (lhs == LABEL_TERMGENSUNCHANGED)
