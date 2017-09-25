@@ -54,7 +54,7 @@
 *	Types, Etc.
 **********************************************************/
 struct config {
-	bool			seedFromTime;
+	int			seedFromTime;
 	unsigned int	seed;
 	char			algorithm;
 	int				runs;
@@ -177,7 +177,7 @@ inline config getConfig(std::string filename) {
 
 			// Parse each configuration value and fill config struct
 			if (lhs == LABEL_SEEDFROMTIME)
-				cfg.seedFromTime = (rhs == "true" || rhs == "True");
+				cfg.seedFromTime = atoi(rhs.c_str());
 			else if (lhs == LABEL_SEED)
 				cfg.seed = (unsigned int)atoll(rhs.c_str());
 			else if (lhs == LABEL_RUNS)
