@@ -9,7 +9,7 @@ fi
 
 # Compile project
 # Note: Compiling with C++11 to make use of high_resolution_clock for microsecond seeding
-g++ src/*.cpp -std=c++11 -o stock_cutting.exe
+g++ src/*.cpp -std=c++11 -o stock_cutting.out
 
 # Run with given configuration
-./stock_cutting.exe $1 $2
+./stock_cutting.out $1 $2
