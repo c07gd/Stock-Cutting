@@ -4,8 +4,8 @@ close all;
 % Global variables
 files = [];
 files (1,:) = '../logs/log_instance1.txt';
-files (2,:) = '..\logs\log_instance2.txt';
-files (3,:) = '..\logs\log_instance3.txt';
+files (2,:) = '../logs/log_instance2.txt';
+files (3,:) = '../logs/log_instance3.txt';
 
 for i=1:size(files,1)
     
