@@ -2,8 +2,8 @@
 .vs
 Debug/*
 x64/*
-solutions/*
-logs/*
+#solutions/*
+#logs/*
 !.gitkeep
 *.o
 *.exe
