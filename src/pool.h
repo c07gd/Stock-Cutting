@@ -31,7 +31,7 @@ private:
 	int					m_numGensUnchanged;
 
 	// Private Functions
-	int kTournament(int k, int type);
+	int kTournament(int k, bool type, bool replacement);
 
 public:
 

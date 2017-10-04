@@ -17,15 +17,6 @@
 
 
 /**********************************************************
-*	Types, Etc.
-**********************************************************/
-enum {
-	HIGHEST,
-	LOWEST
-};
-
-
-/**********************************************************
 *	create(int size, state* initial)
 *	Creates new state copies of initial and adds them to
 *	the pool
@@ -116,7 +107,7 @@ void pool::setFpProbability() {
 
 /**********************************************************
 *	chooseParentFP()
-*	Returns a pointer to a chonse state. Choice is based on
+*	Returns a pointer to a chonsen state. Choice is based on
 *	the probabilities assigns in setFpProbability(). As such,
 *	setFpProbability() must have been called before this.
 **********************************************************/
@@ -133,15 +124,23 @@ state* pool::chooseParentFP() {
 	return m_states[i];
 }
 
+
+/**********************************************************
+*	chooseParentKTourn(int k)
+*	Returns a pointer to a chonsen state. Choice is based on 
+*	the best state found amount k states, chosen randomly
+*	with replacement.
+*	 @param size desired size of the pool after removal
+**********************************************************/
 state* pool::chooseParentKTourn(int k) {
-	return m_states[kTournament(k, HIGHEST)];
+	return m_states[kTournament(k, true, true)];
 }
 
 
 /**********************************************************
 *	reduceByTruncation()
 *	Reduces the pool to the passed size by removing elements
-*	with the lowest fitness. Elements removed are not destroyed.
+*	with the lowest fitness.
 *	 @param size desired size of the pool after removal
 **********************************************************/
 void pool::reduceByTruncation(int size) {
@@ -159,7 +158,6 @@ void pool::reduceByTruncation(int size) {
 /**********************************************************
 *	reduceByKTourn()
 *	Reduces the pool to the passed size by running k-tournaments.
-*	Elements removed are not destroyed.
 *	 @param size desired size of the pool after removal
 *	 @param k number of states chosen in each tournament
 **********************************************************/
@@ -172,10 +170,9 @@ void pool::reduceByKTourn(int size, int k) {
 	while (m_states.size() > (size_t)size) {
 
 		// Randomly pick k members of the pool, keeping track of the one with the best fitness 
-		idx = kTournament(k, LOWEST);
+		idx = kTournament(k, false, false);
 		delete m_states[idx];
 		m_states.erase(m_states.begin() + idx);
-
 	}
 
 	return;
@@ -191,21 +188,38 @@ void pool::reduceByKTourn(int size, int k) {
 *	 @param type either HIGHEST or LOWEST for which element to return
 *	 @return index of the chosen state
 **********************************************************/
-int pool::kTournament(int k, int type) {
+int pool::kTournament(int k, bool best, bool replacement) {
 
 	// Variables
-	int idx;
-	int bestIdx = rand() % m_states.size();
+	int*	tournament = new int[k];
+	int		bestIdx;
+	bool	inTournament;
 
-	// Randomly pick k members of the pool, keeping track of the one with the best fitness 
-	for (int i = 1; i < k; i++) {
-		idx = rand() % m_states.size();
-		if (type == HIGHEST && m_states[idx]->getFitness() > m_states[bestIdx]->getFitness())
-			bestIdx = idx;
-		else if (type == LOWEST && m_states[idx]->getFitness() < m_states[bestIdx]->getFitness())
-			bestIdx = idx;
+	// Randomly pick members for the tournament, with or without replacement
+	for (int i = 0; i < k; i++) {
+		tournament[i] = rand() % m_states.size();
+		if (!replacement) {
+			inTournament = false;
+			for (int j = 0; j < i && !inTournament; j++) {
+				if (tournament[j] == tournament[i]) {
+					i--;
+					break;
+				}
+			}
+		}
 	}
 
+	// Run tournament, looking for best or worst fitness	
+	bestIdx = tournament[0];
+	for (int i = 1; i < k; i++) {
+		if (best && m_states[tournament[i]]->getFitness() > m_states[bestIdx]->getFitness())
+			bestIdx = tournament[i];
+		else if (!best && m_states[tournament[i]]->getFitness() < m_states[bestIdx]->getFitness())
+			bestIdx = tournament[i];
+	}
+
+	// Clean up
+	delete[] tournament;
 	return bestIdx;
 }
 
