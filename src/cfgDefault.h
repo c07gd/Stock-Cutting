@@ -22,6 +22,7 @@
 #define DEFAULT_LOGFILE				("logs/default.txt")
 #define DEFAULT_SOLUTIONFILE		("solutions/default.txt")
 #define DEFAULT_INPUTFILE			("patterns/default.txt")
+#define DEFAULT_SURVIVALSTRATEGY	(0)
 #define DEFAULT_MU					(100)
 #define DEFAULT_LAMBDA				(100)
 #define DEFAULT_RECOMBINATIONTYPE	(0)

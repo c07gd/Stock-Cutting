@@ -138,6 +138,12 @@ int main(int argc, char *argv[]) {
 				evals++;
 			}
 
+			// If comma survival, remove parents from population first
+			if (cfg.survivalStrategy == SURVIVALSTRAT_COMMA) {
+				population.destroy();
+				population.empty();
+			}
+
 			// Add offspring to population
 			for (int i = 0; i < offspring.getSize(); i++)
 				population.add(offspring.get(i));

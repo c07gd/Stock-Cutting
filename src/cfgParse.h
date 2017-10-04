@@ -35,6 +35,7 @@
 #define LABEL_INPUTFILE				("inputFile")
 #define LABEL_MU					("mu")
 #define LABEL_LAMBDA				("lambda")
+#define LABEL_SURVIVALSTRATEGY		("survivalStrategy")
 #define LABEL_RECOMBINATIONTYPE		("recombinationType")
 #define LABEL_CROSSOVERS			("crossovers")
 #define LABEL_UNIFORMPROB			("uniformProb")
@@ -62,6 +63,7 @@ struct config {
 	std::string		logFile;
 	std::string		solutionFile;
 	std::string		inputFile;
+	int				survivalStrategy;
 	int				mu;
 	int				lambda;
 	int				recombinationType;
@@ -83,6 +85,11 @@ enum {
 	SEED_STATIC,
 	SEED_TIME	
 } seedType;
+
+enum {
+	SURVIVALSTRAT_PLUS,
+	SURVIVALSTRAT_COMMA
+} survivalStrategy;
 
 enum {
 	RECOMBINATION_NPOINT,
@@ -136,14 +143,15 @@ inline config getConfig(std::string filename) {
 	cfg.logFile				= DEFAULT_LOGFILE;
 	cfg.solutionFile		= DEFAULT_SOLUTIONFILE;
 	cfg.inputFile			= DEFAULT_INPUTFILE;
+	cfg.survivalStrategy	= DEFAULT_SURVIVALSTRATEGY;
 	cfg.mu					= DEFAULT_MU;
+	cfg.lambda				= DEFAULT_LAMBDA;
 	cfg.recombinationType	= DEFAULT_RECOMBINATIONTYPE;
 	cfg.crossovers			= DEFAULT_CROSSOVERS;
 	cfg.uniformProb			= DEFAULT_UNIFORMPROB;
 	cfg.mutationType		= DEFAULT_MUTATIONTYPE;
 	cfg.mutationRate		= DEFAULT_MUTATIONRATE;	
 	cfg.crossovers			= DEFAULT_CREEPDIST;
-	cfg.lambda				= DEFAULT_LAMBDA;
 	cfg.parentSel			= DEFAULT_PARENTSEL;
 	cfg.parentSelTournSize	= DEFAULT_PARENTSELTOURNSIZE;
 	cfg.survivorSel			= DEFAULT_SURVIVORSEL;
@@ -194,6 +202,8 @@ inline config getConfig(std::string filename) {
 				cfg.mu = atoi(rhs.c_str());
 			else if (lhs == LABEL_LAMBDA)
 				cfg.lambda = atoi(rhs.c_str());
+			else if (lhs == LABEL_SURVIVALSTRATEGY)
+				cfg.survivalStrategy = atoi(rhs.c_str());
 			else if (lhs == LABEL_RECOMBINATIONTYPE)
 				cfg.recombinationType = atoi(rhs.c_str());
 			else if (lhs == LABEL_CROSSOVERS)
