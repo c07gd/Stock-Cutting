@@ -110,9 +110,12 @@ int main(int argc, char *argv[]) {
 					parent1 = population.chooseParentFP();
 					parent2 = population.chooseParentFP();
 				case PARENTSEL_KTOURNAMENT:
-				default:
 					parent1 = population.chooseParentKTourn(cfg.parentSelTournSize);
 					parent2 = population.chooseParentKTourn(cfg.parentSelTournSize);
+					break;
+				case PARENTSEL_RANDOM:
+					parent1 = population.chooseParentRandom();
+					parent2 = population.chooseParentRandom();
 					break;
 				}
 				switch (cfg.recombinationType) {
@@ -152,11 +155,17 @@ int main(int argc, char *argv[]) {
 			// Reduce population size
 			switch (cfg.survivorSel) {
 			case SURVIVORSEL_TRUNCATION:
-				population.reduceByTruncation(cfg.mu - offspring.getSize());
+				population.reduceByTruncation(cfg.mu);
 				break;
 			case SURVIVORSEL_KTOURNAMENT:
-			default:
-				population.reduceByKTourn(cfg.mu - offspring.getSize(), cfg.survivorSelTournSize);
+				population.reduceByKTourn(cfg.mu, cfg.survivorSelTournSize);
+				break;
+			case SURVIVORSEL_RANDOM:
+				population.reduceByRandom(cfg.mu);
+				break;
+			case SURVIVORSEL_FITNESSPROPORTIONAL:
+				population.setFpProbability();
+				population.reduceByFP(cfg.mu);
 				break;
 			}
 

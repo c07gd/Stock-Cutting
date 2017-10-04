@@ -127,13 +127,22 @@ state* pool::chooseParentFP() {
 
 /**********************************************************
 *	chooseParentKTourn(int k)
-*	Returns a pointer to a chonsen state. Choice is based on 
+*	Returns a pointer to a chosen state. Choice is based on 
 *	the best state found amount k states, chosen randomly
 *	with replacement.
-*	 @param size desired size of the pool after removal
+*	 @param k size of the k-tournament
 **********************************************************/
 state* pool::chooseParentKTourn(int k) {
 	return m_states[kTournament(k, true, true)];
+}
+
+
+/**********************************************************
+*	chooseParentRandom()
+*	Returns a pointer to a randomly chosen state.
+**********************************************************/
+state* pool::chooseParentRandom() {
+	return m_states[rand() % m_states.size()];
 }
 
 
@@ -144,6 +153,10 @@ state* pool::chooseParentKTourn(int k) {
 *	 @param size desired size of the pool after removal
 **********************************************************/
 void pool::reduceByTruncation(int size) {
+
+	// Sanity check
+	if (m_states.size() < (size_t)size)
+		return;
 
 	// Sort pool
 	std::sort(m_states.begin(), m_states.end(), compareState);
@@ -162,6 +175,10 @@ void pool::reduceByTruncation(int size) {
 *	 @param k number of states chosen in each tournament
 **********************************************************/
 void pool::reduceByKTourn(int size, int k) {
+
+	// Sanity check
+	if (m_states.size() < (size_t)size)
+		return;
 	
 	// Variables
 	int idx;
@@ -169,8 +186,82 @@ void pool::reduceByKTourn(int size, int k) {
 	// Run tournaments until we've shrunk to desired size
 	while (m_states.size() > (size_t)size) {
 
-		// Randomly pick k members of the pool, keeping track of the one with the best fitness 
+		// Randomly pick k members of the pool, keeping track of the one with the worst fitness 
 		idx = kTournament(k, false, false);
+		delete m_states[idx];
+		m_states.erase(m_states.begin() + idx);
+	}
+
+	return;
+}
+
+
+/**********************************************************
+*	reduceByFP()
+*	Reduces the problem to the passed size by choosing
+*	survivors based on fitnes proportion. Removes and destroys
+*	any states not chosen in FP.
+*	 @param size desired size of the pool after FP reduction
+**********************************************************/
+void pool::reduceByFP(int size) {
+
+	// Sanity check
+	if (m_states.size() < (size_t)size)
+		return;
+
+	// Variables
+	int i, j;
+	bool* survivors = new bool[size];
+
+	// Initialize all states to non-surviving
+	for (i = 0; i < size; i++)
+		survivors[i] = false;
+
+	// Choose states to survive
+	for (i = 0; i < size; i++) {
+
+		// Choose a random value [0.0 - 1.0]
+		float value = (float)(rand() % 100000) / 100000.0f;
+
+		// Walk down the FP probability array and find the corresponding state
+		j = 0;
+		while (m_fpProbability[j] < value && j < (int)m_states.size())
+			j++;
+		survivors[j] = true;
+	}
+
+	// Kill off any states not chosen to survive
+	for (i = size - 1; i >= 0; i--) {
+		if (!survivors[i]) {
+			delete m_states[i];
+			m_states.erase(m_states.begin() + i);
+		}
+	}
+
+	// Clean up
+	delete[] survivors;
+	return;
+}
+
+
+/**********************************************************
+*	reduceByRandom(int size)
+*	Reduces the pool to the passed size by randomly removing
+*	elements.
+*	 @param size desired size of the pool after removal
+**********************************************************/
+void pool::reduceByRandom(int size) {
+
+	// Sanity check
+	if (m_states.size() < (size_t)size)
+		return;
+
+	// Variables 
+	int idx;
+
+	// Randomly choose states and remove them until desired size is reached
+	while ((int)m_states.size() > size) {
+		idx = rand() % m_states.size();
 		delete m_states[idx];
 		m_states.erase(m_states.begin() + idx);
 	}

@@ -46,8 +46,11 @@ public:
 	void setFpProbability();
 	state* chooseParentFP();
 	state* chooseParentKTourn(int k);
+	state* chooseParentRandom();
 	void reduceByTruncation(int size);
 	void reduceByKTourn(int size, int k);	
+	void reduceByFP(int size);
+	void reduceByRandom(int size);
 	bool termTestAvgFitness(int targetGensUnchanged, float unchangedVariance);
 	bool termTestBestFitness(int targetGensUnchanged);
 	void empty();
