@@ -400,7 +400,6 @@ void state::calcFitness() {
 	}
 
 	// Subtract out weighted penalty value
-	m_params.penaltyWeight *= (1 - ((float)g_evals / (float)g_targetEvals));
 	m_fitness -= (int)round((float)m_penalty * m_params.penaltyWeight);
 
 	return;
@@ -605,6 +604,38 @@ void state::creepMutate(int creepDist, int constraintSat) {
 	placeShape(idx, m_x[idx], m_y[idx], m_rot[idx]);
 
 	return;
+}
+
+
+/**********************************************************
+*	updateAdaptableParams(state* parent1, state* parent2)
+*	Evolves adaptable parameters based on recombination
+*	and mutation from passed parents.
+*	 @param parent1 pointer to first parent state
+*	 @param parent2 pointer to second parent state
+**********************************************************/
+void state::updateAdaptableParams(state* parent1, state* parent2) {
+#define MUTATION_STEP_SIZE 0.02f
+
+	// Update penalty weight based on number of evals
+	m_params.penaltyWeight *= (1 - ((float)g_evals / (float)g_targetEvals));
+
+	// Choose a parent's mutation rate to inherit
+	if (rand() % 2)
+		m_params.mutationRate = parent1->m_params.mutationRate;
+	else
+		m_params.mutationRate = parent2->m_params.mutationRate;
+
+	// Mutate our mutation rate (whoa... that's meta...)
+	if (GEN_SCALED_PROB(4) <= m_params.mutationRate) {
+		if(rand() % 2)
+			m_params.mutationRate += MUTATION_STEP_SIZE;
+		else
+			m_params.mutationRate -= MUTATION_STEP_SIZE;
+	}
+
+	return;
+#undef MUTATION_STEP_SIZE
 }
 
 

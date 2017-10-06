@@ -28,7 +28,6 @@
 /**********************************************************
 *	Compiler Constants
 **********************************************************/
-#define GEN_SCALED_PROB(k)	((float)(rand() % (int)std::pow(10.0,k)) / std::pow(10.0,k))
 #define IO_FORMAT_FLOAT(x)	std::fixed << std::setprecision(x) << std::setfill('0')
 
 
@@ -86,7 +85,7 @@ int main(int argc, char *argv[]) {
 	// Construct initial state
 	state initial(shapes, width, numShapes);
 	state overallBest(initial);
-	initial.setParams(cfg.penaltyWeight);
+	initial.setParams(cfg.penaltyWeight, cfg.mutationRate);
 
 	// Open log file
 	log.open(cfg.logFile);
@@ -127,6 +126,7 @@ int main(int argc, char *argv[]) {
 					parent2 = population.chooseParentRandom();
 					break;
 				}
+				temp->updateAdaptableParams(parent1, parent2);
 				switch (cfg.recombinationType) {
 				case RECOMBINATION_NPOINT:
 					temp->nPointCrossover(parent1, parent2, cfg.crossovers, cfg.constraintSat);
@@ -189,8 +189,8 @@ int main(int argc, char *argv[]) {
 			}
 
 			localBest = population.getFittestState();
-			log << g_evals << "\t" << IO_FORMAT_FLOAT(3) << population.getAveragePenaltyWeight() << "\t" << IO_FORMAT_FLOAT(3) << population.getAverageFitness() << "\t" << localBest->getFitness() << std::endl;
-			std::cout << g_evals << "\t" << IO_FORMAT_FLOAT(3) << population.getAveragePenaltyWeight() << "\t" << IO_FORMAT_FLOAT(3) << population.getAverageFitness() << "\t" << localBest->getFitness() << std::endl;
+			log << g_evals << "\t" << IO_FORMAT_FLOAT(3) << population.getAverageMutationRate() << "\t" << IO_FORMAT_FLOAT(3) << population.getAverageFitness() << "\t" << localBest->getFitness() << std::endl;
+			std::cout << g_evals << "\t" << IO_FORMAT_FLOAT(3) << population.getAverageMutationRate() << "\t" << IO_FORMAT_FLOAT(3) << population.getAverageFitness() << "\t" << localBest->getFitness() << std::endl;
 
 			// Keep track of overall best
 			if (localBest->getFitness() > overallBestFitness) {

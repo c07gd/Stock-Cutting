@@ -23,6 +23,7 @@
 **********************************************************/
 #define RANDOM_MAX_TRIES	(10000)
 #define PENALTY_WEIGHT		(3.0f)
+#define GEN_SCALED_PROB(k)	((float)(rand() % (int)std::pow(10.0,k)) / std::pow(10.0,k))
 #define ELEMENT_IS_EQUAL(e1,idx1,e2,idx2) \
 							(e1->m_x[idx1] == e2->m_x[idx2] &&  \
 							 e1->m_y[idx1] == e2->m_y[idx2] &&  \
@@ -34,6 +35,7 @@
 **********************************************************/
 struct adaptablepParams {
 	float	penaltyWeight;
+	float	mutationRate;
 };
 
 
@@ -83,14 +85,16 @@ public:
 	void uniformCrossover(state* parent1, state* parent2, float p, int constraintSat);
 	void randResetMutate(int constraintSat);
 	void creepMutate(int creepDist, int constraintSat);
+	void updateAdaptableParams(state* parent1, state* parent2);
 	void printSolution(std::string filename);
 	void printLayout(std::string filename);
 	
 	// Accessors, Mutators
 	inline int getFitness() const { return m_fitness; };
 	inline adaptablepParams getParams() const { return m_params; };
-	inline void setParams(float penaltyWeight) {
+	inline void setParams(float penaltyWeight, float mutationRate) {
 		m_params.penaltyWeight = penaltyWeight;
+		m_params.mutationRate = mutationRate;
 	}
 
 };

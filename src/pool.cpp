@@ -186,6 +186,10 @@ void pool::reduceByKTourn(int size, int k) {
 	// Run tournaments until we've shrunk to desired size
 	while (m_states.size() > (size_t)size) {
 
+		// Since we're not allowing replacement, need to make sure k isn't bigger than size
+		if (k > (int)m_states.size())
+			k = (int)m_states.size();
+
 		// Randomly pick k members of the pool, keeping track of the one with the worst fitness 
 		idx = kTournament(k, false, false);
 		delete m_states[idx];

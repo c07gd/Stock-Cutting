@@ -62,6 +62,7 @@ public:
 	state* getFittestState();
 	float getAverageFitness();
 	float getAveragePenaltyWeight();
+	float getAverageMutationRate();
 
 };
 
