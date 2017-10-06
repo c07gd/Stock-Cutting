@@ -63,6 +63,7 @@ public:
 	float getAverageFitness();
 	float getAveragePenaltyWeight();
 	float getAverageMutationRate();
+	float getAverageCrossoverPoints();
 
 };
 

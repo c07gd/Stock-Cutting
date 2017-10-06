@@ -85,7 +85,7 @@ int main(int argc, char *argv[]) {
 	// Construct initial state
 	state initial(shapes, width, numShapes);
 	state overallBest(initial);
-	initial.setParams(cfg.penaltyWeight, cfg.mutationRate);
+	initial.setParams(cfg.penaltyWeight, cfg.crossovers, cfg.mutationRate);
 
 	// Open log file
 	log.open(cfg.logFile);
@@ -129,7 +129,7 @@ int main(int argc, char *argv[]) {
 				temp->updateAdaptableParams(parent1, parent2);
 				switch (cfg.recombinationType) {
 				case RECOMBINATION_NPOINT:
-					temp->nPointCrossover(parent1, parent2, cfg.crossovers, cfg.constraintSat);
+					temp->nPointCrossover(parent1, parent2, -1, cfg.constraintSat);
 					break;
 				case RECOMBINATION_UNIFORM:
 					temp->uniformCrossover(parent1, parent2, cfg.uniformProb, cfg.constraintSat);
@@ -189,8 +189,8 @@ int main(int argc, char *argv[]) {
 			}
 
 			localBest = population.getFittestState();
-			log << g_evals << "\t" << IO_FORMAT_FLOAT(3) << population.getAverageMutationRate() << "\t" << IO_FORMAT_FLOAT(3) << population.getAverageFitness() << "\t" << localBest->getFitness() << std::endl;
-			std::cout << g_evals << "\t" << IO_FORMAT_FLOAT(3) << population.getAverageMutationRate() << "\t" << IO_FORMAT_FLOAT(3) << population.getAverageFitness() << "\t" << localBest->getFitness() << std::endl;
+			log << g_evals << "\t" << IO_FORMAT_FLOAT(3) << population.getAverageCrossoverPoints() << "\t" << IO_FORMAT_FLOAT(3) << population.getAverageMutationRate() << "\t" << IO_FORMAT_FLOAT(3) << population.getAverageFitness() << "\t" << localBest->getFitness() << std::endl;
+			std::cout << g_evals << "\t" << IO_FORMAT_FLOAT(3) << population.getAverageCrossoverPoints() << "\t" << IO_FORMAT_FLOAT(3) << population.getAverageMutationRate() << "\t" << IO_FORMAT_FLOAT(3) << population.getAverageFitness() << "\t" << localBest->getFitness() << std::endl;
 
 			// Keep track of overall best
 			if (localBest->getFitness() > overallBestFitness) {

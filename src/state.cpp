@@ -452,12 +452,18 @@ void state::randomize() {
 *	Assigns alleles to by choosing from each parents. N
 *	crossover points are randomly selected. Also checks 
 *	validity of the resulting placment and attempts a repair.
+*	If n is set to -1, will use the adaptable parameter for
+*	number of crossover points.
 *	 @param parent1 pointer to first parent state
 *	 @param parent2 pointer to second parent state
 *	 @param n number of crossover points
 *	 @param constraintSat method for resolving constraint violations
 **********************************************************/
 void state::nPointCrossover(state* parent1, state* parent2, int n, int constraintSat) {
+
+	// Use adaptable parameter?
+	if (n == -1)
+		n = m_params.crossoverPoints;
 
 	// Variables
 	int*	crossoverPts = new int[n];
@@ -632,6 +638,21 @@ void state::updateAdaptableParams(state* parent1, state* parent2) {
 			m_params.mutationRate += MUTATION_STEP_SIZE;
 		else
 			m_params.mutationRate -= MUTATION_STEP_SIZE;
+	}
+
+	// Choose a parent's number of crossover points to inherit
+	if (rand() % 2)
+		m_params.crossoverPoints = parent1->m_params.crossoverPoints;
+	else
+		m_params.crossoverPoints = parent2->m_params.crossoverPoints;
+
+	// Mutate our number of crossover points
+	if (GEN_SCALED_PROB(4) <= m_params.mutationRate) {
+		if (rand() % 2)
+			m_params.crossoverPoints++;
+		else
+			m_params.crossoverPoints--;
+		m_params.crossoverPoints = std::max(0, m_params.crossoverPoints);
 	}
 
 	return;

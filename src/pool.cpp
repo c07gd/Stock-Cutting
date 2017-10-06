@@ -434,3 +434,31 @@ float pool::getAveragePenaltyWeight() {
 	// Return average
 	return totalPenaltyWeight / (float)m_states.size();
 }
+
+
+float pool::getAverageMutationRate() {
+
+	// Variables
+	float	totalMutationRate = 0.0f;
+
+	// Calculate total fitness
+	for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it)
+		totalMutationRate += (*it)->getParams().mutationRate;
+
+	// Return average
+	return totalMutationRate / (float)m_states.size();
+}
+
+
+float pool::getAverageCrossoverPoints() {
+
+	// Variables
+	int	totalCrossoverPoints = 0;
+
+	// Calculate total fitness
+	for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it)
+		totalCrossoverPoints += (*it)->getParams().crossoverPoints;
+
+	// Return average
+	return (float)totalCrossoverPoints / (float)m_states.size();
+}

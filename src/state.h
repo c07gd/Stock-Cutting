@@ -35,6 +35,7 @@
 **********************************************************/
 struct adaptablepParams {
 	float	penaltyWeight;
+	int		crossoverPoints;
 	float	mutationRate;
 };
 
@@ -92,8 +93,9 @@ public:
 	// Accessors, Mutators
 	inline int getFitness() const { return m_fitness; };
 	inline adaptablepParams getParams() const { return m_params; };
-	inline void setParams(float penaltyWeight, float mutationRate) {
+	inline void setParams(float penaltyWeight, int crosoverPoints, float mutationRate) {
 		m_params.penaltyWeight = penaltyWeight;
+		m_params.crossoverPoints = crosoverPoints;
 		m_params.mutationRate = mutationRate;
 	}
 
