@@ -28,7 +28,15 @@
 /**********************************************************
 *	Compiler Constants
 **********************************************************/
-#define GEN_SCALED_PROB(k) ((float)(rand() % (int)std::pow(10.0,k)) / std::pow(10.0,k))
+#define GEN_SCALED_PROB(k)	((float)(rand() % (int)std::pow(10.0,k)) / std::pow(10.0,k))
+#define IO_FORMAT_FLOAT(x)	std::fixed << std::setprecision(x) << std::setfill('0')
+
+
+/**********************************************************
+*	Global Variables
+**********************************************************/
+int g_evals;
+int g_targetEvals;
 
 
 /**********************************************************
@@ -45,7 +53,6 @@ int main(int argc, char *argv[]) {
 	pool			population;
 	pool			offspring;
 	int				run;
-	int				evals;
 	bool			terminate = false;
 	state*			parent1;
 	state*			parent2;
@@ -59,6 +66,7 @@ int main(int argc, char *argv[]) {
 	}
 	cfg = getConfig(argv[1]);
 	cfg.inputFile = argv[2];
+	g_targetEvals = cfg.fitnessEvals;
 
 	// Get shapes
 	readInputFile(argv[2], shapes, width, numShapes);
@@ -78,6 +86,7 @@ int main(int argc, char *argv[]) {
 	// Construct initial state
 	state initial(shapes, width, numShapes);
 	state overallBest(initial);
+	initial.setParams(cfg.penaltyWeight);
 
 	// Open log file
 	log.open(cfg.logFile);
@@ -97,7 +106,7 @@ int main(int argc, char *argv[]) {
 		// Randomly generate a start population
 		population.create(cfg.mu, &initial);
 		population.randomizeAll();
-		evals = population.getSize();
+		g_evals = population.getSize();
 
 		do {
 
@@ -138,7 +147,7 @@ int main(int argc, char *argv[]) {
 				}					
 				temp->calcFitness();
 				offspring.add(temp);
-				evals++;
+				g_evals++;
 			}
 
 			// If comma survival, remove parents from population first
@@ -180,8 +189,8 @@ int main(int argc, char *argv[]) {
 			}
 
 			localBest = population.getFittestState();
-			log << evals << "\t" << std::fixed << std::setprecision(3) << std::setfill('0') << population.getAverageFitness() << "\t" << localBest->getFitness() << std::endl;
-			std::cout << evals << "\t" << std::fixed << std::setprecision(3) << std::setfill('0') << population.getAverageFitness() << "\t" << localBest->getFitness() << std::endl;
+			log << g_evals << "\t" << IO_FORMAT_FLOAT(3) << population.getAveragePenaltyWeight() << "\t" << IO_FORMAT_FLOAT(3) << population.getAverageFitness() << "\t" << localBest->getFitness() << std::endl;
+			std::cout << g_evals << "\t" << IO_FORMAT_FLOAT(3) << population.getAveragePenaltyWeight() << "\t" << IO_FORMAT_FLOAT(3) << population.getAverageFitness() << "\t" << localBest->getFitness() << std::endl;
 
 			// Keep track of overall best
 			if (localBest->getFitness() > overallBestFitness) {
@@ -190,7 +199,7 @@ int main(int argc, char *argv[]) {
 			}
 
 		// End loop when termination test returns true of we hit our max number of evals
-		} while (!terminate && (evals < cfg.fitnessEvals));
+		} while (!terminate && (g_evals < cfg.fitnessEvals));
 
 		// Clean up
 		population.destroy();

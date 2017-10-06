@@ -21,6 +21,13 @@
 
 
 /**********************************************************
+*	Variables
+**********************************************************/
+extern int g_evals;
+extern int g_targetEvals;
+
+
+/**********************************************************
 *	state()
 *	Default constructor
 **********************************************************/
@@ -82,6 +89,7 @@ state::state(const state& rhs) {
 	m_shapes = rhs.m_shapes;
 	m_fitness = rhs.m_fitness;
 	m_penalty = rhs.m_penalty;
+	m_params = rhs.m_params;
 
 	// Construct arrays
 	constructArrays();
@@ -118,6 +126,7 @@ state& state::operator=(const state &rhs) {
 	m_shapes = rhs.m_shapes;
 	m_fitness = rhs.m_fitness;
 	m_penalty = rhs.m_penalty;
+	m_params = rhs.m_params;
 
 	// Copy array data over
 	for (int i = 0; i < m_numShapes; i++) {
@@ -391,7 +400,8 @@ void state::calcFitness() {
 	}
 
 	// Subtract out weighted penalty value
-	m_fitness -= (int)round((float)m_penalty * PENALTY_WEIGHT);
+	m_params.penaltyWeight *= (1 - ((float)g_evals / (float)g_targetEvals));
+	m_fitness -= (int)round((float)m_penalty * m_params.penaltyWeight);
 
 	return;
 }

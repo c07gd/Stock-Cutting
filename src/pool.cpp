@@ -416,3 +416,17 @@ float pool::getAverageFitness() {
 	// Return average
 	return (float)totalFitness / (float)m_states.size();
 }
+
+
+float pool::getAveragePenaltyWeight() {
+
+	// Variables
+	float	totalPenaltyWeight = 0;
+
+	// Calculate total fitness
+	for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it)
+		totalPenaltyWeight += (*it)->getParams().penaltyWeight;
+
+	// Return average
+	return totalPenaltyWeight / (float)m_states.size();
+}

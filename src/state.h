@@ -28,6 +28,15 @@
 							 e1->m_y[idx1] == e2->m_y[idx2] &&  \
 							 e1->m_rot[idx1] == e2->m_rot[idx2])
 
+
+/**********************************************************
+*	Types, Etc.
+**********************************************************/
+struct adaptablepParams {
+	float	penaltyWeight;
+};
+
+
 /**********************************************************
 *	State Class
 **********************************************************/
@@ -43,6 +52,8 @@ private:
 	int			m_penalty;
 	int			m_numShapes;
 	shape*		m_shapes;
+	adaptablepParams
+				m_params;
 
 	// Layout Parameters
 	int*		m_x;
@@ -76,7 +87,11 @@ public:
 	void printLayout(std::string filename);
 	
 	// Accessors, Mutators
-	int getFitness() const { return m_fitness; };
+	inline int getFitness() const { return m_fitness; };
+	inline adaptablepParams getParams() const { return m_params; };
+	inline void setParams(float penaltyWeight) {
+		m_params.penaltyWeight = penaltyWeight;
+	}
 
 };
 

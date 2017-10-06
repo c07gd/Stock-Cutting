@@ -61,6 +61,7 @@ public:
 	inline int getSize() const { return m_states.size(); };
 	state* getFittestState();
 	float getAverageFitness();
+	float getAveragePenaltyWeight();
 
 };
 

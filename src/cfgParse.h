@@ -47,7 +47,7 @@
 #define LABEL_SURVIVORSEL			("survivorSel")
 #define LABEL_SURVIVORSELTOURNSIZE	("survivorSelTournSize")
 #define LABEL_CONSTRAINTSAT			("constraintSat")
-#define LABEL_PENALTYWEIGHT			("penalthWeight")
+#define LABEL_PENALTYWEIGHT			("penaltyWeight")
 #define LABEL_TERMTYPE				("termType")
 #define LABEL_TERMGENSUNCHANGED		("termGensUnchanged")
 
@@ -78,7 +78,7 @@ struct config {
 	int				survivorSel;
 	int				survivorSelTournSize;
 	int				constraintSat;
-	int				penaltyWeight;
+	float			penaltyWeight;
 	int				termType;
 	int				termGensUnchanged;
 };
