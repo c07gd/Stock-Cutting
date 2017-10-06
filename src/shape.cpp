@@ -58,17 +58,20 @@ shape::shape(const char* line) {
 		m_moves.push_back(m);
 	} while (line[i] != '\n' && line[i] != '\0' && line[i] != '\r');
 
+	// Update attributes
+	calcOverlap();
+	calcLength();
+
 	return;
 }
 
 
 /**********************************************************
-*	getLength()
-*	Finds length of the shape in its initial form. Does not
-*	take into account shape the may be longer when rotated.
-*	 @return length of the shape
+*	calcLength()
+*	Finds the maximum diameter of the shape (side-to-side,
+*	or top-to-bottom) and assigns the value to m_length.
 **********************************************************/
-int shape::getLength() {
+void shape::calcLength() {
 
 	// Variables
 	int		traceLR = 0;
@@ -104,7 +107,64 @@ int shape::getLength() {
 	}
 
 	// Length is difference + 1 for start location
-	return std::max((farRight - farLeft + 1), (farUp - farDown + 1));
+	m_length = std::max((farRight - farLeft + 1), (farUp - farDown + 1));
+
+	return;
+}
+
+
+/**********************************************************
+*	calcOverlap()
+*	Finds the number of squares for which the shape traces
+*	over itself. This is useful for discounting trace overlaps
+*	from the penalty function later.
+**********************************************************/
+void shape::calcOverlap() {
+	
+	// Variables
+	std::vector<int>	xVals;
+	std::vector<int>	yVals;
+	int					traceX = 0;
+	int					traceY = 0;
+
+	// Mark start position
+	m_overlap = 0;
+	xVals.push_back(traceX);
+	yVals.push_back(traceY);
+
+	// Trace out shape
+	for (std::vector<move>::iterator it = m_moves.begin(); it != m_moves.end(); ++it) {
+		for (int i = 0; i < (*it).distance; i++) {
+			switch ((*it).direction) {
+			case DIR_UP:
+				traceX++;
+				break;
+			case DIR_DOWN:
+				traceX--;
+				break;
+			case DIR_LEFT:
+				traceY--;
+				break;
+			case DIR_RIGHT:
+				traceY++;
+				break;
+			}
+
+			// Check if we've marked this location before
+			for (int i = 0; i < (int)xVals.size(); i++) {
+				if (xVals[i] == traceX && yVals[i] == traceY) {
+					m_overlap++;
+					break;
+				}
+			}
+
+			// Mark our location
+			xVals.push_back(traceX);
+			yVals.push_back(traceY);
+		}
+	}
+
+	return;
 }
 
 

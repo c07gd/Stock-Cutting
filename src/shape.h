@@ -56,7 +56,13 @@ class shape {
 
 private:
 
-	std::vector<move> m_moves;
+	std::vector<move>	m_moves;
+	int					m_length;
+	int					m_overlap;
+
+	// Private Functions
+	void calcLength();
+	void calcOverlap();
 
 public:
 
@@ -66,11 +72,12 @@ public:
 	~shape() {};
 
 	// Member Functions
-	int getLength();
 	void print();
 
 	// Accessors, Mutators
 	inline std::vector<move>* getMoves() { return &m_moves; };
+	inline int getLength() { return m_length; };
+	inline int getOverlap() { return m_overlap; };
 
 };
 

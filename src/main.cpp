@@ -120,19 +120,19 @@ int main(int argc, char *argv[]) {
 				}
 				switch (cfg.recombinationType) {
 				case RECOMBINATION_NPOINT:
-					temp->nPointCrossover(parent1, parent2, cfg.crossovers);
+					temp->nPointCrossover(parent1, parent2, cfg.crossovers, cfg.constraintSat);
 					break;
 				case RECOMBINATION_UNIFORM:
-					temp->uniformCrossover(parent1, parent2, cfg.uniformProb);
+					temp->uniformCrossover(parent1, parent2, cfg.uniformProb, cfg.constraintSat);
 					break;
 				}				
 				if (GEN_SCALED_PROB(4) <= cfg.mutationRate) {
 					switch (cfg.mutationType) {
 					case MUTATION_RANDOM:
-						temp->randResetMutate();
+						temp->randResetMutate(cfg.constraintSat);
 						break;
 					case MUTATION_CREEP:
-						temp->creepMutate(cfg.creepDist);
+						temp->creepMutate(cfg.creepDist, cfg.constraintSat);
 						break;
 					}
 				}					

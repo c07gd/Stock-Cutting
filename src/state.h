@@ -22,6 +22,7 @@
 *	Compiler Constants
 **********************************************************/
 #define RANDOM_MAX_TRIES	(10000)
+#define PENALTY_WEIGHT		(3.0f)
 #define ELEMENT_IS_EQUAL(e1,idx1,e2,idx2) \
 							(e1->m_x[idx1] == e2->m_x[idx2] &&  \
 							 e1->m_y[idx1] == e2->m_y[idx2] &&  \
@@ -39,6 +40,7 @@ private:
 	int			m_length;
 	bool**		m_layout;
 	int			m_fitness;
+	int			m_penalty;
 	int			m_numShapes;
 	shape*		m_shapes;
 
@@ -49,7 +51,8 @@ private:
 
 	// Private Funtions
 	void constructArrays();
-
+	void repair(int idx, int& x, int& y, int& rot);
+	void resolveConstraints(int idx, int& x, int& y, int& rot, int type);
 
 public:
 
@@ -64,12 +67,11 @@ public:
 	void randomize();
 	bool placementIsValid(int i, int x, int y, int rot);
 	void placeShape(int i, int x, int y, int rot);
-	void repair(int& idx, int& x, int& y, int& rot);
 	void calcFitness();
-	void nPointCrossover(state* parent1, state* parent2, int n);
-	void uniformCrossover(state* parent1, state* parent2, float p);
-	void randResetMutate();
-	void creepMutate(int creepDist);
+	void nPointCrossover(state* parent1, state* parent2, int n, int constraintSat);
+	void uniformCrossover(state* parent1, state* parent2, float p, int constraintSat);
+	void randResetMutate(int constraintSat);
+	void creepMutate(int creepDist, int constraintSat);
 	void printSolution(std::string filename);
 	void printLayout(std::string filename);
 	

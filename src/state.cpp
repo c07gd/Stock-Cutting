@@ -13,6 +13,7 @@
 *	Headers
 **********************************************************/
 #include "state.h"
+#include "cfgParse.h"
 #include <algorithm>
 #include <iostream>
 #include <fstream>
@@ -29,6 +30,7 @@ state::state() {
 	m_width = 0;
 	m_length = 0;
 	m_fitness = -1;
+	m_penalty = 0;
 	m_numShapes = 0;
 	m_layout = NULL;
 	m_shapes = NULL;
@@ -79,6 +81,7 @@ state::state(const state& rhs) {
 	m_numShapes = rhs.m_numShapes;
 	m_shapes = rhs.m_shapes;
 	m_fitness = rhs.m_fitness;
+	m_penalty = rhs.m_penalty;
 
 	// Construct arrays
 	constructArrays();
@@ -114,6 +117,7 @@ state& state::operator=(const state &rhs) {
 	m_numShapes = rhs.m_numShapes;
 	m_shapes = rhs.m_shapes;
 	m_fitness = rhs.m_fitness;
+	m_penalty = rhs.m_penalty;
 
 	// Copy array data over
 	for (int i = 0; i < m_numShapes; i++) {
@@ -151,7 +155,7 @@ void state::constructArrays() {
 	for (int i = 0; i < m_width; i++) {
 		m_layout[i] = new bool[m_length];
 		for (int j = 0; j < m_length; j++) {
-			m_layout[i][j] = false;
+			m_layout[i][j] = 0;
 		}
 	}
 
@@ -236,8 +240,8 @@ void state::placeShape(int i, int x, int y, int rot) {
 	m_rot[i] = rot;
 
 	// Trace moves and mark layout
+	m_penalty = 0;
 	moves = m_shapes[i].getMoves();
-	m_layout[traceX][traceY] = true;
 	for (std::vector<move>::iterator it = moves->begin(); it != moves->end(); ++it) {
 		for (int j = 0; j < (*it).distance; j++) {
 			switch (rotateShape((*it).direction, rot)) {
@@ -254,10 +258,60 @@ void state::placeShape(int i, int x, int y, int rot) {
 				traceY++;
 				break;
 			}
-			m_layout[traceX][traceY] = true;
+
+			// Check for penalty
+			if (traceX < 0 || traceX >= m_width || traceY < 0 || traceY >= m_length)
+				m_penalty++;
+			else {
+				if (m_layout[traceX][traceY])
+					m_penalty++;
+				m_layout[traceX][traceY] = true;
+			}
+
+			// Update fitness
+			if (traceY > (m_length - m_fitness))
+				m_fitness = m_length - traceY;
 		}
 	}
 
+	// Discount any squares where the shape overlapped itself
+	// Also bounds-check the penalty so it is never negative
+	// This could happen if overlap occurs while off the layout
+	m_penalty = std::max(0, m_penalty - m_shapes[i].getOverlap());
+
+	return;
+}
+
+
+/**********************************************************
+*	resolveConstraints(int idx, int type)
+*	Handles inavlid placements. Calls the proper constraint 
+*	resolution procedure based on the type passed.
+*	 @param idx the index of the shape need resolution
+*	 @param type the constraint resolution procedure to run
+**********************************************************/
+void state::resolveConstraints(int idx, int& x, int& y, int& rot, int type) {
+	
+	// Sanity check
+	if(placementIsValid(idx, m_x[idx], m_y[idx], m_rot[idx]))
+		return;
+	
+	// Run constraint resolution procedure based on passed type
+	switch (type) {
+		case CONSTRAINTSAT_REPAIR:
+			repair(idx, m_x[idx], m_y[idx], m_rot[idx]);
+			break;
+		case CONSTRAINTSAT_RANDOM:
+			do {
+				m_x[idx] = rand() % m_width;
+				m_y[idx] = rand() % m_length;
+				m_rot[idx] = rand() % NUM_ROTS;
+			} while (!placementIsValid(idx, m_x[idx], m_y[idx], m_rot[idx]));
+			break;
+		case CONSTRAINTSAT_PENALTY:
+			break;
+	}
+	
 	return;
 }
 
@@ -271,11 +325,15 @@ void state::placeShape(int i, int x, int y, int rot) {
 *	 @param y the given y coordinate
 *	 @param rot the given rotation
 **********************************************************/
-void state::repair(int& idx, int& x, int& y, int& rot) {
-
+void state::repair(int idx, int& x, int& y, int& rot) {
+	
+	// Sanity check
+	if(placementIsValid(idx, x, y, rot))
+		return;
+	
 	// Variables
-	bool	found = false;
-
+	bool found = false;
+	
 	// Spiral outward from starting point looking for a valid placement
 	// Pattern is DRUULLDDDRRRUUUULLLL...
 	for (int i = 0; !found; i++) {
@@ -332,6 +390,9 @@ void state::calcFitness() {
 		}
 	}
 
+	// Subtract out weighted penalty value
+	m_fitness -= (int)round((float)m_penalty * PENALTY_WEIGHT);
+
 	return;
 }
 
@@ -385,8 +446,9 @@ void state::randomize() {
 *	 @param parent1 pointer to first parent state
 *	 @param parent2 pointer to second parent state
 *	 @param n number of crossover points
+*	 @param constraintSat method for resolving constraint violations
 **********************************************************/
-void state::nPointCrossover(state* parent1, state* parent2, int n) {
+void state::nPointCrossover(state* parent1, state* parent2, int n, int constraintSat) {
 
 	// Variables
 	int*	crossoverPts = new int[n];
@@ -407,14 +469,14 @@ void state::nPointCrossover(state* parent1, state* parent2, int n) {
 			std::swap(parent1, parent2);
 			j++;
 		}
-
-		// Check validity of new placement
-		// If invalid, randomize until valid
 		m_x[i] = parent1->m_x[i];
 		m_y[i] = parent1->m_y[i];
 		m_rot[i] = parent1->m_rot[i];
-		if (!placementIsValid(i, m_x[i], m_y[i], m_rot[i]))
-			repair(i, m_x[i], m_y[i], m_rot[i]);
+
+		// Resolve constraints
+		resolveConstraints(i, m_x[i], m_y[i], m_rot[i], constraintSat);
+
+		// Place shape
 		placeShape(i, m_x[i], m_y[i], m_rot[i]);
 	}
 
@@ -432,8 +494,9 @@ void state::nPointCrossover(state* parent1, state* parent2, int n) {
 *	 @param parent1 pointer to first parent state
 *	 @param parent2 pointer to second parent state
 *	 @param p probabilitiy (0.0-1.0) of choosing parent1 vs. parent2
+*	 @param constraintSat method for resolving constraint violations
 **********************************************************/
-void state::uniformCrossover(state* parent1, state* parent2, float p) {
+void state::uniformCrossover(state* parent1, state* parent2, float p, int constraintSat) {
 
 	//Variables
 	float*	pArray;
@@ -450,9 +513,15 @@ void state::uniformCrossover(state* parent1, state* parent2, float p) {
 			chosenParent = parent1;
 		else
 			chosenParent = parent2;
-		if (!placementIsValid(i, chosenParent->m_x[i], chosenParent->m_y[i], chosenParent->m_rot[i]))
-			repair(i, chosenParent->m_x[i], chosenParent->m_y[i], chosenParent->m_rot[i]);
-		placeShape(i, chosenParent->m_x[i], chosenParent->m_y[i], chosenParent->m_rot[i]);
+		m_x[i] = chosenParent->m_x[i];
+		m_y[i] = chosenParent->m_y[i];
+		m_rot[i] = chosenParent->m_rot[i];
+		
+		// Resolve constraints
+		resolveConstraints(i, m_x[i], m_y[i], m_rot[i], constraintSat);
+
+		// Place shape
+		placeShape(i, m_x[i], m_y[i], m_rot[i]);
 	}
 	
 	// Clean up
@@ -466,8 +535,9 @@ void state::uniformCrossover(state* parent1, state* parent2, float p) {
 *	Picks a random gene and assigns it a new random placement.
 *	Also checks	validity of the resulting placment and
 *	attempts a repair.
+*	 @param constraintSat method for resolving constraint violations
 **********************************************************/
-void state::randResetMutate() {
+void state::randResetMutate(int constraintSat) {
 
 	// Variables
 	int idx;
@@ -475,13 +545,15 @@ void state::randResetMutate() {
 	// Pick a random gene
 	idx = rand() % m_numShapes;
 
-	// Assign new random coordinates
-		m_x[idx] = rand() % m_width;
-		m_y[idx] = rand() % m_length;
-		m_rot[idx] = rand() % NUM_ROTS;
-	if(!placementIsValid(idx, m_x[idx], m_y[idx], m_rot[idx]))
-		repair(idx, m_x[idx], m_y[idx], m_rot[idx]);
-
+	// Choose new random coordinates
+	m_x[idx] = rand() % m_width;
+	m_y[idx] = rand() % m_length;
+	m_rot[idx] = rand() % NUM_ROTS;
+	
+	// Resolve constraints
+	resolveConstraints(idx, m_x[idx], m_y[idx], m_rot[idx], constraintSat);
+	
+	// Place shape
 	placeShape(idx, m_x[idx], m_y[idx], m_rot[idx]);
 
 	return;
@@ -494,8 +566,9 @@ void state::randResetMutate() {
 *	a small amount. Also checks validity of the resulting
 *	placment and attempts a repair.
 *	 @param creepDist max distance the chosen allele can creep
+*	 @param constraintSat method for resolving constraint violations
 **********************************************************/
-void state::creepMutate(int creepDist) {
+void state::creepMutate(int creepDist, int constraintSat) {
 
 	// Pick random values
 	int idx = rand() % m_numShapes;
@@ -514,11 +587,11 @@ void state::creepMutate(int creepDist) {
 		m_rot[idx] += abs(creepDist % 4);
 		break;
 	}
+	
+	// Resolve constraints
+	resolveConstraints(idx, m_x[idx], m_y[idx], m_rot[idx], constraintSat);
 
 	// Place shape
-	if (!placementIsValid(idx, m_x[idx], m_y[idx], m_rot[idx]))
-		repair(idx, m_x[idx], m_y[idx], m_rot[idx]);
-
 	placeShape(idx, m_x[idx], m_y[idx], m_rot[idx]);
 
 	return;

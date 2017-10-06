@@ -46,7 +46,8 @@
 #define LABEL_PARENTSELTOURNSIZE	("parentSelTournSize")
 #define LABEL_SURVIVORSEL			("survivorSel")
 #define LABEL_SURVIVORSELTOURNSIZE	("survivorSelTournSize")
-#define LABEL_TERMEVALS				("termEvals")
+#define LABEL_CONSTRAINTSAT			("constraintSat")
+#define LABEL_PENALTYWEIGHT			("penalthWeight")
 #define LABEL_TERMTYPE				("termType")
 #define LABEL_TERMGENSUNCHANGED		("termGensUnchanged")
 
@@ -76,7 +77,8 @@ struct config {
 	int				parentSelTournSize;
 	int				survivorSel;
 	int				survivorSelTournSize;
-	int				termEvals;
+	int				constraintSat;
+	int				penaltyWeight;
 	int				termType;
 	int				termGensUnchanged;
 };
@@ -84,41 +86,47 @@ struct config {
 enum {
 	SEED_STATIC,
 	SEED_TIME	
-} seedType;
+};
 
 enum {
 	SURVIVALSTRAT_PLUS,
 	SURVIVALSTRAT_COMMA
-} survivalStrategy;
+};
 
 enum {
 	RECOMBINATION_NPOINT,
 	RECOMBINATION_UNIFORM
-} recombinationType;
+};
 
 enum {
 	MUTATION_RANDOM,
 	MUTATION_CREEP
-} mutationType;
+};
 
 enum {
 	PARENTSEL_FITNESSPROPOTIONAL,
 	PARENTSEL_KTOURNAMENT,
 	PARENTSEL_RANDOM
-} parentSelection;
+};
 
 enum {
 	SURVIVORSEL_TRUNCATION,
 	SURVIVORSEL_KTOURNAMENT,
 	SURVIVORSEL_RANDOM,
 	SURVIVORSEL_FITNESSPROPORTIONAL
-} survivorSelection;
+};
+
+enum {
+	CONSTRAINTSAT_RANDOM,
+	CONSTRAINTSAT_REPAIR,
+	CONSTRAINTSAT_PENALTY
+};
 
 enum {
 	TERMTYPE_NUMEVALS,
 	TERMTYPE_AVGFITNESS,
 	TERMTYPE_BESTFITNESS
-} termType;
+};
 
 
 /**********************************************************
@@ -159,6 +167,8 @@ inline config getConfig(std::string filename) {
 	cfg.parentSelTournSize	= DEFAULT_PARENTSELTOURNSIZE;
 	cfg.survivorSel			= DEFAULT_SURVIVORSEL;
 	cfg.survivorSelTournSize= DEFAULT_SURVIVORSELTOURNSIZE;
+	cfg.constraintSat		= DEFAULT_CONSTRAINTSAT;
+	cfg.penaltyWeight		= DEFAULT_PENALTYWEIGHT;
 	cfg.termType			= DEFAULT_TERMTYPE;
 	cfg.termGensUnchanged	= DEFAULT_TERMGENSUNCHANGED;
 	
@@ -227,6 +237,10 @@ inline config getConfig(std::string filename) {
 				cfg.survivorSel = atoi(rhs.c_str());
 			else if (lhs == LABEL_SURVIVORSELTOURNSIZE)
 				cfg.survivorSelTournSize = atoi(rhs.c_str());
+			else if (lhs == LABEL_CONSTRAINTSAT)
+				cfg.constraintSat = atoi(rhs.c_str());
+			else if (lhs == LABEL_PENALTYWEIGHT)
+				cfg.penaltyWeight = (float)atof(rhs.c_str());
 			else if (lhs == LABEL_TERMTYPE)
 				cfg.termType = atoi(rhs.c_str());
 			else if (lhs == LABEL_TERMGENSUNCHANGED)
