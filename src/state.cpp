@@ -400,7 +400,7 @@ void state::calcFitness() {
 	}
 
 	// Subtract out weighted penalty value
-	m_fitness -= (int)round((float)m_penalty * m_params.penaltyWeight);
+	m_fitness -= (int)round((float)m_penalty * m_params.pw);
 
 	return;
 }
@@ -462,8 +462,8 @@ void state::randomize() {
 void state::nPointCrossover(state* parent1, state* parent2, int n, int constraintSat) {
 
 	// Use adaptable parameter?
-	if (n == -1)
-		n = m_params.crossoverPoints;
+	if (m_params.enableCP)
+		n = m_params.cp;
 
 	// Variables
 	int*	crossoverPts = new int[n];
@@ -623,36 +623,45 @@ void state::creepMutate(int creepDist, int constraintSat) {
 void state::updateAdaptableParams(state* parent1, state* parent2) {
 #define MUTATION_STEP_SIZE 0.02f
 
-	// Update penalty weight based on number of evals
-	m_params.penaltyWeight *= (1 - ((float)g_evals / (float)g_targetEvals));
-
-	// Choose a parent's mutation rate to inherit
-	if (rand() % 2)
-		m_params.mutationRate = parent1->m_params.mutationRate;
-	else
-		m_params.mutationRate = parent2->m_params.mutationRate;
-
-	// Mutate our mutation rate (whoa... that's meta...)
-	if (GEN_SCALED_PROB(4) <= m_params.mutationRate) {
-		if(rand() % 2)
-			m_params.mutationRate += MUTATION_STEP_SIZE;
-		else
-			m_params.mutationRate -= MUTATION_STEP_SIZE;
+	// Penalty weight
+	if (m_params.enablePW) {
+		//m_params.pw = 
 	}
 
-	// Choose a parent's number of crossover points to inherit
-	if (rand() % 2)
-		m_params.crossoverPoints = parent1->m_params.crossoverPoints;
-	else
-		m_params.crossoverPoints = parent2->m_params.crossoverPoints;
-
-	// Mutate our number of crossover points
-	if (GEN_SCALED_PROB(4) <= m_params.mutationRate) {
+	// Mutation rate
+	if (m_params.enableMR) {
+		// Choose a parent's mutation rate to inherit
 		if (rand() % 2)
-			m_params.crossoverPoints++;
+			m_params.mr = parent1->m_params.mr;
 		else
-			m_params.crossoverPoints--;
-		m_params.crossoverPoints = std::max(0, m_params.crossoverPoints);
+			m_params.mr = parent2->m_params.mr;
+
+		// Mutate our mutation rate (whoa... that's meta...)
+		if (GEN_SCALED_PROB(4) <= m_params.mr) {
+			if (rand() % 2)
+				m_params.mr += MUTATION_STEP_SIZE;
+			else
+				m_params.mr -= MUTATION_STEP_SIZE;
+		}
+	}
+
+	// Crossover points
+	if (m_params.enableCP) {
+
+		// Choose a parent's number of crossover points to inherit
+		if (rand() % 2)
+			m_params.cp = parent1->m_params.cp;
+		else
+			m_params.cp = parent2->m_params.cp;
+
+		// Mutate our number of crossover points
+		if (GEN_SCALED_PROB(4) <= m_params.mr) {
+			if (rand() % 2)
+				m_params.cp++;
+			else
+				m_params.cp--;
+			m_params.cp = std::max(0, m_params.cp);
+		}
 	}
 
 	return;

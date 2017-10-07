@@ -15,6 +15,7 @@
 *	Headers
 **********************************************************/
 #include "shape.h"
+#include "cfgParse.h"
 #include <string>
 
 
@@ -34,9 +35,12 @@
 *	Types, Etc.
 **********************************************************/
 struct adaptablepParams {
-	float	penaltyWeight;
-	int		crossoverPoints;
-	float	mutationRate;
+	bool	enablePW;
+	float	pw;
+	bool	enableCP;
+	int		cp;
+	bool	enableMR;
+	float	mr;
 };
 
 
@@ -93,10 +97,13 @@ public:
 	// Accessors, Mutators
 	inline int getFitness() const { return m_fitness; };
 	inline adaptablepParams getParams() const { return m_params; };
-	inline void setParams(float penaltyWeight, int crosoverPoints, float mutationRate) {
-		m_params.penaltyWeight = penaltyWeight;
-		m_params.crossoverPoints = crosoverPoints;
-		m_params.mutationRate = mutationRate;
+	inline void setParams(config cfg) {
+		m_params.enablePW = (cfg.constraintSat == CONSTRAINTSAT_PENALTY);
+		m_params.pw = cfg.penaltyWeight;
+		m_params.enableCP = cfg.crossoversSA;
+		m_params.cp = cfg.crossovers;
+		m_params.enableMR = cfg.mutationRateSA;
+		m_params.mr = cfg.mutationRate;
 	}
 
 };

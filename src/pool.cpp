@@ -429,7 +429,7 @@ float pool::getAveragePenaltyWeight() {
 
 	// Calculate total fitness
 	for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it)
-		totalPenaltyWeight += (*it)->getParams().penaltyWeight;
+		totalPenaltyWeight += (*it)->getParams().pw;
 
 	// Return average
 	return totalPenaltyWeight / (float)m_states.size();
@@ -443,7 +443,7 @@ float pool::getAverageMutationRate() {
 
 	// Calculate total fitness
 	for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it)
-		totalMutationRate += (*it)->getParams().mutationRate;
+		totalMutationRate += (*it)->getParams().mr;
 
 	// Return average
 	return totalMutationRate / (float)m_states.size();
@@ -457,7 +457,7 @@ float pool::getAverageCrossoverPoints() {
 
 	// Calculate total fitness
 	for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it)
-		totalCrossoverPoints += (*it)->getParams().crossoverPoints;
+		totalCrossoverPoints += (*it)->getParams().cp;
 
 	// Return average
 	return (float)totalCrossoverPoints / (float)m_states.size();

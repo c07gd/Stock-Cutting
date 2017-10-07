@@ -85,7 +85,7 @@ int main(int argc, char *argv[]) {
 	// Construct initial state
 	state initial(shapes, width, numShapes);
 	state overallBest(initial);
-	initial.setParams(cfg.penaltyWeight, cfg.crossovers, cfg.mutationRate);
+	initial.setParams(cfg);
 
 	// Open log file
 	log.open(cfg.logFile);
@@ -129,7 +129,7 @@ int main(int argc, char *argv[]) {
 				temp->updateAdaptableParams(parent1, parent2);
 				switch (cfg.recombinationType) {
 				case RECOMBINATION_NPOINT:
-					temp->nPointCrossover(parent1, parent2, -1, cfg.constraintSat);
+					temp->nPointCrossover(parent1, parent2, cfg.crossovers, cfg.constraintSat);
 					break;
 				case RECOMBINATION_UNIFORM:
 					temp->uniformCrossover(parent1, parent2, cfg.uniformProb, cfg.constraintSat);
@@ -189,8 +189,24 @@ int main(int argc, char *argv[]) {
 			}
 
 			localBest = population.getFittestState();
-			log << g_evals << "\t" << IO_FORMAT_FLOAT(3) << population.getAverageCrossoverPoints() << "\t" << IO_FORMAT_FLOAT(3) << population.getAverageMutationRate() << "\t" << IO_FORMAT_FLOAT(3) << population.getAverageFitness() << "\t" << localBest->getFitness() << std::endl;
-			std::cout << g_evals << "\t" << IO_FORMAT_FLOAT(3) << population.getAverageCrossoverPoints() << "\t" << IO_FORMAT_FLOAT(3) << population.getAverageMutationRate() << "\t" << IO_FORMAT_FLOAT(3) << population.getAverageFitness() << "\t" << localBest->getFitness() << std::endl;
+			
+			// Log data
+			log << g_evals << "\t";
+			std::cout << g_evals << "\t";
+			if (cfg.crossoversSA) {
+				log << IO_FORMAT_FLOAT(3) << population.getAverageCrossoverPoints() << "\t";
+				std::cout << IO_FORMAT_FLOAT(3) << population.getAverageCrossoverPoints() << "\t";
+			}
+			if (cfg.mutationRateSA) {
+				log << IO_FORMAT_FLOAT(3) << population.getAverageMutationRate() << "\t";
+				std::cout << IO_FORMAT_FLOAT(3) << population.getAverageMutationRate() << "\t";
+			}
+			if (cfg.constraintSat == CONSTRAINTSAT_PENALTY) {
+				log << IO_FORMAT_FLOAT(3) << population.getAveragePenaltyWeight() << "\t";
+				std::cout << IO_FORMAT_FLOAT(3) << population.getAveragePenaltyWeight() << "\t";
+			}
+			log << IO_FORMAT_FLOAT(3) << population.getAverageFitness() << "\t" << localBest->getFitness() << std::endl;
+			std::cout << IO_FORMAT_FLOAT(3) << population.getAverageFitness() << "\t" << localBest->getFitness() << std::endl;
 
 			// Keep track of overall best
 			if (localBest->getFitness() > overallBestFitness) {

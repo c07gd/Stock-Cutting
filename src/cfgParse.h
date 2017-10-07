@@ -38,9 +38,11 @@
 #define LABEL_SURVIVALSTRATEGY		("survivalStrategy")
 #define LABEL_RECOMBINATIONTYPE		("recombinationType")
 #define LABEL_CROSSOVERS			("crossovers")
+#define LABEL_CROSSOVERSSA			("crossoversSA")
 #define LABEL_UNIFORMPROB			("uniformProb")
 #define LABEL_MUTATIONTYPE			("mutationType")
 #define LABEL_MUTATIONRATE			("mutationRate")
+#define LABEL_MUTATIONRATESA		("mutationRateSA")
 #define LABEL_CREEPDIST				("creepDist")
 #define LABEL_PARENTSEL				("parentSel")
 #define LABEL_PARENTSELTOURNSIZE	("parentSelTournSize")
@@ -69,9 +71,11 @@ struct config {
 	int				lambda;
 	int				recombinationType;
 	int				crossovers;
+	bool			crossoversSA;
 	float			uniformProb;
 	int				mutationType;
 	float			mutationRate;
+	bool			mutationRateSA;
 	int				creepDist;
 	int				parentSel;
 	int				parentSelTournSize;
@@ -162,7 +166,9 @@ inline config getConfig(std::string filename) {
 	cfg.uniformProb			= DEFAULT_UNIFORMPROB;
 	cfg.mutationType		= DEFAULT_MUTATIONTYPE;
 	cfg.mutationRate		= DEFAULT_MUTATIONRATE;	
+	cfg.mutationRateSA		= DEFAULT_MUTATIONRATESA;
 	cfg.crossovers			= DEFAULT_CREEPDIST;
+	cfg.crossoversSA		= DEFAULT_CROSSOVERSSA;
 	cfg.parentSel			= DEFAULT_PARENTSEL;
 	cfg.parentSelTournSize	= DEFAULT_PARENTSELTOURNSIZE;
 	cfg.survivorSel			= DEFAULT_SURVIVORSEL;
@@ -221,12 +227,16 @@ inline config getConfig(std::string filename) {
 				cfg.recombinationType = atoi(rhs.c_str());
 			else if (lhs == LABEL_CROSSOVERS)
 				cfg.crossovers = atoi(rhs.c_str());
+			else if (lhs == LABEL_CROSSOVERSSA)
+				cfg.crossoversSA = (bool)atoi(rhs.c_str());
 			else if (lhs == LABEL_UNIFORMPROB)
 				cfg.uniformProb = (float)atof(rhs.c_str());
 			else if (lhs == LABEL_MUTATIONTYPE)
 				cfg.mutationType = atoi(rhs.c_str());
 			else if (lhs == LABEL_MUTATIONRATE)
 				cfg.mutationRate = (float)atof(rhs.c_str());
+			else if (lhs == LABEL_MUTATIONRATESA)
+				cfg.mutationRateSA = (bool)atoi(rhs.c_str());
 			else if (lhs == LABEL_CREEPDIST)
 				cfg.creepDist = atoi(rhs.c_str());
 			else if (lhs == LABEL_PARENTSEL)
