@@ -1,11 +1,13 @@
 clear;
 close all;
 
+set(0,'DefaultFigureVisible','off');
+
 % Global variables
 files = [];
-files (1,:) = '../logs/log_instance1.txt';
-files (2,:) = '../logs/log_instance2.txt';
-files (3,:) = '../logs/log_instance3.txt';
+files(1,:) = '../logs/crossover_control_set1.txt';
+files(2,:) = '../logs/crossover_control_set2.txt';
+files(3,:) = '../logs/crossover_control_set3.txt';  
 
 for i=1:size(files,1)
     
@@ -55,6 +57,13 @@ for i=1:size(files,1)
     boxplot([avg_bestFitness.',avg_avgFitness.'],'Labels',{'Best Fitness','Average Fitness'})
     title({'Distribution of Fitness Values Across Evaluations';['Logfile: ' char(files(i,:))]},'Interpreter','none');
     ylabel('Fitness');
-    saveas(fig, ['images\graph_' num2str(i) '.png']);
+    filename = [];
+    for j=9:size(files,2)
+        if(char(files(i,j)) == '.')
+            break
+        end
+        filename(j-8) = files(i,j);
+    end
+    saveas(fig, ['images\assn1c_boxplot_' filename '.png']);
     
 end

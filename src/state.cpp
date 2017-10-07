@@ -368,6 +368,15 @@ void state::repair(int idx, int& x, int& y, int& rot) {
 				if (placementIsValid(idx, x, y, rot))
 					found = true;
 			}
+
+			// If nothing found, just accept the invalid state and move on
+			// This should be extremely rare, I saw it get deadlocked here
+			// about one in 30*10000 fitness evals
+			// I can't be a very fit state if it can't find find a placement
+			// (i.e. if it has a high fitness, there's plenty of room to the 
+			// right to place stuff), so it won't survive long in the population
+			if ((i*j*4) > (10 * RANDOM_MAX_TRIES))
+				found = true;
 		}
 	}
 
