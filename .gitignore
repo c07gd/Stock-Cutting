@@ -15,3 +15,6 @@ doc/*.bbl
 doc/*.blg
 doc/*.log
 doc/*.out
+
+# MATLAB files
+*.asv

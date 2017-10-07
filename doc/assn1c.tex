@@ -1,0 +1,50 @@
+\documentclass[11pt]{article}
+
+\usepackage[letterpaper,bindingoffset=0.2in,
+            left=1in,right=1in,top=1in,bottom=1in,
+            footskip=.25in]{geometry}
+
+\usepackage{hyperref}
+	\hypersetup{
+			colorlinks=true,
+			linkcolor=black,
+			filecolor=magenta,      
+			urlcolor=blue,
+	}
+	
+\usepackage{graphicx}
+	\graphicspath{ {images/} }
+	
+\begin{document}
+
+
+\title{COMP SCI 5401 FS2017 Assignment 1c}
+\author{Stuart Miller\\\href{mailto:sm67c@mst.edu}{sm67c@mst.edu}}
+\maketitle
+
+
+\section{Overview}
+
+Assignment 1c presented a great many parameters to test. As more techniques are introduced, it becomes more and more difficult to distinguish a genuinely "`good"' parameter value as one can never be entirely sure if it was solely one value that resulted in a change in fitness landscape, a combination of multiple values, or perhaps the order of calls to the random number generator came out more favorably. Therefore, in this assignment, it has been attempted to isolate parameters being tested and pick favorable and reasonably values to the parameters not immediately relevant.
+
+As a precursor, the entirety of this assignment will make use of n-point crossovers and random reset mutations. Although other operators are implemented in the codebase, these two have been set to be self-adaptive in Bonus 2. For consistency with the runs in the Bonus section, even when self-adaptability is turned off, the analysis will still use only these two operators. For initial values and non adaptive states, the operators will be fixed at three crossover points and a 12\% mutation chance. These are values that were determined to be beneficial in Assignment 1b. Furthermore, survival strategy will always be set to comma \((\mu,\lambda)\) and selection will be k-tournaments with moderate selective pressure.
+
+
+\section{Penalty Coefficient}
+
+To test the penalty coefficient, two control sets were run where invalid placements were solved by random replacements and then a repair. The penalty function was then implemented, with static weights of 1, 2, and 5, receptively. As the graph in figure \ref{fig:penalty_weight} shows, the penalty weight functions shows significantly lower fitness values than other methods. This is to be expected for intermediate solutions, but the best solution shouldn't have any penalty. Additionally, the fact the the different weights returned the same max fitness shows that this may not be an optimal strategy for this problem. It is worth noting that numerous evolutionary strategy were tried and this combination yielded the best and most consistent results.
+
+\begin{figure}
+\caption{Best solution per run, with varying penalties}
+\centering
+\includegraphics[width=5.5in]{graph_1c_penalty_weight.png}\\
+\end{figure}
+
+
+\section{Bonus 1}
+
+
+\section{Bonus 2}
+
+
+\end{document}

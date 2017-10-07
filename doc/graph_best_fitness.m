@@ -2,10 +2,13 @@ clear;
 close all;
 
 % Global variables
-files (1,:) = '../logs/log_repair.txt  ';
-files (2,:) = '../logs/log_norepair.txt';
-outputname = './images/graph_bonus2.png';
-colors = [[0.3020 0.7451 0.9333];[0.9294 0.6941 0.1255]];
+files (1,:) = '../logs/random.txt  ';
+files (2,:) = '../logs/repair.txt  ';
+files (3,:) = '../logs/penalty1.txt';
+files (4,:) = '../logs/penalty2.txt';
+files (5,:) = '../logs/penalty5.txt';
+outputname = './images/graph_1c_penalty_weight.png';
+colors = [[0.3020 0.7451 0.9333];[0.9294 0.6941 0.1255];[0 0.6000 0.2000];[0.4941 0.1843 0.5569];[0.8510 0.3255 0.0980]];
 
 fig = figure;
 hold on;
@@ -37,11 +40,20 @@ for i=1:size(files,1)
             continue
         end
         if(~isempty(line))
-            lineData = textscan(line,'%f %f %f');
-            lineData = cell2mat(lineData);
-            if(lineData(3) > best)
-                best = lineData(3);
-                idx = lineData(1);
+            if(i==1 || i==2)
+                lineData = textscan(line,'%f %f %f');
+                lineData = cell2mat(lineData);
+                if(lineData(3) > best)
+                    best = lineData(3);
+                    idx = lineData(1);
+                end
+            else
+                lineData = textscan(line,'%f %f %f %f');
+                lineData = cell2mat(lineData);
+                if(lineData(4) > best)
+                    best = lineData(4);
+                    idx = lineData(1);
+                end
             end
             eval = eval + 1;
         end
@@ -58,7 +70,7 @@ end
 
 % Format graph
 hold off;
-title('Best Solution Found per Run');
+%title('Best Solution Found per Run');
 xlabel('Run');
 ylabel('Fitness');
 l = legend('show');
