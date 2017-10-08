@@ -31,12 +31,14 @@ Assignment 1c presented a great many parameters to test. As more techniques are 
 
 As a precursor, the entirety of this assignment will make use of n-point crossovers and random reset mutations. Although other operators are implemented in the codebase, these two have been set to be self-adaptive in Bonus 2. For consistency with the runs in the Bonus section, even when self-adaptability is turned off, the analysis will still use only these two operators. For initial values and non adaptive states, the operators will be fixed at three crossover points and a 12\% mutation chance. These are values that were determined to be beneficial in Assignment 1b. Furthermore, survival strategy will always be set to comma \((\mu,\lambda)\) and selection will be k-tournaments with moderate selective pressure.
 
-Furthermore, box plots were generated for each test run graphed below. As this totals to a rather large number of boxplots, they have not been pictured in this report. Instead, they can be viewed in ./doc/images/assn1c\_boxplot\_*.png.
-
 
 \section{Penalty Coefficient}\label{sect:penalty}
 
 To test the penalty coefficient, two control sets were run where invalid placements were solved by random replacements and then a repair. The penalty function was then implemented, with static weights of 1.0, 2.0, and 5.0, respectively.
+
+As the graph in Figures \ref{fig:penaltyset1}, \ref{fig:penaltyset2}, and \ref{fig:penaltyset3} all show, the penalty weight functions shows significantly lower fitness values than other methods. This is to be expected for intermediate solutions, but the best solution shouldn't have any penalty. Additionally, the fact that the different weights returned the same max fitness shows that this may not be an optimal strategy for this problem. It is worth noting that numerous evolutionary strategy were tried and this combination yielded the best and most consistent results.
+
+In all three data sets, each penalty weight averaged to be more or less the same final value. This similarity between data sets is likely due to the fact that in all instances, invalid solutions are VERY easy to come by (and can consequently be resolved small alterations from the repair function). Regardless of the complexity of the shapes, penalizable values are just as likely.
 
 \begin{figure}[h]
 \begin{minipage}{.5\textwidth}
@@ -57,8 +59,6 @@ To test the penalty coefficient, two control sets were run where invalid placeme
   \label{fig:penaltyset3}
 \end{figure}
 
-As the graph in Figures \ref{fig:penaltyset1}, \ref{fig:penaltyset2}, and \ref{fig:penaltyset3} all show, the penalty weight functions shows significantly lower fitness values than other methods. This is to be expected for intermediate solutions, but the best solution shouldn't have any penalty. Additionally, the fact the the different weights returned the same max fitness shows that this may not be an optimal strategy for this problem. It is worth noting that numerous evolutionary strategy were tried and this combination yielded the best and most consistent results.
-
 
 \newpage
 \section{Self-Adaptive Parameter}\label{sect:selfadaptive}
@@ -66,6 +66,10 @@ As the graph in Figures \ref{fig:penaltyset1}, \ref{fig:penaltyset2}, and \ref{f
 To test self-adaptability, the number of crossover points \textit{n} was set to be adaptable. For offspring created, there was an equivalent random chance of inheriting each parent's \textit{n}. Additionally, \textit{n} had a small chance to mutate (equivalent to the genetic mutation rate) by $\pm$1. For analysis, the mutation rate was averaged across all member of the population for each generation.
 
 As it was determined in Section \ref{sect:penalty}, the penalty function yields no great benefit for this problem, so the repair function method was used here instead. The other parameters were kept the same as in section \ref{sect:penalty}.
+
+As figures \ref{fig:crossoverset1}, \ref{fig:crossoverset2}, and \ref{fig:crossoverset3} all show, allowing crossovers to self-adapt has a significant improvement on the average best fitness. It is also interesting to worth noting that while each instance started at three crossover points, some runs took this number higher, and some drove it lower. Examining the log (located in the ./logs/ directory) shows no consistent trend. It can only be assumed that each run's random initialization took it to a different area of the fitness landscape where more or less crossovers were desirable.
+
+There is no distinct difference between the three data sets; self-adaptivity always proved beneficial. In fact, the difference between the two was nearly the same each time. This is likely due to the fact that each instance of this problem has such a variable fitness landscape, that allowing the recombination to vary itself more (by increasing the number of crossovers) allowed each run to exploit its particular fitness landscape.
 
 \begin{figure}[h]
 \begin{minipage}{.5\textwidth}
@@ -86,7 +90,43 @@ As it was determined in Section \ref{sect:penalty}, the penalty function yields 
   \label{fig:crossoverset3}
 \end{figure}
 
-As figures \ref{fig:crossoverset1}, \ref{fig:crossoverset2}, and \ref{fig:crossoverset3} all show, allowing crossovers to self-adapt has a significant improvement on the average best fitness. It is also interesting to worth noting that while each instance started at three crossover points, some runs took this number higher, and some drove it lower. Examining the log (located in the ./logs/ directory) shows no consistent trend. It can only be assumed that each run's random initialization took it to a different area of the fitness landscape where more or less crossovers were desirable.
+
+\section{Box Plots and Statistical Analysis}\label{sect:boxesandstats}
+
+Box plots were generated for each test run graphed above. However, since this totals to a rather large number of boxplots, they have not all been pictured in this report. A full listing of box plots can be viewed in ./doc/images/assn1c\_boxplot\_*.png.
+
+In Figures \ref{fig:boxplot1} and \ref{fig:boxplot2} box plots are shown for the first data set. It can be observed that the resulting populations are as to be expected, with an upper bound having the best fitness and the remaining population distributed below. It is worth noting that with the self-adaptive crossovers, the distribution tends to skew more towards the maximum. This is likely due to the fact that, as shown in Section \ref{sect:selfadaptive}, self-adaptivity pushes the population closer to a better fitness solution.
+
+A statistical analysis was also run (Figures \ref{fig:statanal1} and \ref{fig:statanal2}) which further illustrates this finding.
+
+\begin{figure}[h]
+\begin{minipage}{.5\textwidth}
+  \includegraphics[width=3.25in]{assn1c_boxplot_crossover_adapt_set1.png}
+  \captionof{figure}{Adaptive Crossovers, 50Shapes.txt}
+  \label{fig:boxplot1}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+  \includegraphics[width=3.25in]{assn1c_boxplot_penalty_weight1_set1.png}
+  \captionof{figure}{Penalty Weight 1.0, 50Shapes.txt}
+  \label{fig:boxplot2}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\begin{minipage}{.5\textwidth}
+\centering
+  \includegraphics[width=2.5in]{assn1c_stat_anal_crossovers_set1.png}
+  \captionof{figure}{Adaptive Crossovers, 50Shapes.txt}
+  \label{fig:statanal1}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+\centering
+  \includegraphics[width=2.4in]{assn1c_stat_anal_penalty_weight_1_set1.png}
+  \captionof{figure}{Penalty Weight 1.0, 50Shapes.txt}
+  \label{fig:statanal2}
+\end{minipage}
+\end{figure}
 
 
 \section{Bonus 1}
