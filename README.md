@@ -13,20 +13,19 @@ This program makes use of C++11 in order to access the high_resolution_clock in 
 Use the included ```run.sh``` to compile and run the program. You will need to supply the configuration file and shape pattern file as arguments. Shape files are taken directly from Dr. T's website [here](http://web.mst.edu/~tauritzd/courses/ec/cs5401fs2017/).
 
 ```bash
-./run.sh instance1.cfg patterns/50Shapes.cfg
+./run.sh cfg/crossover_adapt.cfg patterns/50Shapes.cfg
 ```
 
 ### Bonus Information
 ###### Bonus 1
-The repair function can be found on [line 274](https://github.com/stewythe1st/Stock-Cutting/blob/master/src/state.cpp#L274) of [src/state.cpp](https://github.com/stewythe1st/Stock-Cutting/blob/master/src/state.cpp).
+
+* All self-adaptive parameters are controlled in ```state::updateAdaptableParams()```, in [state.cpp](https://github.com/stewythe1st/Stock-Cutting/blob/master/src/state.cpp), [line 632](https://github.com/stewythe1st/Stock-Cutting/blob/master/src/state.cpp#L632)
+* Documentation, graphs, and and explanation of findings for Bonus 1 can be found in assn1c.pdf in this repo's root directory.
 
 ###### Bonus 2
-The following operators can be found in [src/state.cpp](https://github.com/stewythe1st/Stock-Cutting/blob/master/src/state.cpp) on the lines listed below
-* N-Point Crossover - [line 389](https://github.com/stewythe1st/Stock-Cutting/blob/master/src/state.cpp#L389)
-* Uniform Crossover - [line 436](https://github.com/stewythe1st/Stock-Cutting/blob/master/src/state.cpp#L436)
-* Random Reset Mutation - [line 470](https://github.com/stewythe1st/Stock-Cutting/blob/master/src/state.cpp#L470)
-* Creep Mutation - [line 498](https://github.com/stewythe1st/Stock-Cutting/blob/master/src/state.cpp#L498)
 
+* All self-adaptive parameters are controlled in ```state::updateAdaptableParams()```, in [state.cpp](https://github.com/stewythe1st/Stock-Cutting/blob/master/src/state.cpp), [line 632](https://github.com/stewythe1st/Stock-Cutting/blob/master/src/state.cpp#L632)
+* Documentation, graphs, and and explanation of findings for Bonus 2 can be found in assn1c.pdf in this repo's root directory.
 
 ### Input
 
