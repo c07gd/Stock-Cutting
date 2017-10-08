@@ -36,6 +36,7 @@
 **********************************************************/
 struct adaptablepParams {
 	bool	enablePW;
+	int		typePW;
 	float	pw;
 	bool	enableCP;
 	int		cp;
@@ -99,6 +100,7 @@ public:
 	inline adaptablepParams getParams() const { return m_params; };
 	inline void setParams(config cfg) {
 		m_params.enablePW = (cfg.constraintSat == CONSTRAINTSAT_PENALTY);
+		m_params.typePW = cfg.penaltyWeightSA;
 		m_params.pw = cfg.penaltyWeight;
 		m_params.enableCP = cfg.crossoversSA;
 		m_params.cp = cfg.crossovers;

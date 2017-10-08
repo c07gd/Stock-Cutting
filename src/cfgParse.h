@@ -50,6 +50,7 @@
 #define LABEL_SURVIVORSELTOURNSIZE	("survivorSelTournSize")
 #define LABEL_CONSTRAINTSAT			("constraintSat")
 #define LABEL_PENALTYWEIGHT			("penaltyWeight")
+#define LABEL_PENALTYWEIGHTSA		("penaltyWeightSA")
 #define LABEL_TERMTYPE				("termType")
 #define LABEL_TERMGENSUNCHANGED		("termGensUnchanged")
 
@@ -83,6 +84,7 @@ struct config {
 	int				survivorSelTournSize;
 	int				constraintSat;
 	float			penaltyWeight;
+	int				penaltyWeightSA;
 	int				termType;
 	int				termGensUnchanged;
 };
@@ -124,6 +126,12 @@ enum {
 	CONSTRAINTSAT_RANDOM,
 	CONSTRAINTSAT_REPAIR,
 	CONSTRAINTSAT_PENALTY
+};
+
+enum {
+	PENALTYWEIGHT_FIXED,
+	PENALTYWEIGHT_TIME,
+	PENALTYWEIGHT_SA
 };
 
 enum {
@@ -175,6 +183,7 @@ inline config getConfig(std::string filename) {
 	cfg.survivorSelTournSize= DEFAULT_SURVIVORSELTOURNSIZE;
 	cfg.constraintSat		= DEFAULT_CONSTRAINTSAT;
 	cfg.penaltyWeight		= DEFAULT_PENALTYWEIGHT;
+	cfg.penaltyWeightSA		= DEFAULT_PENALTYWEIGHTSA;
 	cfg.termType			= DEFAULT_TERMTYPE;
 	cfg.termGensUnchanged	= DEFAULT_TERMGENSUNCHANGED;
 	
@@ -251,6 +260,8 @@ inline config getConfig(std::string filename) {
 				cfg.constraintSat = atoi(rhs.c_str());
 			else if (lhs == LABEL_PENALTYWEIGHT)
 				cfg.penaltyWeight = (float)atof(rhs.c_str());
+			else if (lhs == LABEL_PENALTYWEIGHTSA)
+				cfg.penaltyWeightSA = atoi(rhs.c_str());
 			else if (lhs == LABEL_TERMTYPE)
 				cfg.termType = atoi(rhs.c_str());
 			else if (lhs == LABEL_TERMGENSUNCHANGED)

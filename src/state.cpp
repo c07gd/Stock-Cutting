@@ -631,10 +631,30 @@ void state::creepMutate(int creepDist, int constraintSat) {
 **********************************************************/
 void state::updateAdaptableParams(state* parent1, state* parent2) {
 #define MUTATION_STEP_SIZE 0.02f
+#define MAX_PENALTY 10.0f
+#define PENALTY_STEP_SIZE 0.2f
 
 	// Penalty weight
 	if (m_params.enablePW) {
-		//m_params.pw = 
+		switch (m_params.typePW) {
+		case PENALTYWEIGHT_TIME:
+			m_params.pw = MAX_PENALTY * (float)g_evals / (float)g_targetEvals;
+			break;
+		case PENALTYWEIGHT_SA:
+			if (rand() % 2)
+				m_params.pw = parent1->m_params.pw;
+			else
+				m_params.pw = parent2->m_params.pw;
+			if (GEN_SCALED_PROB(4) <= m_params.mr) {
+				if (rand() % 2)
+					m_params.pw += PENALTY_STEP_SIZE;
+				else
+					m_params.pw -= PENALTY_STEP_SIZE;
+			}
+			break;
+		case PENALTYWEIGHT_FIXED:
+			break;
+		}
 	}
 
 	// Mutation rate
