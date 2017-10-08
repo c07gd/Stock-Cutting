@@ -7,7 +7,7 @@ set(0,'DefaultFigureVisible','off');
 files = [];
 files(1,:) = '../logs/crossover_control_set1.txt';
 files(2,:) = '../logs/crossover_control_set2.txt';
-files(3,:) = '../logs/crossover_control_set3.txt';  
+files(3,:) = '../logs/crossover_control_set3.txt';
 
 for i=1:size(files,1)
     

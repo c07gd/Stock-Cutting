@@ -60,10 +60,9 @@ In all three data sets, each penalty weight averaged to be more or less the same
 \end{figure}
 
 
-\newpage
 \section{Self-Adaptive Parameter}\label{sect:selfadaptive}
 
-To test self-adaptability, the number of crossover points \textit{n} was set to be adaptable. For offspring created, there was an equivalent random chance of inheriting each parent's \textit{n}. Additionally, \textit{n} had a small chance to mutate (equivalent to the genetic mutation rate) by $\pm$1. For analysis, the mutation rate was averaged across all member of the population for each generation.
+To test self-adaptability, the number of crossover points \textit{n} was set to be adaptable. For offspring created, there was an equivalent random chance of inheriting each parent's \textit{n}. Additionally, \textit{n} had a small chance to mutate (equivalent to the genetic mutation rate) by $\pm$1. For analysis, \textit{n} was averaged across all member of the population for each generation and then logged.
 
 As it was determined in Section \ref{sect:penalty}, the penalty function yields no great benefit for this problem, so the repair function method was used here instead. The other parameters were kept the same as in section \ref{sect:penalty}.
 
@@ -129,10 +128,36 @@ A statistical analysis was also run (Figures \ref{fig:statanal1} and \ref{fig:st
 \end{figure}
 
 
-\section{Bonus 1}
+%\section{Bonus 1}
 
 
 \section{Bonus 2}
+To further test self-adaptability, the mutation rate was set to be adaptable. For offspring created, there was an equivalent random chance of inheriting each parent's mutation rate. Additionally, \textit{n} had a small chance to mutate (equivalent to the genetic mutation rate) by $\pm$1 2\%. For analysis, the mutation rate was averaged across all member of the population for each generation and then logged. The test parameters were kept exactly the same as in Section \ref{sect:selfadaptive}.
 
+These graphs are a little more difficult to interpret, as there are now many factors influencing the results. As shown in Figures \ref{fig:bonus2_1}, \ref{fig:bonus2_2}, and \ref{fig:bonus2_3} all the averages are fairly clustered together. It is also worth noting that some of the results here actually contradict the results obtained in Section \ref{sect:selfadaptive}, that is, the control scored better than the adaptive crossovers alone. This seems to be due to randomness, as both averages are valued fairly close to each other. This trend is also not consistent across all three data sets.
+
+Interestingly enough, there is a clear improvement for the combined adaptive parameter for the 100Shapes data set, and a slight improvement for the 100ShapesComplex data set. It seems that the allowing both parameters to adapt has allowed the algorithm to better exploit the more varied fitness landscape provided by the more complex data sets.
+
+Similar to the finding in Section \ref{sect:selfadaptive}, there was not clear trend in the direction that the adaptive parameters took. For both crossovers and mutation rate, some runs increased the values and some decreased. Again, this can be seen in detail by examining the logs located in the ./logs/ directory) shows no consistent trend. Once again, it can be assumed that each run's random initialization took it to a different area of the fitness landscape where more or less of each parameter was more desirable.
+
+\begin{figure}[h]
+\begin{minipage}{.5\textwidth}
+  \includegraphics[width=3.25in]{assn1c_bonus2_set1.png}
+  \captionof{figure}{Adaptive, 50Shapes.txt}
+  \label{fig:bonus2_1}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+\centering
+  \includegraphics[width=3.25in]{assn1c_bonus2_set2.png}
+  \captionof{figure}{Adaptive, 100Shapes.txt}
+  \label{fig:bonus2_2}
+\end{minipage}
+\end{figure}
+\begin{figure}[h]
+	\centering
+  \includegraphics[width=3.25in]{assn1c_bonus2_set3.png}
+  \captionof{figure}{Adaptive, 100ShapesComplex.txt}
+  \label{fig:bonus2_3}
+\end{figure}
 
 \end{document}

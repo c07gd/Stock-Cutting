@@ -2,12 +2,11 @@ clear;
 close all;
 
 % Global variables
-files (1,:) = '../logs/penalty_random_set3.txt ';
-files (2,:) = '../logs/penalty_repair_set3.txt ';
-files (3,:) = '../logs/penalty_weight1_set3.txt';
-files (4,:) = '../logs/penalty_weight2_set3.txt';
-files (5,:) = '../logs/penalty_weight5_set3.txt';
-outputname = './images/assn1c_penalty_set3.png';
+files(1,:) = '../logs/bonus2_control_set3.txt  ';
+files(2,:) = '../logs/bonus2_crossover_set3.txt';
+files(3,:) = '../logs/bonus2_mutation_set3.txt ';  
+files(4,:) = '../logs/bonus2_both_set3.txt     ';  
+outputname = './images/assn1c_bonus2_set3.png';
 colors = [[0.3020 0.7451 0.9333];[0.9294 0.6941 0.1255];[0 0.6000 0.2000];[0.4941 0.1843 0.5569];[0.8510 0.3255 0.0980]];
 
 fig = figure;
@@ -40,11 +39,18 @@ for i=1:size(files,1)
             continue
         end
         if(~isempty(line))
-            if(i==1 || i==2)
+            if(i==1)
                 lineData = textscan(line,'%f %f %f');
                 lineData = cell2mat(lineData);
                 if(lineData(3) > best)
                     best = lineData(3);
+                    idx = lineData(1);
+                end
+            elseif(i==4)
+                lineData = textscan(line,'%f %f %f %f %f');
+                lineData = cell2mat(lineData);
+                if(lineData(4) > best)
+                    best = lineData(5);
                     idx = lineData(1);
                 end
             else
