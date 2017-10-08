@@ -13,7 +13,7 @@ This program makes use of C++11 in order to access the high_resolution_clock in 
 Use the included ```run.sh``` to compile and run the program. You will need to supply the configuration file and shape pattern file as arguments. Shape files are taken directly from Dr. T's website [here](http://web.mst.edu/~tauritzd/courses/ec/cs5401fs2017/).
 
 ```bash
-./run.sh cfg/crossover_adapt.cfg patterns/50Shapes.cfg
+./run.sh cfg/crossover_adapt.cfg patterns/50Shapes.txt
 ```
 
 ### Bonus Information
