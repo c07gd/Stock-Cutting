@@ -2,11 +2,10 @@ clear;
 close all;
 
 % Global variables
-files(1,:) = '../logs/bonus2_control_set3.txt  ';
-files(2,:) = '../logs/bonus2_crossover_set3.txt';
-files(3,:) = '../logs/bonus2_mutation_set3.txt ';  
-files(4,:) = '../logs/bonus2_both_set3.txt     ';  
-outputname = './images/assn1c_bonus2_set3.png';
+files(1,:) = '../logs/bonus1_fixed_set3.txt   ';
+files(2,:) = '../logs/bonus1_time_set3.txt    ';
+files(3,:) = '../logs/bonus1_adaptive_set3.txt';  
+outputname = './images/assn1c_bonus1_set3.png';
 colors = [[0.3020 0.7451 0.9333];[0.9294 0.6941 0.1255];[0 0.6000 0.2000];[0.4941 0.1843 0.5569];[0.8510 0.3255 0.0980]];
 
 fig = figure;
@@ -39,27 +38,11 @@ for i=1:size(files,1)
             continue
         end
         if(~isempty(line))
-            if(i==1)
-                lineData = textscan(line,'%f %f %f');
-                lineData = cell2mat(lineData);
-                if(lineData(3) > best)
-                    best = lineData(3);
-                    idx = lineData(1);
-                end
-            elseif(i==4)
-                lineData = textscan(line,'%f %f %f %f %f');
-                lineData = cell2mat(lineData);
-                if(lineData(4) > best)
-                    best = lineData(5);
-                    idx = lineData(1);
-                end
-            else
-                lineData = textscan(line,'%f %f %f %f');
-                lineData = cell2mat(lineData);
-                if(lineData(4) > best)
-                    best = lineData(4);
-                    idx = lineData(1);
-                end
+            lineData = textscan(line,'%f %f %f %f');
+            lineData = cell2mat(lineData);
+            if(lineData(4) > best)
+                best = lineData(4);
+                idx = lineData(1);
             end
             eval = eval + 1;
         end

@@ -128,10 +128,34 @@ A statistical analysis was also run (Figures \ref{fig:statanal1} and \ref{fig:st
 \end{figure}
 
 
-%\section{Bonus 1}
+\section{Bonus 1}\label{sect:bonus1}
 
+The self-adaptivity aspect was further tested. Three methods were implemented: fixed penalty weight, time-scaling penalty weight, and self-adaptive penalty weight. For this test, the fixed penalty weight was set at 2.0 and the time-scaling scaled to a maximum of 10.0.
 
-\section{Bonus 2}
+The results show that there really was no great improvement on one method verses the other. Both the fixed and self-adaptive penalty methods remained at mostly the same average best value. It is interesting to note the the time-scaling approach underperformed on the 50Shapes data set and performed quite well on the 100ShapesComplex data set. In the more complex data set, allowing the algorithm to be more exploratory in the early evaluations seems to prove beneficial.
+
+\begin{figure}[h]
+\begin{minipage}{.5\textwidth}
+  \includegraphics[width=3.25in]{assn1c_bonus1_set1.png}
+  \captionof{figure}{Penalty Methods, 50Shapes.txt}
+  \label{fig:bonus2_1}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+\centering
+  \includegraphics[width=3.25in]{assn1c_bonus1_set2.png}
+  \captionof{figure}{Penalty Methods, 100Shapes.txt}
+  \label{fig:bonus2_2}
+\end{minipage}
+\end{figure}
+\begin{figure}[h]
+	\centering
+  \includegraphics[width=3.25in]{assn1c_bonus1_set3.png}
+  \captionof{figure}{Penalty Methods, 100ShapesComplex.txt}
+  \label{fig:bonus2_3}
+\end{figure}
+
+\section{Bonus 2}\label{sect:bonus2}
+
 To further test self-adaptability, the mutation rate was set to be adaptable. For offspring created, there was an equivalent random chance of inheriting each parent's mutation rate. Additionally, \textit{n} had a small chance to mutate (equivalent to the genetic mutation rate) by $\pm$1 2\%. For analysis, the mutation rate was averaged across all member of the population for each generation and then logged. The test parameters were kept exactly the same as in Section \ref{sect:selfadaptive}.
 
 These graphs are a little more difficult to interpret, as there are now many factors influencing the results. As shown in Figures \ref{fig:bonus2_1}, \ref{fig:bonus2_2}, and \ref{fig:bonus2_3} all the averages are fairly clustered together. It is also worth noting that some of the results here actually contradict the results obtained in Section \ref{sect:selfadaptive}, that is, the control scored better than the adaptive crossovers alone. This seems to be due to randomness, as both averages are valued fairly close to each other. This trend is also not consistent across all three data sets.
@@ -158,6 +182,16 @@ Similar to the finding in Section \ref{sect:selfadaptive}, there was not clear t
   \includegraphics[width=3.25in]{assn1c_bonus2_set3.png}
   \captionof{figure}{Adaptive, 100ShapesComplex.txt}
   \label{fig:bonus2_3}
+\end{figure}
+
+\section{Addendum}
+As a proof that the self-adaptive penalty function works, this graph has been included. Here, the author forgot to add a check to stop the penalty function from going negative. Since the fitness was calculated by subtracting weighted penalty value, negative weights allowed the fitness to skyrocket. See Figure \ref{fig:addendum}.
+
+\begin{figure}[h]
+	\centering
+  \includegraphics[width=3.25in]{assn1c_bonus1_negative_weights.png}
+  \captionof{figure}{Adaptive, 100ShapesComplex.txt}
+  \label{fig:addendum}
 \end{figure}
 
 \end{document}
