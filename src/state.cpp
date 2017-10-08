@@ -650,6 +650,7 @@ void state::updateAdaptableParams(state* parent1, state* parent2) {
 					m_params.pw += PENALTY_STEP_SIZE;
 				else
 					m_params.pw -= PENALTY_STEP_SIZE;
+				m_params.pw = std::max(0.0f, m_params.pw);
 			}
 			break;
 		case PENALTYWEIGHT_FIXED:
