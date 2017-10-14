@@ -23,7 +23,6 @@
 *	Compiler Constants
 **********************************************************/
 #define RANDOM_MAX_TRIES	(10000)
-#define PENALTY_WEIGHT		(3.0f)
 #define GEN_SCALED_PROB(k)	((float)(rand() % (int)std::pow(10.0,k)) / std::pow(10.0,k))
 #define ELEMENT_IS_EQUAL(e1,idx1,e2,idx2) \
 							(e1->m_x[idx1] == e2->m_x[idx2] &&  \
@@ -44,6 +43,11 @@ struct adaptablepParams {
 	float	mr;
 };
 
+struct fitness {
+	int length;
+	int width;
+};
+
 
 /**********************************************************
 *	State Class
@@ -56,7 +60,7 @@ private:
 	int			m_width;
 	int			m_length;
 	bool**		m_layout;
-	int			m_fitness;
+	fitness		m_fitness;
 	int			m_penalty;
 	int			m_numShapes;
 	shape*		m_shapes;
@@ -70,6 +74,8 @@ private:
 
 	// Private Funtions
 	void constructArrays();
+	int calcLength();
+	int calcWidth();
 	void repair(int idx, int& x, int& y, int& rot);
 	void resolveConstraints(int idx, int& x, int& y, int& rot, int type);
 
@@ -96,7 +102,7 @@ public:
 	void printLayout(std::string filename);
 	
 	// Accessors, Mutators
-	inline int getFitness() const { return m_fitness; };
+	inline fitness getFitness() const { return m_fitness; };
 	inline adaptablepParams getParams() const { return m_params; };
 	inline void setParams(config cfg) {
 		m_params.enablePW = (cfg.constraintSat == CONSTRAINTSAT_PENALTY);
@@ -115,7 +121,7 @@ public:
 *	State Compare Function
 *	Returns true if s1 has a higher fitness value
 **********************************************************/
-inline bool compareState(state* s1, state* s2) { return(s1->getFitness() > s2->getFitness()); }
+inline bool compareState(state* s1, state* s2) { return(s1->getFitness().length > s2->getFitness().length); }
 
 
 #endif

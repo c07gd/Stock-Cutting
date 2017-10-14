@@ -19,6 +19,23 @@
 
 
 /**********************************************************
+*	Types, etc
+**********************************************************/
+enum {
+	FITNESS_LENGTH,
+	FITNESS_WIDTH,
+	PENALTY_WEIGHT,
+	CROSSOVER_POINTS,
+	MUTATION_RATE
+};
+
+enum {
+	HIGHEST,
+	LOWEST
+};
+
+
+/**********************************************************
 *	Pool Class
 **********************************************************/
 class pool {
@@ -59,11 +76,8 @@ public:
 	inline void add(state* x) { m_states.push_back(x); };
 	inline state* get(size_t i) const { return m_states[i]; };
 	inline int getSize() const { return m_states.size(); };
-	state* getFittestState();
-	float getAverageFitness();
-	float getAveragePenaltyWeight();
-	float getAverageMutationRate();
-	float getAverageCrossoverPoints();
+	state* getBest(int parameter, int highest);
+	float getAverage(int parameter);
 
 };
 

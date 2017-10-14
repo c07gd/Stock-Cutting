@@ -91,13 +91,13 @@ void pool::setFpProbability() {
 	// Get the sum of fitness values
 	totalFitness = 0;
 	for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it) {
-		totalFitness += (*it)->getFitness();
+		totalFitness += (*it)->getFitness().length;
 	}
 
 	lastProbability = 0.0f;
 	m_fpProbability.clear();
 	for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it) {
-		m_fpProbability.push_back((float)(*it)->getFitness() / (float)totalFitness + lastProbability);
+		m_fpProbability.push_back((float)(*it)->getFitness().length / (float)totalFitness + lastProbability);
 		lastProbability = m_fpProbability.back();
 	}
 
@@ -307,9 +307,9 @@ int pool::kTournament(int k, bool best, bool replacement) {
 	// Run tournament, looking for best or worst fitness	
 	bestIdx = tournament[0];
 	for (int i = 1; i < k; i++) {
-		if (best && m_states[tournament[i]]->getFitness() > m_states[bestIdx]->getFitness())
+		if (best && m_states[tournament[i]]->getFitness().length > m_states[bestIdx]->getFitness().length)
 			bestIdx = tournament[i];
-		else if (!best && m_states[tournament[i]]->getFitness() < m_states[bestIdx]->getFitness())
+		else if (!best && m_states[tournament[i]]->getFitness().length < m_states[bestIdx]->getFitness().length)
 			bestIdx = tournament[i];
 	}
 
@@ -331,7 +331,7 @@ int pool::kTournament(int k, bool best, bool replacement) {
 **********************************************************/
 bool pool::termTestAvgFitness(int targetGensUnchanged, float unchangedVariance) {
 
-	float avgFitness = getAverageFitness();
+	float avgFitness = getAverage(FITNESS_LENGTH);
 
 	// If unchanged, increment counter
 	if (abs(avgFitness - m_lastAvgFitness) < unchangedVariance)
@@ -360,7 +360,7 @@ bool pool::termTestAvgFitness(int targetGensUnchanged, float unchangedVariance) 
 **********************************************************/
 bool pool::termTestBestFitness(int targetGensUnchanged) {
 
-	int bestFitness = getFittestState()->getFitness();
+	int bestFitness = getBest(FITNESS_LENGTH, HIGHEST)->getFitness().length;
 	
 	// If unchanged, increment counter
 	if (bestFitness == m_lastBestFitness)
@@ -381,84 +381,82 @@ bool pool::termTestBestFitness(int targetGensUnchanged) {
 
 
 /**********************************************************
-*	getFittestState()
-*	Finds the fittest state in the pool.
-*	 @return pointer to the fittest state in the pool
+*	getBest(int parameter, int type)
+*	Returns the best paramter given. Here, "best" means 
+*	either highest or lowest, depending on the type given.
+*	 @param parameter state parameter we're looking for
+*	 @param type HIGHEST or LOWEST
+*	 @return state* pointer to the best state found
 **********************************************************/
-state* pool::getFittestState() {
-	
+state* pool::getBest(int parameter, int type) {
+
 	// Variables
-	int		bestFitness = -1;
-	state*	bestFitnessPtr;
+	int		valBest;
+	int		valCurrent;
+	state*	ptr;
+	
+	// Initialize
+	ptr = m_states.front();
+	switch (parameter) {
+	case FITNESS_LENGTH:
+		valBest = ptr->getFitness().length;
+		break;
+	case FITNESS_WIDTH:
+		valBest = ptr->getFitness().width;
+	}
 
 	// Find best fitness
 	for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it) {
-		if ((*it)->getFitness() > bestFitness) {
-			bestFitness = (*it)->getFitness();
-			bestFitnessPtr = (*it);
+		switch (parameter) {
+		case FITNESS_LENGTH:
+			valCurrent = (*it)->getFitness().length;
+			break;
+		case FITNESS_WIDTH:
+			valCurrent = (*it)->getFitness().width;
+			break;
+		}
+		if ((type == HIGHEST && valCurrent > valBest) || (type == LOWEST && valCurrent < valBest)) {
+			ptr = (*it);
+			valBest = valCurrent;
 		}
 	}
 
-	return bestFitnessPtr;
+	return ptr;
 }
 
 
 /**********************************************************
-*	getFittestState()
-*	Finds the average fitness of all states in the pool.
-*	 @return average fitness of all states in the pool
+*	getAverage(int parameter)
+*	Returns the average of the paramter given for all states
+*	in the pool.
+*	 @param parameter state parameter we're looking for
+*	 @return float* average value of the parameter given
 **********************************************************/
-float pool::getAverageFitness() {
-
+float pool::getAverage(int parameter) {
+	
 	// Variables
-	int		totalFitness = 0;
+	float total = 0;
 
 	// Calculate total fitness
 	for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it)
-		totalFitness += (*it)->getFitness();
+		switch (parameter) {
+		case FITNESS_LENGTH:
+			total += (float)(*it)->getFitness().length;
+			break;
+		case FITNESS_WIDTH:
+			total += (float)(*it)->getFitness().width;
+			break;
+		case MUTATION_RATE:
+			total += (*it)->getParams().mr;
+			break;
+		case CROSSOVER_POINTS:
+			total += (float)(*it)->getParams().cp;
+			break;
+		case PENALTY_WEIGHT:
+			total += (*it)->getParams().pw;
+			break;
+		}
 
 	// Return average
-	return (float)totalFitness / (float)m_states.size();
-}
-
-
-float pool::getAveragePenaltyWeight() {
-
-	// Variables
-	float	totalPenaltyWeight = 0;
-
-	// Calculate total fitness
-	for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it)
-		totalPenaltyWeight += (*it)->getParams().pw;
-
-	// Return average
-	return totalPenaltyWeight / (float)m_states.size();
-}
-
-
-float pool::getAverageMutationRate() {
-
-	// Variables
-	float	totalMutationRate = 0.0f;
-
-	// Calculate total fitness
-	for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it)
-		totalMutationRate += (*it)->getParams().mr;
-
-	// Return average
-	return totalMutationRate / (float)m_states.size();
-}
-
-
-float pool::getAverageCrossoverPoints() {
-
-	// Variables
-	int	totalCrossoverPoints = 0;
-
-	// Calculate total fitness
-	for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it)
-		totalCrossoverPoints += (*it)->getParams().cp;
-
-	// Return average
-	return (float)totalCrossoverPoints / (float)m_states.size();
+	return(total / (float)m_states.size());
 }

@@ -36,7 +36,8 @@ state::state() {
 	// Assign default values
 	m_width = 0;
 	m_length = 0;
-	m_fitness = -1;
+	m_fitness.length = -1;
+	m_fitness.width = -1;
 	m_penalty = 0;
 	m_numShapes = 0;
 	m_layout = NULL;
@@ -248,6 +249,15 @@ void state::placeShape(int i, int x, int y, int rot) {
 	m_y[i] = y;
 	m_rot[i] = rot;
 
+	// Mark starting position
+	if (traceX < 0 || traceX >= m_width || traceY < 0 || traceY >= m_length)
+		m_penalty++;
+	else {
+		if (m_layout[traceX][traceY])
+			m_penalty++;
+		m_layout[traceX][traceY] = true;
+	}
+
 	// Trace moves and mark layout
 	m_penalty = 0;
 	moves = m_shapes[i].getMoves();
@@ -276,10 +286,6 @@ void state::placeShape(int i, int x, int y, int rot) {
 					m_penalty++;
 				m_layout[traceX][traceY] = true;
 			}
-
-			// Update fitness
-			if (traceY > (m_length - m_fitness))
-				m_fitness = m_length - traceY;
 		}
 	}
 
@@ -386,32 +392,67 @@ void state::repair(int idx, int& x, int& y, int& rot) {
 
 /**********************************************************
 *	calcFitness()
-*	Updates the m_fitness member variable. Fitness is defined
-*	as the max length minus the length used.
+*	Updates the m_fitness_* member variables. Subtracts out
+*	penalty values if invlaid layouts are aloowed. (If invalid
+*	layouts are not allowed, m_penalty will be 0 and that
+*	calculation will have no effect.
 **********************************************************/
 void state::calcFitness() {
 
-	// Variables
-	bool exit;
-	
-	// Walk down the layout starting at the far end
-	exit = false;
-	for (int i = m_length - 1; i >= 0 && !exit; i--) {
-		for (int j = 0; j < m_width && !exit; j++) {
+	int penalty = (int)round((float)m_penalty * m_params.pw);
 
-			// When we hit a marked square, we're done
-			// Calculate and assign fitness (total length - used length)
-			if (m_layout[j][i]) {
-				m_fitness = m_length - i - 1;
-				exit = true;
-			}
-		}
-	}
-
-	// Subtract out weighted penalty value
-	m_fitness -= (int)round((float)m_penalty * m_params.pw);
+	m_fitness.length = calcLength() - penalty;
+	m_fitness.width = calcWidth() - penalty;
 
 	return;
+}
+
+
+/**********************************************************
+*	calcLength()
+*	Finds the length of stock used.
+*	 @return int length of stock used
+**********************************************************/
+int state::calcLength() {
+
+	// Variables
+	int rtn = -1;
+
+	// Walk down the layout starting at the far end
+	for (int i = m_length - 1; i >= 0 && rtn == -1; i--) {
+		for (int j = 0; j < m_width && rtn == -1; j++) {
+
+			// When we hit a marked square, we're done
+			// Return (total length - used length - 1)
+			if (m_layout[j][i])
+				rtn = m_length - i - 1;
+		}
+	}
+	return rtn;
+}
+
+
+/**********************************************************
+*	calcWidth()
+*	Finds the width of stock used.
+*	 @return int width of stock used
+**********************************************************/
+int state::calcWidth() {
+
+	// Variables
+	int rtn = -1;
+
+	// Walk down the layout starting at the top side
+	for (int i = 0; i < m_width && rtn == -1; i++) {
+		for (int j = 0; j < m_length && rtn == -1; j++) {
+
+			// When we hit a marked square, we're done
+			// Return (total width - used width)
+			if (m_layout[i][j])
+				rtn = m_width - i;
+		}
+	}
+	return rtn;
 }
 
 

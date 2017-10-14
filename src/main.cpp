@@ -188,30 +188,32 @@ int main(int argc, char *argv[]) {
 				break;
 			}
 
-			localBest = population.getFittestState();
+			localBest = population.getBest(FITNESS_LENGTH, HIGHEST);
 			
 			// Log data
 			log << g_evals << "\t";
 			std::cout << g_evals << "\t";
 			if (cfg.crossoversSA) {
-				log << IO_FORMAT_FLOAT(3) << population.getAverageCrossoverPoints() << "\t";
-				std::cout << IO_FORMAT_FLOAT(3) << population.getAverageCrossoverPoints() << "\t";
+				log << IO_FORMAT_FLOAT(3) << population.getAverage(CROSSOVER_POINTS) << "\t";
+				std::cout << IO_FORMAT_FLOAT(3) << population.getAverage(CROSSOVER_POINTS) << "\t";
 			}
 			if (cfg.mutationRateSA) {
-				log << IO_FORMAT_FLOAT(3) << population.getAverageMutationRate() << "\t";
-				std::cout << IO_FORMAT_FLOAT(3) << population.getAverageMutationRate() << "\t";
+				log << IO_FORMAT_FLOAT(3) << population.getAverage(MUTATION_RATE) << "\t";
+				std::cout << IO_FORMAT_FLOAT(3) << population.getAverage(MUTATION_RATE) << "\t";
 			}
 			if (cfg.constraintSat == CONSTRAINTSAT_PENALTY) {
-				log << IO_FORMAT_FLOAT(3) << population.getAveragePenaltyWeight() << "\t";
-				std::cout << IO_FORMAT_FLOAT(3) << population.getAveragePenaltyWeight() << "\t";
+				log << IO_FORMAT_FLOAT(3) << population.getAverage(PENALTY_WEIGHT) << "\t";
+				std::cout << IO_FORMAT_FLOAT(3) << population.getAverage(PENALTY_WEIGHT) << "\t";
 			}
-			log << IO_FORMAT_FLOAT(3) << population.getAverageFitness() << "\t" << localBest->getFitness() << std::endl;
-			std::cout << IO_FORMAT_FLOAT(3) << population.getAverageFitness() << "\t" << localBest->getFitness() << std::endl;
+			log << IO_FORMAT_FLOAT(3) << population.getAverage(FITNESS_LENGTH) << "\t" << localBest->getFitness().length << "\t";
+			log << IO_FORMAT_FLOAT(3) << population.getAverage(FITNESS_WIDTH) << "\t" << localBest->getFitness().width << std::endl;
+			std::cout << IO_FORMAT_FLOAT(3) << population.getAverage(FITNESS_LENGTH) << "\t" << localBest->getFitness().width << "\t";
+			std::cout << IO_FORMAT_FLOAT(3) << population.getAverage(FITNESS_WIDTH) << "\t" << localBest->getFitness().length << std::endl;
 
 			// Keep track of overall best
-			if (localBest->getFitness() > overallBestFitness) {
+			if (localBest->getFitness().length > overallBestFitness) {
 				overallBest = *localBest;
-				overallBestFitness = localBest->getFitness();
+				overallBestFitness = localBest->getFitness().length;
 			}
 
 		// End loop when termination test returns true of we hit our max number of evals
