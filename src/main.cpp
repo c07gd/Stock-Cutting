@@ -94,6 +94,7 @@ int main(int argc, char *argv[]) {
 		std::cout << "Error: Unable to write log file" << std::endl;
 		exit(1);
 	}
+	log << "Configuration File: " << argv[1] << std::endl << std::endl;
 	log << "Result Log" << std::endl;
 
 	// Add offspring to population
