@@ -23,6 +23,7 @@
 #include "shape.h"
 #include "state.h"
 #include "cfgParse.h"
+#include "pareto.hpp"
 
 
 /**********************************************************
@@ -160,6 +161,10 @@ int main(int argc, char *argv[]) {
 			for (int i = 0; i < offspring.getSize(); i++)
 				population.add(offspring.get(i));
 			offspring.empty();
+
+			// Find Pareto optimal front
+			std::vector<std::vector<int>> paretoOut;
+			pareto(population.getStates(), paretoOut);
 
 			// Reduce population size
 			switch (cfg.survivorSel) {

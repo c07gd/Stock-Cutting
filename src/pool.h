@@ -76,6 +76,7 @@ public:
 	inline void add(state* x) { m_states.push_back(x); };
 	inline state* get(size_t i) const { return m_states[i]; };
 	inline int getSize() const { return m_states.size(); };
+	inline std::vector<state*> getStates() const { return m_states; };
 	state* getBest(int parameter, int highest);
 	float getAverage(int parameter);
 

@@ -449,7 +449,7 @@ int state::calcWidth() {
 			// When we hit a marked square, we're done
 			// Return (total width - used width)
 			if (m_layout[i][j])
-				rtn = m_width - i;
+				rtn = i;
 		}
 	}
 	return rtn;
