@@ -61,6 +61,7 @@ private:
 	int			m_length;
 	bool**		m_layout;
 	fitness		m_fitness;
+	int			m_paretoLevel;
 	int			m_penalty;
 	int			m_numShapes;
 	shape*		m_shapes;
@@ -104,6 +105,8 @@ public:
 	// Accessors, Mutators
 	inline fitness getFitness() const { return m_fitness; };
 	inline adaptablepParams getParams() const { return m_params; };
+	inline int getParetoLevel() const { return m_paretoLevel; };
+	inline void setParetoLevel(int p) { m_paretoLevel = p; };
 	inline void setParams(config cfg) {
 		m_params.enablePW = (cfg.constraintSat == CONSTRAINTSAT_PENALTY);
 		m_params.typePW = cfg.penaltyWeightSA;
@@ -115,13 +118,6 @@ public:
 	}
 
 };
-
-
-/**********************************************************
-*	State Compare Function
-*	Returns true if s1 has a higher fitness value
-**********************************************************/
-inline bool compareState(state* s1, state* s2) { return(s1->getFitness().length > s2->getFitness().length); }
 
 
 #endif

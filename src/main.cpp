@@ -23,7 +23,6 @@
 #include "shape.h"
 #include "state.h"
 #include "cfgParse.h"
-#include "pareto.hpp"
 
 
 /**********************************************************
@@ -164,8 +163,7 @@ int main(int argc, char *argv[]) {
 			offspring.empty();
 
 			// Find Pareto optimal front
-			std::vector<std::vector<int>> paretoOut;
-			pareto(population.getStates(), paretoOut);
+			population.calcPareto();
 
 			// Reduce population size
 			switch (cfg.survivorSel) {
@@ -211,10 +209,10 @@ int main(int argc, char *argv[]) {
 				log << IO_FORMAT_FLOAT(3) << population.getAverage(PENALTY_WEIGHT) << "\t";
 				std::cout << IO_FORMAT_FLOAT(3) << population.getAverage(PENALTY_WEIGHT) << "\t";
 			}
-			log << IO_FORMAT_FLOAT(3) << population.getAverage(FITNESS_LENGTH) << "\t" << localBest->getFitness().length << "\t";
-			log << IO_FORMAT_FLOAT(3) << population.getAverage(FITNESS_WIDTH) << "\t" << localBest->getFitness().width << std::endl;
-			std::cout << IO_FORMAT_FLOAT(3) << population.getAverage(FITNESS_LENGTH) << "\t" << localBest->getFitness().width << "\t";
-			std::cout << IO_FORMAT_FLOAT(3) << population.getAverage(FITNESS_WIDTH) << "\t" << localBest->getFitness().length << std::endl;
+			log << IO_FORMAT_FLOAT(3) << population.getAverage(FITNESS_LENGTH) << "\t" << population.getBest(FITNESS_LENGTH, HIGHEST)->getFitness().length << "\t";
+			log << IO_FORMAT_FLOAT(3) << population.getAverage(FITNESS_WIDTH) << "\t" << population.getBest(FITNESS_WIDTH, HIGHEST)->getFitness().width << std::endl;
+			std::cout << IO_FORMAT_FLOAT(3) << population.getAverage(FITNESS_LENGTH) << "\t" << population.getBest(FITNESS_LENGTH, HIGHEST)->getFitness().length << "\t";
+			std::cout << IO_FORMAT_FLOAT(3) << population.getAverage(FITNESS_WIDTH) << "\t" << population.getBest(FITNESS_WIDTH, HIGHEST)->getFitness().width << std::endl;
 
 			// Keep track of overall best
 			if (localBest->getFitness().length > overallBestFitness) {

@@ -46,6 +46,7 @@ private:
 	int					m_lastBestFitness;
 	float				m_lastAvgFitness;
 	int					m_numGensUnchanged;
+	int					m_paretoMin;
 
 	// Private Functions
 	int kTournament(int k, bool type, bool replacement);
@@ -61,13 +62,14 @@ public:
 	void create(int size, state* initial);
 	void randomizeAll();
 	void setFpProbability();
+	void calcPareto();
 	state* chooseParentFP();
 	state* chooseParentKTourn(int k);
 	state* chooseParentRandom();
-	void reduceByTruncation(int size);
-	void reduceByKTourn(int size, int k);	
-	void reduceByFP(int size);
-	void reduceByRandom(int size);
+	void reduceByTruncation(size_t size);
+	void reduceByKTourn(size_t size, int k);	
+	void reduceByFP(size_t size);
+	void reduceByRandom(size_t size);
 	bool termTestAvgFitness(int targetGensUnchanged, float unchangedVariance);
 	bool termTestBestFitness(int targetGensUnchanged);
 	void empty();

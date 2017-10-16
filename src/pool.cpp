@@ -13,6 +13,7 @@
 *	Headers
 **********************************************************/
 #include "pool.h"
+#include "pareto.hpp"
 #include <algorithm>
 
 
@@ -91,15 +92,41 @@ void pool::setFpProbability() {
 	// Get the sum of fitness values
 	totalFitness = 0;
 	for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it) {
-		totalFitness += (*it)->getFitness().length;
+		totalFitness += m_paretoMin + 1 - (*it)->getParetoLevel();
 	}
 
 	lastProbability = 0.0f;
 	m_fpProbability.clear();
 	for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it) {
-		m_fpProbability.push_back((float)(*it)->getFitness().length / (float)totalFitness + lastProbability);
+		m_fpProbability.push_back(((float)(m_paretoMin + 1 - (*it)->getParetoLevel()) / (float)totalFitness) + lastProbability);
 		lastProbability = m_fpProbability.back();
 	}
+
+	return;
+}
+
+
+/**********************************************************
+*	calcPareto()
+*	Calls the pareto() function to calculate a pareto structure
+*	and stores it as a member variable.
+**********************************************************/
+void pool::calcPareto() {
+
+	// Variables
+	std::vector<std::vector<int>> paretoLevels;
+
+	// Build a Pareto-leveled structure
+	pareto(m_states, paretoLevels);
+
+	// Walk down the structure and assign level to each state
+	for (size_t i = 0; i < paretoLevels.size(); i++) {
+		for (size_t j = 0; j < paretoLevels[i].size(); j++) {
+			m_states[paretoLevels[i][j]]->setParetoLevel(i);
+		}
+	}
+
+	m_paretoMin = (int)paretoLevels.size() - 1;
 
 	return;
 }
@@ -114,7 +141,7 @@ void pool::setFpProbability() {
 state* pool::chooseParentFP() {
 
 	// Choose a random value [0.0 - 1.0]
-	float value = (float)(rand() % 100000)  / 100000.0f;
+	float value = (float)(rand() % 10000)  / 10000.0f;
 
 	// Walk down the FP probability array and find the corresponding parent
 	size_t i = 0;
@@ -133,7 +160,7 @@ state* pool::chooseParentFP() {
 *	 @param k size of the k-tournament
 **********************************************************/
 state* pool::chooseParentKTourn(int k) {
-	return m_states[kTournament(k, true, true)];
+	return m_states[kTournament(k, LOWEST, true)];
 }
 
 
@@ -152,17 +179,28 @@ state* pool::chooseParentRandom() {
 *	with the lowest fitness.
 *	 @param size desired size of the pool after removal
 **********************************************************/
-void pool::reduceByTruncation(int size) {
+void pool::reduceByTruncation(size_t size) {
 
 	// Sanity check
-	if (m_states.size() < (size_t)size)
+	if (m_states.size() < size)
 		return;
 
-	// Sort pool
-	std::sort(m_states.begin(), m_states.end(), compareState);
+	// Variables
+	size_t i = 0;
 
-	// Remove from bottom until shrunk to desired size
-	m_states.resize(size);
+	// Remove states at the lowest Pareto level until the desired size is reached
+	while (m_states.size() > size) {
+		if (i >= m_states.size()) {
+			i = 0;
+			m_paretoMin--;
+		}		
+		if (m_states[i]->getParetoLevel() == m_paretoMin) {
+			delete m_states[i];
+			m_states.erase(m_states.begin() + i);
+			i--;
+		}
+		i++;
+	}
 
 	return;
 }
@@ -174,24 +212,24 @@ void pool::reduceByTruncation(int size) {
 *	 @param size desired size of the pool after removal
 *	 @param k number of states chosen in each tournament
 **********************************************************/
-void pool::reduceByKTourn(int size, int k) {
+void pool::reduceByKTourn(size_t size, int k) {
 
 	// Sanity check
-	if (m_states.size() < (size_t)size)
+	if (m_states.size() < size)
 		return;
 	
 	// Variables
 	int idx;
 
 	// Run tournaments until we've shrunk to desired size
-	while (m_states.size() > (size_t)size) {
+	while (m_states.size() > size) {
 
 		// Since we're not allowing replacement, need to make sure k isn't bigger than size
 		if (k > (int)m_states.size())
 			k = (int)m_states.size();
 
 		// Randomly pick k members of the pool, keeping track of the one with the worst fitness 
-		idx = kTournament(k, false, false);
+		idx = kTournament(k, LOWEST, false);
 		delete m_states[idx];
 		m_states.erase(m_states.begin() + idx);
 	}
@@ -207,35 +245,37 @@ void pool::reduceByKTourn(int size, int k) {
 *	any states not chosen in FP.
 *	 @param size desired size of the pool after FP reduction
 **********************************************************/
-void pool::reduceByFP(int size) {
+void pool::reduceByFP(size_t size) {
 
 	// Sanity check
 	if (m_states.size() < (size_t)size)
 		return;
 
 	// Variables
-	int i, j;
-	bool* survivors = new bool[size];
+	int j;
+	bool* survivors = new bool[m_states.size()];
 
 	// Initialize all states to non-surviving
-	for (i = 0; i < size; i++)
+	for (size_t i = 0; i < m_states.size(); i++)
 		survivors[i] = false;
 
 	// Choose states to survive
-	for (i = 0; i < size; i++) {
+	for (size_t i = 0; i < size; i++) {
 
 		// Choose a random value [0.0 - 1.0]
-		float value = (float)(rand() % 100000) / 100000.0f;
+		float value = (float)(rand() % 10000) / 10000.0f;
 
 		// Walk down the FP probability array and find the corresponding state
 		j = 0;
 		while (m_fpProbability[j] < value && j < (int)m_states.size())
 			j++;
+		if (survivors[j])
+			i--;
 		survivors[j] = true;
 	}
 
 	// Kill off any states not chosen to survive
-	for (i = size - 1; i >= 0; i--) {
+	for (int i = m_states.size() - 1; i >= 0; i--) {
 		if (!survivors[i]) {
 			delete m_states[i];
 			m_states.erase(m_states.begin() + i);
@@ -244,6 +284,7 @@ void pool::reduceByFP(int size) {
 
 	// Clean up
 	delete[] survivors;
+	int i = 0;
 	return;
 }
 
@@ -254,17 +295,17 @@ void pool::reduceByFP(int size) {
 *	elements.
 *	 @param size desired size of the pool after removal
 **********************************************************/
-void pool::reduceByRandom(int size) {
+void pool::reduceByRandom(size_t size) {
 
 	// Sanity check
-	if (m_states.size() < (size_t)size)
+	if (m_states.size() < size)
 		return;
 
 	// Variables 
 	int idx;
 
 	// Randomly choose states and remove them until desired size is reached
-	while ((int)m_states.size() > size) {
+	while (m_states.size() > size) {
 		idx = rand() % m_states.size();
 		delete m_states[idx];
 		m_states.erase(m_states.begin() + idx);
@@ -307,9 +348,9 @@ int pool::kTournament(int k, bool best, bool replacement) {
 	// Run tournament, looking for best or worst fitness	
 	bestIdx = tournament[0];
 	for (int i = 1; i < k; i++) {
-		if (best && m_states[tournament[i]]->getFitness().length > m_states[bestIdx]->getFitness().length)
+		if (best && m_states[tournament[i]]->getParetoLevel() > m_states[bestIdx]->getParetoLevel())
 			bestIdx = tournament[i];
-		else if (!best && m_states[tournament[i]]->getFitness().length < m_states[bestIdx]->getFitness().length)
+		else if (!best && m_states[tournament[i]]->getParetoLevel() < m_states[bestIdx]->getParetoLevel())
 			bestIdx = tournament[i];
 	}
 
