@@ -51,6 +51,57 @@ state::state() {
 
 
 /**********************************************************
+*	state(shape* shapes, int width, int numShapes, std::string filename)
+*	Custom constructor, taking a solution file to seed the
+*	state with a layout.
+*	 @param shapes pointer to an array of shapes
+*	 @param width width of the stock
+*	 @param numShapes length of the shapes array
+*	 @param filename name of solution file to read in layout from
+**********************************************************/
+state::state(shape* shapes, int width, int numShapes, std::string filename) {
+
+	// Copy data over to members
+	m_shapes = shapes;
+	m_width = width;
+	m_numShapes = numShapes;
+
+	// Calculate max length
+	m_length = 0;
+	for (int i = 0; i < m_width; i++)
+		m_length += m_shapes[i].getLength();
+
+	// Construct arrays
+	constructArrays();
+
+	// Variables
+	std::ifstream	in;
+	std::string		line;
+	int				i = 0;
+	int				pos1, pos2;
+
+	// Open input file
+	in.open(filename);
+	if (!in.is_open()) {
+		std::cout << "Error: Unable to read state input file" << std::endl;
+		exit(1);
+	}
+
+	// Read in solution file line by line and store in state structure
+	while (getline(in, line)) {
+		pos1 = line.find(",");
+		pos2 = line.find(",", pos1+1);
+		m_x[i] = atoi(line.substr(0, pos1).c_str());
+		m_y[i] = atoi(line.substr(pos1 + 1, pos2 - pos1 - 1).c_str());
+		m_rot[i] = atoi(line.substr(pos2 + 1).c_str());
+		i++;
+	}
+
+	return;
+}
+
+
+/**********************************************************
 *	state(shape* shapes, int width, int numShapes)
 *	Custom constructor
 *	 @param shapes pointer to an array of shapes

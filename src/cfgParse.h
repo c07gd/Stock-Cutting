@@ -27,6 +27,7 @@
 #define COMMENT_CHAR				('#')
 #define LABEL_SEEDFROMTIME			("seedFromTime")
 #define LABEL_SEED					("seed")
+#define LABEL_SEEDSTATE				("seedState")
 #define LABEL_ALGORITHM				("algorithm")
 #define LABEL_RUNS					("runs")
 #define LABEL_FITNESSEVALS			("fitnessEvals")
@@ -61,6 +62,8 @@
 struct config {
 	int			seedFromTime;
 	unsigned int	seed;
+	std::vector<std::string>
+					seedStates;
 	char			algorithm;
 	int				runs;
 	int				fitnessEvals;
@@ -186,6 +189,7 @@ inline config getConfig(std::string filename) {
 	cfg.penaltyWeightSA		= DEFAULT_PENALTYWEIGHTSA;
 	cfg.termType			= DEFAULT_TERMTYPE;
 	cfg.termGensUnchanged	= DEFAULT_TERMGENSUNCHANGED;
+	cfg.seedStates.clear();
 	
 	// Open configuration file
 	in.open(filename);
@@ -266,6 +270,8 @@ inline config getConfig(std::string filename) {
 				cfg.termType = atoi(rhs.c_str());
 			else if (lhs == LABEL_TERMGENSUNCHANGED)
 				cfg.termGensUnchanged = atoi(rhs.c_str());
+			else if (lhs == LABEL_SEEDSTATE)
+				cfg.seedStates.push_back(rhs);
 		}
 	}
 

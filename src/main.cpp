@@ -104,8 +104,14 @@ int main(int argc, char *argv[]) {
 		std::cout << std::endl << "Run " << run + 1 << std::endl;
 
 		// Randomly generate a start population
-		population.create(cfg.mu, &initial);
+		population.create(cfg.mu - cfg.seedStates.size(), &initial);
 		population.randomizeAll();
+
+		// Add in seed states
+		for (size_t i = 0; i < cfg.seedStates.size(); i++) {
+			state* temp = new state(shapes, width, numShapes, cfg.seedStates[i]);
+			population.add(temp);
+		}
 		g_evals = population.getSize();
 
 		do {

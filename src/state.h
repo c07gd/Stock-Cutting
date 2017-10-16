@@ -84,6 +84,7 @@ public:
 
 	// Constructors, Destructors, Etc.
 	state();
+	state(shape* shapes, int width, int numShapes, std::string filename);
 	state(shape* shapes, int width, int numShapes);
 	state(const state& rhs);
 	state& operator=(const state &rhs);
