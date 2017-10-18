@@ -13,7 +13,7 @@
 *	Headers
 **********************************************************/
 #include "pool.h"
-#include "pareto.hpp"
+#include "pareto.h"
 #include <algorithm>
 
 
@@ -127,6 +127,66 @@ void pool::calcPareto() {
 	}
 
 	m_paretoMin = (int)paretoLevels.size() - 1;
+
+	return;
+}
+
+
+/**********************************************************
+*	comparePareto(std::vector<state*> bestPareto)
+*	Compares the current Pareto front to the passed vector
+*	of a pareto front. If current is better, copies current
+*	into best. "Better" is defined as the front in which a
+*	larger proportion of states dominate the other.
+*	and stores it as a member variable.
+	 @param bestPareto vector of the current best front
+**********************************************************/
+void pool::comparePareto(std::vector<state*>& bestPareto) {
+
+	// Variables
+	int		cnt1 = 0;
+	int		cnt2 = 0;
+	float	ratio1;
+	float	ratio2;
+
+	// If best is currently empty, just copy into it
+	if (bestPareto.size() == 0) {
+		for (size_t i = 0; i < m_states.size(); i++) {
+			if (m_states[i]->getParetoLevel() == 1) {
+				state* temp = new state(*m_states[i]);
+				bestPareto.push_back(temp);
+			}
+		}
+	}
+	else {
+
+		// Count states that dominate best and vice-versa
+		for (size_t i = 0; i < m_states.size(); i++) {
+			if (m_states[i]->getParetoLevel() == 0) {
+				for (size_t j = 0; j < bestPareto.size(); j++) {
+					if (DOMINATES(m_states[i], bestPareto[j]))
+						cnt1++;
+					if (DOMINATES(bestPareto[j], m_states[i]))
+						cnt2++;
+				}
+			}
+		}
+
+		// If a higher proportion of states dominate best, make this our new best
+		ratio1 = (float)cnt1 / (float)m_states.size();
+		ratio2 = (float)cnt2 / (float)bestPareto.size();
+		if (ratio1 > ratio2) {
+			for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it)
+				delete (*it);
+			bestPareto.clear();
+			for (size_t i = 0; i < m_states.size(); i++) {
+				if (m_states[i]->getParetoLevel() == 0) {
+					state* temp = new state(*m_states[i]);
+					bestPareto.push_back(temp);
+				}
+			}
+		}
+	}
 
 	return;
 }

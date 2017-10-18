@@ -63,6 +63,7 @@ public:
 	void randomizeAll();
 	void setFpProbability();
 	void calcPareto();
+	void comparePareto(std::vector<state*>& bestPareto);
 	state* chooseParentFP();
 	state* chooseParentKTourn(int k);
 	state* chooseParentRandom();

@@ -12,6 +12,6 @@
     <ClInclude Include="src\cfgParse.h" />
     <ClInclude Include="src\pool.h" />
     <ClInclude Include="src\cfgDefault.h" />
-    <ClInclude Include="src\pareto.hpp" />
+    <ClInclude Include="src\pareto.h" />
   </ItemGroup>
 </Project>

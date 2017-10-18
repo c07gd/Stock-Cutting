@@ -100,7 +100,7 @@ public:
 	void randResetMutate(int constraintSat);
 	void creepMutate(int creepDist, int constraintSat);
 	void updateAdaptableParams(state* parent1, state* parent2);
-	void printSolution(std::string filename);
+	std::string getSolutionString();
 	void printLayout(std::string filename);
 	
 	// Accessors, Mutators

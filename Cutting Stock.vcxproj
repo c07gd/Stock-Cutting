@@ -27,7 +27,7 @@
   <ItemGroup>
     <ClInclude Include="src\cfgDefault.h" />
     <ClInclude Include="src\cfgParse.h" />
-    <ClInclude Include="src\pareto.hpp" />
+    <ClInclude Include="src\pareto.h" />
     <ClInclude Include="src\shape.h" />
     <ClInclude Include="src\state.h" />
     <ClInclude Include="src\pool.h" />

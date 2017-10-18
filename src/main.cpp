@@ -23,6 +23,7 @@
 #include "shape.h"
 #include "state.h"
 #include "cfgParse.h"
+#include "pareto.h"
 
 
 /**********************************************************
@@ -49,14 +50,16 @@ int main(int argc, char *argv[]) {
 	int				width = 0;
 	int				numShapes = 0;
 	std::ofstream	log;
+	std::ofstream	solution;
 	pool			population;
 	pool			offspring;
 	int				run;
 	bool			terminate = false;
 	state*			parent1;
 	state*			parent2;
-	state*			localBest;
 	int				overallBestFitness = -1;
+	std::vector<state*>
+					bestPareto;
 
 	// Get configuration
 	if (argc <= 1) {
@@ -198,8 +201,6 @@ int main(int argc, char *argv[]) {
 				break;
 			}
 
-			localBest = population.getBest(FITNESS_LENGTH, HIGHEST);
-			
 			// Log data
 			log << g_evals << "\t";
 			std::cout << g_evals << "\t";
@@ -220,15 +221,12 @@ int main(int argc, char *argv[]) {
 			std::cout << IO_FORMAT_FLOAT(3) << population.getAverage(FITNESS_LENGTH) << "\t" << population.getBest(FITNESS_LENGTH, HIGHEST)->getFitness().length << "\t";
 			std::cout << IO_FORMAT_FLOAT(3) << population.getAverage(FITNESS_WIDTH) << "\t" << population.getBest(FITNESS_WIDTH, HIGHEST)->getFitness().width << std::endl;
 
-			// Keep track of overall best
-			if (localBest->getFitness().length > overallBestFitness) {
-				overallBest = *localBest;
-				overallBestFitness = localBest->getFitness().length;
-			}
-
-		// End loop when termination test returns true of we hit our max number of evals
+			// End loop when termination test returns true of we hit our max number of evals
 		} while (!terminate && (g_evals < cfg.fitnessEvals));
 
+		// Check if this run has the best Pareto Front
+		population.comparePareto(bestPareto);	
+		
 		// Clean up
 		population.destroy();
 		population.empty();
@@ -236,9 +234,15 @@ int main(int argc, char *argv[]) {
 		offspring.empty();
 	}
 
-	// Print best solution
-	overallBest.printSolution(cfg.solutionFile);
-	overallBest.printLayout("solutions/layout.txt");
+	// Print Pareto front of best solutions
+	solution.open(cfg.solutionFile);
+	if (!solution.is_open()) {
+		std::cout << "Error: Unable to write solution file" << std::endl;
+		exit(1);
+	}
+	solution << "Solutions in Pareto front: " << bestPareto.size() << std::endl << std::endl;
+	for (size_t i = 0; i < bestPareto.size(); i++)
+		solution << "Solution " << i + 1 << ":" << std::endl << bestPareto[i]->getSolutionString() << std::endl << std::endl;
 
 	// Clean up
 	delete[] shapes;

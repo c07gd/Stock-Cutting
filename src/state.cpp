@@ -39,6 +39,7 @@ state::state() {
 	m_fitness.length = -1;
 	m_fitness.width = -1;
 	m_penalty = 0;
+	m_paretoLevel = 0;
 	m_numShapes = 0;
 	m_layout = NULL;
 	m_shapes = NULL;
@@ -142,6 +143,7 @@ state::state(const state& rhs) {
 	m_fitness = rhs.m_fitness;
 	m_penalty = rhs.m_penalty;
 	m_params = rhs.m_params;
+	m_paretoLevel = rhs.m_paretoLevel;
 
 	// Construct arrays
 	constructArrays();
@@ -179,6 +181,7 @@ state& state::operator=(const state &rhs) {
 	m_fitness = rhs.m_fitness;
 	m_penalty = rhs.m_penalty;
 	m_params = rhs.m_params;
+	m_paretoLevel = rhs.m_paretoLevel;
 
 	// Copy array data over
 	for (int i = 0; i < m_numShapes; i++) {
@@ -797,26 +800,16 @@ void state::updateAdaptableParams(state* parent1, state* parent2) {
 *	Format is <x>,<y>,<rot>
 *	 @param filename name of the solution file to write
 **********************************************************/
-void state::printSolution(std::string filename) {
+std::string state::getSolutionString() {
 
 	// Variables
-	std::ofstream out;
-
-	// Open output file
-	out.open(filename);
-	if (!out.is_open()) {
-		std::cout << "Error: Unable to write solution file" << std::endl;
-		exit(1);
-	}
-
+	std::string rtn = "";
+	
 	// Walk down shapes array and output data
 	for (int i = 0; i < m_numShapes; i++)
-		out << m_y[i] << "," << m_x[i] << "," << m_rot[i] << std::endl;
+		rtn += std::to_string(m_y[i]) + "," + std::to_string(m_x[i]) + "," + std::to_string(m_rot[i]) + "\n";
 
-	// Clean up
-	out.close();
-
-	return;
+	return rtn;
 }
 
 
