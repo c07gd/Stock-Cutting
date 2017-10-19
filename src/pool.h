@@ -24,6 +24,7 @@
 enum {
 	FITNESS_LENGTH,
 	FITNESS_WIDTH,
+	FITNESS_EDGES,
 	PENALTY_WEIGHT,
 	CROSSOVER_POINTS,
 	MUTATION_RATE
@@ -60,7 +61,7 @@ public:
 
 	// Member Functions
 	void create(int size, state* initial);
-	void randomizeAll();
+	void randomizeAll(config* cfg);
 	void setFpProbability();
 	void calcPareto();
 	void comparePareto(std::vector<state*>& bestPareto);

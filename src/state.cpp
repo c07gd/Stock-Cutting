@@ -455,8 +455,12 @@ void state::calcFitness() {
 
 	int penalty = (int)round((float)m_penalty * m_params.pw);
 
-	m_fitness.length = calcLength() - penalty;
-	m_fitness.width = calcWidth() - penalty;
+	if (m_fitness.objective1 == OBJECTIVE_LENGTH || m_fitness.objective2 == OBJECTIVE_LENGTH)
+		m_fitness.length = calcLength() - penalty;
+	if (m_fitness.objective1 == OBJECTIVE_WIDTH || m_fitness.objective2 == OBJECTIVE_WIDTH)
+		m_fitness.width = calcWidth() - penalty;
+	if (m_fitness.objective1 == OBJECTIVE_EDGES || m_fitness.objective2 == OBJECTIVE_EDGES)
+		m_fitness.edges = calcEdges() - penalty;
 
 	return;
 }
@@ -507,6 +511,44 @@ int state::calcWidth() {
 		}
 	}
 	return rtn;
+}
+
+
+/**********************************************************
+*	calcEdges()
+*	Finds a maximized value representing the unique non-exterior
+*	perimeter of all shapes on the layout. Perimeter is added
+*	each shape unless it is shared with another shape or 
+*	it borders the edge of the stock (which is already cut).
+*	Since we desired to maximize objective, perimeters are
+*	subtracted from an estimated max value, creating a
+*	maximized value to return.
+*	 @return int maximized edge value
+**********************************************************/
+int state::calcEdges() {
+	
+	// Variables
+	int edges = 0;
+	
+	// Walk across layout starting at top left, going right, then down
+	for (int i = m_width - 1; i >= 0; i--) {
+		for (int j = 0; j < m_length; j++) {
+
+			// For each square, check which sides we need to make a cut on
+			if (m_layout[i][j]) {
+				if (j != 0 && !m_layout[i][j-1]) // left
+					edges++;
+				if (i != 0 && !m_layout[i - 1][j]) // bottom
+					edges++;
+				if (j < (m_length - 1) && !m_layout[i][j + 1]) // right
+					edges++;
+				if (i < (m_width - 1) && !m_layout[i + 1][j]) // top
+					edges++;
+			}
+		}
+	}
+
+	return (m_numShapes * AVERAGE_EDGES) - edges;
 }
 
 

@@ -54,6 +54,8 @@
 #define LABEL_PENALTYWEIGHTSA		("penaltyWeightSA")
 #define LABEL_TERMTYPE				("termType")
 #define LABEL_TERMGENSUNCHANGED		("termGensUnchanged")
+#define LABEL_OBJECTIVE1			("objective1")
+#define LABEL_OBJECTIVE2			("objective2")
 
 
 /**********************************************************
@@ -90,6 +92,8 @@ struct config {
 	int				penaltyWeightSA;
 	int				termType;
 	int				termGensUnchanged;
+	int				objective1;
+	int				objective2;
 };
 
 enum {
@@ -143,6 +147,12 @@ enum {
 	TERMTYPE_BESTFITNESS
 };
 
+enum {
+	OBJECTIVE_LENGTH,
+	OBJECTIVE_WIDTH,
+	OBJECTIVE_EDGES
+};
+
 
 /**********************************************************
 *	getConfig(std::string filename)
@@ -189,6 +199,8 @@ inline config getConfig(std::string filename) {
 	cfg.penaltyWeightSA		= DEFAULT_PENALTYWEIGHTSA;
 	cfg.termType			= DEFAULT_TERMTYPE;
 	cfg.termGensUnchanged	= DEFAULT_TERMGENSUNCHANGED;
+	cfg.objective1			= DEFAULT_OBJCTIVE1;
+	cfg.objective2			= DEFAULT_OBJCTIVE2;
 	cfg.seedStates.clear();
 	
 	// Open configuration file
@@ -272,6 +284,10 @@ inline config getConfig(std::string filename) {
 				cfg.termGensUnchanged = atoi(rhs.c_str());
 			else if (lhs == LABEL_SEEDSTATE)
 				cfg.seedStates.push_back(rhs);
+			else if (lhs == LABEL_OBJECTIVE1)
+				cfg.objective1 = atoi(rhs.c_str());
+			else if (lhs == LABEL_OBJECTIVE2)
+				cfg.objective2 = atoi(rhs.c_str());
 		}
 	}
 

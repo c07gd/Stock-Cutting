@@ -22,6 +22,7 @@
 /**********************************************************
 *	Compiler Constants
 **********************************************************/
+#define AVERAGE_EDGES		(15)
 #define RANDOM_MAX_TRIES	(10000)
 #define GEN_SCALED_PROB(k)	((float)(rand() % (int)std::pow(10.0,k)) / std::pow(10.0,k))
 #define ELEMENT_IS_EQUAL(e1,idx1,e2,idx2) \
@@ -44,8 +45,11 @@ struct adaptablepParams {
 };
 
 struct fitness {
-	int length;
-	int width;
+	int		length;
+	int		width;
+	int		edges;
+	int		objective1;
+	int		objective2;
 };
 
 
@@ -77,6 +81,7 @@ private:
 	void constructArrays();
 	int calcLength();
 	int calcWidth();
+	int calcEdges();
 	void repair(int idx, int& x, int& y, int& rot);
 	void resolveConstraints(int idx, int& x, int& y, int& rot, int type);
 
@@ -108,6 +113,7 @@ public:
 	inline adaptablepParams getParams() const { return m_params; };
 	inline int getParetoLevel() const { return m_paretoLevel; };
 	inline void setParetoLevel(int p) { m_paretoLevel = p; };
+	inline void setFitnessTypes(int a, int b) { m_fitness.objective1 = a; m_fitness.objective2 = b; };
 	inline void setParams(config cfg) {
 		m_params.enablePW = (cfg.constraintSat == CONSTRAINTSAT_PENALTY);
 		m_params.typePW = cfg.penaltyWeightSA;

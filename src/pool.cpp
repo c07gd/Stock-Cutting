@@ -67,9 +67,10 @@ void pool::destroy() {
 *	Assigns random placements to all states in the pool.
 *	Also calculates the new fitness for each.
 **********************************************************/
-void pool::randomizeAll() {
+void pool::randomizeAll(config* cfg) {
 	for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it) {
 		(*it)->randomize();
+		(*it)->setFitnessTypes(cfg->objective1, cfg->objective2);
 		(*it)->calcFitness();
 	}
 
@@ -504,6 +505,10 @@ state* pool::getBest(int parameter, int type) {
 		break;
 	case FITNESS_WIDTH:
 		valBest = ptr->getFitness().width;
+		break;
+	case FITNESS_EDGES:
+		valBest = ptr->getFitness().edges;
+		break;
 	}
 
 	// Find best fitness
@@ -514,6 +519,9 @@ state* pool::getBest(int parameter, int type) {
 			break;
 		case FITNESS_WIDTH:
 			valCurrent = (*it)->getFitness().width;
+			break;
+		case FITNESS_EDGES:
+			valCurrent = (*it)->getFitness().edges;
 			break;
 		}
 		if ((type == HIGHEST && valCurrent > valBest) || (type == LOWEST && valCurrent < valBest)) {
@@ -546,6 +554,9 @@ float pool::getAverage(int parameter) {
 			break;
 		case FITNESS_WIDTH:
 			total += (float)(*it)->getFitness().width;
+			break;
+		case FITNESS_EDGES:
+			total += (float)(*it)->getFitness().edges;
 			break;
 		case MUTATION_RATE:
 			total += (*it)->getParams().mr;

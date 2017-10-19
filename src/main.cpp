@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
 
 		// Randomly generate a start population
 		population.create(cfg.mu - cfg.seedStates.size(), &initial);
-		population.randomizeAll();
+		population.randomizeAll(&cfg);
 
 		// Add in seed states
 		for (size_t i = 0; i < cfg.seedStates.size(); i++) {
@@ -154,7 +154,8 @@ int main(int argc, char *argv[]) {
 						temp->creepMutate(cfg.creepDist, cfg.constraintSat);
 						break;
 					}
-				}					
+				}
+				temp->setFitnessTypes(cfg.objective1, cfg.objective2);
 				temp->calcFitness();
 				offspring.add(temp);
 				g_evals++;
@@ -216,10 +217,20 @@ int main(int argc, char *argv[]) {
 				log << IO_FORMAT_FLOAT(3) << population.getAverage(PENALTY_WEIGHT) << "\t";
 				std::cout << IO_FORMAT_FLOAT(3) << population.getAverage(PENALTY_WEIGHT) << "\t";
 			}
-			log << IO_FORMAT_FLOAT(3) << population.getAverage(FITNESS_LENGTH) << "\t" << population.getBest(FITNESS_LENGTH, HIGHEST)->getFitness().length << "\t";
-			log << IO_FORMAT_FLOAT(3) << population.getAverage(FITNESS_WIDTH) << "\t" << population.getBest(FITNESS_WIDTH, HIGHEST)->getFitness().width << std::endl;
-			std::cout << IO_FORMAT_FLOAT(3) << population.getAverage(FITNESS_LENGTH) << "\t" << population.getBest(FITNESS_LENGTH, HIGHEST)->getFitness().length << "\t";
-			std::cout << IO_FORMAT_FLOAT(3) << population.getAverage(FITNESS_WIDTH) << "\t" << population.getBest(FITNESS_WIDTH, HIGHEST)->getFitness().width << std::endl;
+			if (cfg.objective1 == OBJECTIVE_LENGTH || cfg.objective2 == OBJECTIVE_LENGTH) {
+				log << IO_FORMAT_FLOAT(3) << population.getAverage(FITNESS_LENGTH) << "\t" << population.getBest(FITNESS_LENGTH, HIGHEST)->getFitness().length << "\t";
+				std::cout << IO_FORMAT_FLOAT(3) << population.getAverage(FITNESS_LENGTH) << "\t" << population.getBest(FITNESS_LENGTH, HIGHEST)->getFitness().length << "\t";
+			}
+			if (cfg.objective1 == OBJECTIVE_WIDTH || cfg.objective2 == OBJECTIVE_WIDTH) {
+				log << IO_FORMAT_FLOAT(3) << population.getAverage(FITNESS_WIDTH) << "\t" << population.getBest(FITNESS_WIDTH, HIGHEST)->getFitness().width << "\t";
+				std::cout << IO_FORMAT_FLOAT(3) << population.getAverage(FITNESS_WIDTH) << "\t" << population.getBest(FITNESS_WIDTH, HIGHEST)->getFitness().width << "\t";
+			}
+			if (cfg.objective1 == OBJECTIVE_EDGES || cfg.objective2 == OBJECTIVE_EDGES) {
+				log << IO_FORMAT_FLOAT(3) << population.getAverage(FITNESS_EDGES) << "\t" << population.getBest(FITNESS_EDGES, HIGHEST)->getFitness().edges << "\t";
+				std::cout << IO_FORMAT_FLOAT(3) << population.getAverage(FITNESS_EDGES) << "\t" << population.getBest(FITNESS_EDGES, HIGHEST)->getFitness().edges << "\t";
+			}
+			log << std::endl;
+			std::cout << std::endl;
 
 			// End loop when termination test returns true of we hit our max number of evals
 		} while (!terminate && (g_evals < cfg.fitnessEvals));

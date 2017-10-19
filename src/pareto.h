@@ -21,14 +21,34 @@
 *	compiler Constants
 **********************************************************/
 #define PARETO_DEBUG	(0)
-#define GET_PARAM_1(x)	((x)->getFitness().length)
-#define GET_PARAM_2(x)	((x)->getFitness().width)
-#define EQUAL(a, b)		(GET_PARAM_1(a) == GET_PARAM_1(b) && GET_PARAM_2(a) == GET_PARAM_2(b))
-#define DOMINATES(a, b)	(GET_PARAM_1(a) >= GET_PARAM_1(b) && GET_PARAM_2(a) >= GET_PARAM_2(b) && !EQUAL(a, b))
+#define EQUAL(a, b)		(getObjective(a, 0) == getObjective(b, 0) && getObjective(a, 1) == getObjective(b, 1))
+#define DOMINATES(a, b)	(getObjective(a, 0) >= getObjective(b, 0) && getObjective(a, 1) >= getObjective(b, 1) && !EQUAL(a, b))
 
 
 /**********************************************************
-*	pareto(std::vector<T> pool)
+*	int getObjective(state* s, bool obj)
+*	Returns given state's value for the given objective.
+*	 @param state* state to get
+*	 @param obj objective to get (0 for first, 1 for second)
+**********************************************************/
+inline int getObjective(state* s, bool obj) {
+	switch (obj ? s->getFitness().objective1 : s->getFitness().objective2) {
+	case OBJECTIVE_LENGTH:
+		return s->getFitness().length;
+		break;
+	case OBJECTIVE_WIDTH:
+		return s->getFitness().length;
+		break;
+	case OBJECTIVE_EDGES:
+		return s->getFitness().length;
+		break;
+	}
+	return 0;
+};
+
+
+/**********************************************************
+*	void pareto(std::vector<T, A> pool, std::vector<std::vector<int>>& pareto)
 *	Calculates and returns a level-ordered pareto structure
 *	of reference indices. The first index of the vector is
 *	the level, the second is the index of the state in the
