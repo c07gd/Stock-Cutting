@@ -483,6 +483,42 @@ bool pool::termTestBestFitness(int targetGensUnchanged) {
 
 
 /**********************************************************
+*	termTestTopDominated(int targetGensUnchanged)
+*	Determines if the pool's number of top dominated fitness
+*	states has remained	unchanged for a target number of
+*	generations.
+*	 @param targetGensUnchanged target number of gerenations
+*	 @return false unless target generations hit
+**********************************************************/
+bool pool::termTestTopDominated(int targetGensUnchanged) {
+
+	// Variables
+	int cnt = 0;
+
+	for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it) {
+		if ((*it)->getParetoLevel() == 0)
+			cnt++;
+	}
+
+	// If unchanged, increment counter
+	if (cnt == m_lastTopDominated)
+		m_lastTopDominated++;
+	else
+		m_numGensUnchanged = 0;
+	m_lastTopDominated = cnt;
+
+	// Return false unless we hit our target
+	if (m_numGensUnchanged < targetGensUnchanged)
+		return false;
+
+	// Clean up
+	m_numGensUnchanged = 0;
+	m_lastTopDominated = -1;
+	return true;
+}
+
+
+/**********************************************************
 *	getBest(int parameter, int type)
 *	Returns the best paramter given. Here, "best" means 
 *	either highest or lowest, depending on the type given.

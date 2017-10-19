@@ -46,6 +46,7 @@ private:
 	std::vector<float>	m_fpProbability;
 	int					m_lastBestFitness;
 	float				m_lastAvgFitness;
+	int					m_lastTopDominated;
 	int					m_numGensUnchanged;
 	int					m_paretoMin;
 
@@ -74,6 +75,7 @@ public:
 	void reduceByRandom(size_t size);
 	bool termTestAvgFitness(int targetGensUnchanged, float unchangedVariance);
 	bool termTestBestFitness(int targetGensUnchanged);
+	bool termTestTopDominated(int targetGensUnchanged);
 	void empty();
 
 	// Accessors, Mutators

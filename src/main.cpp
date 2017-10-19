@@ -200,6 +200,9 @@ int main(int argc, char *argv[]) {
 			case TERMTYPE_BESTFITNESS:
 				terminate = population.termTestBestFitness(cfg.termGensUnchanged);
 				break;
+			case TERMTYPE_TOPDOMINATED:
+				terminate = population.termTestTopDominated(cfg.termGensUnchanged);
+				break;
 			}
 
 			// Log data
