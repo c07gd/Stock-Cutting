@@ -177,7 +177,7 @@ void pool::comparePareto(std::vector<state*>& bestPareto) {
 		ratio1 = (float)cnt1 / (float)m_states.size();
 		ratio2 = (float)cnt2 / (float)bestPareto.size();
 		if (ratio1 > ratio2) {
-			for (std::vector<state*>::iterator it = m_states.begin(); it != m_states.end(); ++it)
+			for (std::vector<state*>::iterator it = bestPareto.begin(); it != bestPareto.end(); ++it)
 				delete (*it);
 			bestPareto.clear();
 			for (size_t i = 0; i < m_states.size(); i++) {

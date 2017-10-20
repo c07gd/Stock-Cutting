@@ -37,10 +37,10 @@ inline int getObjective(state* s, bool obj) {
 		return s->getFitness().length;
 		break;
 	case OBJECTIVE_WIDTH:
-		return s->getFitness().length;
+		return s->getFitness().width;
 		break;
 	case OBJECTIVE_EDGES:
-		return s->getFitness().length;
+		return s->getFitness().edges;
 		break;
 	}
 	return 0;

@@ -53,7 +53,6 @@ int main(int argc, char *argv[]) {
 	std::ofstream	solution;
 	pool			population;
 	pool			offspring;
-	int				run;
 	bool			terminate = false;
 	state*			parent1;
 	state*			parent2;
@@ -100,7 +99,6 @@ int main(int argc, char *argv[]) {
 	log << "Result Log" << std::endl;
 
 	// Add offspring to population
-	run = 0;
 	for (int run = 0; run < cfg.runs; run++) {
 
 		log << std::endl << "Run " << run + 1 << std::endl;
