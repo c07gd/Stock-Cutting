@@ -47,6 +47,31 @@ inline int getObjective(state* s, bool obj) {
 };
 
 
+template <typename T, typename A>
+inline void logPareto(std::vector<T, A> pool, std::string filename) {
+
+	// Variables	
+	std::ofstream out;
+	
+	// Open output file
+	out.open(filename);
+	if (!out.is_open()) {
+		std::cout << "Error: Unable to write Pareto output file" << std::endl;;
+		exit(1);
+	}
+	
+	// Log all in the Pareto front
+	for (size_t i = 0; i < pool.size(); i++) {
+		if (pool[i]->getParetoLevel() == 0)
+			out << getObjective(pool[i], 0) << "," << getObjective(pool[i], 1) << std::endl;
+	}
+
+	// Clean up
+	out.close();
+	return;
+}
+
+
 /**********************************************************
 *	void pareto(std::vector<T, A> pool, std::vector<std::vector<int>>& pareto)
 *	Calculates and returns a level-ordered pareto structure

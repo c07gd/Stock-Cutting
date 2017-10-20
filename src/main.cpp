@@ -237,7 +237,7 @@ int main(int argc, char *argv[]) {
 		} while (!terminate && (g_evals < cfg.fitnessEvals));
 
 		// Check if this run has the best Pareto Front
-		population.comparePareto(bestPareto);	
+		population.comparePareto(bestPareto);
 		
 		// Clean up
 		population.destroy();
@@ -255,8 +255,10 @@ int main(int argc, char *argv[]) {
 	solution << "Solutions in Pareto front: " << bestPareto.size() << std::endl << std::endl;
 	for (size_t i = 0; i < bestPareto.size(); i++)
 		solution << "Solution " << i + 1 << ":" << std::endl << bestPareto[i]->getSolutionString() << std::endl << std::endl;
+	logPareto(bestPareto, cfg.solutionFile + ".pareto");
 
 	// Clean up
+	bestPareto.clear();
 	delete[] shapes;
 
 	return 0;
