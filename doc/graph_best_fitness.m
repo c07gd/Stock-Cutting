@@ -2,22 +2,28 @@ clear;
 close all;
 
 % Global variables
-files(1,:) = '../logs/bonus1_fixed_set3.txt   ';
-files(2,:) = '../logs/bonus1_time_set3.txt    ';
-files(3,:) = '../logs/bonus1_adaptive_set3.txt';  
-outputname = './images/assn1c_bonus1_set3.png';
-colors = [[0.3020 0.7451 0.9333];[0.9294 0.6941 0.1255];[0 0.6000 0.2000];[0.4941 0.1843 0.5569];[0.8510 0.3255 0.0980]];
+files(1,:) = '../logs/cfg1_set1.txt';
+files(2,:) = '../logs/cfg1_set2.txt';
+files(3,:) = '../logs/cfg1_set3.txt';
+%files(4,:) = '../logs/4.txt';
+%files(5,:) = '../logs/5.txt';
+%files(6,:) = '../logs/6.txt';
+%files(7,:) = '../logs/7.txt';
+%files(8,:) = '../logs/8.txt';
+outputname = './images/assn1d_cfg1_bestfitness';
+colors = jet(size(files,1));
 
-fig = figure;
+fig = figure();
+subplot(2,1,1);
 hold on;
 for i=1:size(files,1)
     
     % Variables for this run
     file = fopen(char(files(i,:)));
-    runData = [];
-    run = 1;
+    run = 0;
     eval = 1;
-    best = 0;
+    best1 = 0;
+    best2 = 0;
 
     % Skip first 3 lines
     for j=1:3
@@ -33,16 +39,20 @@ for i=1:size(files,1)
         if(strncmpi(line, 'Run ', 4))
             run = run + 1;
             eval = 1;
-            runData(run) = best;
-            best = 0;
+            runData1(run) = best1;
+            runData2(run) = best2;
+            best1 = 0;
+            best2 = 0;
             continue
         end
         if(~isempty(line))
-            lineData = textscan(line,'%f %f %f %f');
+            lineData = textscan(line,'%f %f %f %f %f');
             lineData = cell2mat(lineData);
-            if(lineData(4) > best)
-                best = lineData(4);
-                idx = lineData(1);
+            if(lineData(3) > best1)
+                best1 = lineData(3);
+            end
+            if(lineData(5) > best2)
+                best2 = lineData(5);
             end
             eval = eval + 1;
         end
@@ -50,18 +60,33 @@ for i=1:size(files,1)
     fclose(file);
     
     % Graph data
-    average = mean(runData);
-    plot(1:1:length(runData),runData,'DisplayName',char(files(i,:)),'color',colors(i,:));
-    p = plot(1:1:length(runData),repmat(average,1,length(runData)),'--','color',colors(i,:));
-    hasbehavior(p,'legend',false);
-    text(2,average+1,sprintf('average=%.1f',average),'FontWeight','bold');
+    p1 = plot(1:1:length(runData1),runData1,'DisplayName',char(files(i,:)),'color',colors(i,:));
+    p2 = plot(1:1:length(runData2),runData2,'DisplayName',char(files(i,:)),'color',colors(i,:));
+    hasbehavior(p2,'legend',false);
+    averages(i,1) = mean(runData1);
+    averages(i,2) = mean(runData2);
+    best(i,1) = max(runData1);
+    best(i,2) = max(runData2);
 end
 
 % Format graph
 hold off;
-%title('Best Solution Found per Run');
 xlabel('Run');
 ylabel('Fitness');
-l = legend('show');
-set(l, 'Interpreter', 'none');
-saveas(fig, outputname);
+
+% Build and format table
+for i=1:size(files,1)
+    colorstring(i,:) = ['<html><span style="color: rgb(' sprintf('%03d',floor(255*colors(i,1))) ',' sprintf('%03d',floor(255*colors(i,2))) ',' sprintf('%03d',floor(255*colors(i,3))) ');">---------------</span></html>"'];
+end
+tabledata = table(cellstr(colorstring),cellstr(files),averages(:,1),best(:,1),averages(:,2),best(:,2));
+tabledata = table2cell(tabledata);
+t = uitable();
+t.Data = tabledata;
+t.Units = 'normalized';
+t.Position = [0,-.04,1,.5];
+t.ColumnName = {'Color','File','Average Best|Obj 1','Overall Best|Obj 1','Average Best|Obj 2','Overall Best|Obj 2'};
+t.ColumnWidth = {50,140,80,80,80,80};
+
+% Save image
+fig.PaperPositionMode = 'auto';
+print(outputname,'-dpng','-r0');

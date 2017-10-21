@@ -5,9 +5,9 @@ set(0,'DefaultFigureVisible','off');
 
 % Global variables
 files = [];
-files(1,:) = '../logs/crossover_control_set1.txt';
-files(2,:) = '../logs/crossover_control_set2.txt';
-files(3,:) = '../logs/crossover_control_set3.txt';
+files(1,:) = '../logs/cfg1_set1.txt';
+files(2,:) = '../logs/cfg1_set2.txt';
+files(3,:) = '../logs/cfg1_set3.txt';
 
 for i=1:size(files,1)
     
@@ -37,7 +37,7 @@ for i=1:size(files,1)
             continue
         end
         if(~isempty(line))
-            lineData = textscan(line,'%f %f %f');
+            lineData = textscan(line,'%f %f %f %f %f');
             lineData = cell2mat(lineData);
             avgFitness(run,eval) = lineData(2);
             bestFitness(run,eval) = lineData(3);
