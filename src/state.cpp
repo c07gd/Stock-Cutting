@@ -23,8 +23,9 @@
 /**********************************************************
 *	Variables
 **********************************************************/
-extern int g_evals;
-extern int g_targetEvals;
+extern int	g_evals;
+extern int	g_targetEvals;
+int			s_totalEdges = -1;
 
 
 /**********************************************************
@@ -548,7 +549,11 @@ int state::calcEdges() {
 		}
 	}
 
-	return (m_numShapes * AVERAGE_EDGES) - edges;
+	// If not yet calculated, start out edge minimization from here
+	if (s_totalEdges == -1)
+		s_totalEdges = edges;
+
+	return s_totalEdges - edges;
 }
 
 

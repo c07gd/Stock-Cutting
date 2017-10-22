@@ -22,7 +22,6 @@
 /**********************************************************
 *	Compiler Constants
 **********************************************************/
-#define AVERAGE_EDGES		(15)
 #define RANDOM_MAX_TRIES	(10000)
 #define GEN_SCALED_PROB(k)	((float)(rand() % (int)std::pow(10.0,k)) / std::pow(10.0,k))
 #define ELEMENT_IS_EQUAL(e1,idx1,e2,idx2) \
