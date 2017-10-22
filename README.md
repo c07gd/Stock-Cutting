@@ -13,19 +13,16 @@ This program makes use of C++11 in order to access the high_resolution_clock in 
 Use the included ```run.sh``` to compile and run the program. You will need to supply the configuration file and shape pattern file as arguments. Shape files are taken directly from Dr. T's website [here](http://web.mst.edu/~tauritzd/courses/ec/cs5401fs2017/).
 
 ```bash
-./run.sh cfg/crossover_adapt.cfg patterns/50Shapes.txt
+./run.sh cfg/cfg1_control_set1.cfg patterns/50Shapes.txt
 ```
 
+A batch run script ```run_batch.sh``` is also included which will re-run all test sets used in this assignment. It included to aid the developer and is not reccommended for the TA to use.
+
 ### Bonus Information
-###### Bonus 1
+###### Bonus 3
 
-* All self-adaptive parameters are controlled in ```state::updateAdaptableParams()```, in [state.cpp](https://github.com/stewythe1st/Stock-Cutting/blob/master/src/state.cpp), [line 632](https://github.com/stewythe1st/Stock-Cutting/blob/master/src/state.cpp#L632)
-* Documentation, graphs, and and explanation of findings for Bonus 1 can be found in assn1c.pdf in this repo's root directory.
-
-###### Bonus 2
-
-* All self-adaptive parameters are controlled in ```state::updateAdaptableParams()```, in [state.cpp](https://github.com/stewythe1st/Stock-Cutting/blob/master/src/state.cpp), [line 632](https://github.com/stewythe1st/Stock-Cutting/blob/master/src/state.cpp#L632)
-* Documentation, graphs, and and explanation of findings for Bonus 2 can be found in assn1c.pdf in this repo's root directory.
+* Edge calculating fucntion can be found in ```state::calcEdges()```, in [state.cpp](https://github.com/stewythe1st/Stock-Cutting/blob/master/src/state.cpp), [line 529](https://github.com/stewythe1st/Stock-Cutting/blob/master/src/state.cpp#L529)
+* Documentation, graphs, and and explanation of findings for Bonus 3 can be found in assn1d.pdf in this repo's root directory.
 
 ### Input
 
