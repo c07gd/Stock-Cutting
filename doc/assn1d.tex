@@ -98,6 +98,53 @@ Again, the Pareto fronts shown in Figure \ref{fig:cfg3_pareto} have few members,
   \label{fig:cfg3_pareto}
 \end{figure}
 
+\section{Additional statistical Analysis}\label{sect:statanal}
+
+Box plots were generated for each test run graphed above. However, since this totals to a rather large number of boxplots, they have not all been pictured in this report. A full listing of box plots can be viewed in ./doc/images/assn1d\_boxplot\_*.png.
+
+In Figures \ref{fig:boxplot_control_obj1} and \ref{fig:boxplot_expl_obj1} box plots are shown for the objective 1(length) of the control configuration and exploitative configurations, respectively. Figures \ref{fig:boxplot_control_obj2} and \ref{fig:boxplot_expl_obj2} show the second objective (width). It can be observed that the resulting populations are as to be expected, with an upper bound having the best fitness and the remaining population distributed below.
+
+A statistical analysis was also run (Figures \ref{fig:statanal1} and \ref{fig:statanal2}) for each objective. Each compares the variances of the best run of the control configuration to the best run of the exploitative configuration. As the weight objective had much less improvement, it makes sense that its variance more closely aligns with that of the control configuration.
+
+\begin{figure}[H]
+\begin{minipage}{.5\textwidth}
+  \includegraphics[width=3in]{assn1d_boxplot_cfg1_set1_obj1.png}
+  \captionof{figure}{Exploitation (100\% k-tourns), Length}
+  \label{fig:boxplot_control_obj1}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+  \includegraphics[width=3in]{assn1d_boxplot_cfg1_control_set1_obj1.png}
+  \captionof{figure}{Control (50\% k-tourns), Length}
+  \label{fig:boxplot_expl_obj1}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\begin{minipage}{.5\textwidth}
+  \includegraphics[width=3in]{assn1d_boxplot_cfg1_set1_obj2.png}
+  \captionof{figure}{Exploitation (100\% k-tourns), Width}
+  \label{fig:boxplot_control_obj2}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+  \includegraphics[width=3in]{assn1d_boxplot_cfg1_control_set1_obj2.png}
+  \captionof{figure}{Control (50\% k-tourns), Width}
+  \label{fig:boxplot_expl_obj2}
+\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+\begin{minipage}{.5\textwidth}
+  \includegraphics[width=3in]{assn1d_statanal_obj1.png}
+  \captionof{figure}{Objective 1 (length)}
+  \label{fig:statanal1}
+\end{minipage}%
+\begin{minipage}{.5\textwidth}
+  \includegraphics[width=3in]{assn1d_statanal_obj2.png}
+  \captionof{figure}{Objective 2 (width)}
+  \label{fig:statanal2}
+\end{minipage}
+\end{figure}
+
 \section{Bonus 3}\label{sect:bonus3}
 
 Bonus 3 adds in another objective: edges (or glass-cut). Objective 1 was set to length as before and objective 2 was changed to edge length. This was achieved by counting the perimeter of each shape while discounting those edges that were shared with either the edge of the stock or another shape. In order to provide an objective to minimize, the first call to the edge calculating function stores its calculated value and subtracts all subsequent values from that. This works because our first generation is theoretically the most unfit with improvements occurring from there.
