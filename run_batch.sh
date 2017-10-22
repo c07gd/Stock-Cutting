@@ -2,6 +2,7 @@
 
 g++ src/*.cpp -std=c++11 -o stock_cutting.out
 
+# Comment lines below as needed
 ./stock_cutting.out cfg/cfg1_set1.cfg patterns/50Shapes.txt &
 ./stock_cutting.out cfg/cfg1_set2.cfg patterns/100Shapes.txt &
 ./stock_cutting.out cfg/cfg1_set3.cfg patterns/100ShapesComplex.txt &
@@ -23,3 +24,6 @@ g++ src/*.cpp -std=c++11 -o stock_cutting.out
 ./stock_cutting.out cfg/cfg3_randreset_set1.cfg patterns/50Shapes.txt &
 ./stock_cutting.out cfg/cfg3_randreset_set2.cfg patterns/100Shapes.txt &
 ./stock_cutting.out cfg/cfg3_randreset_set3.cfg patterns/100ShapesComplex.txt &
+./stock_cutting.out cfg/bonus3_set1.cfg patterns/50Shapes.txt &
+./stock_cutting.out cfg/bonus3_set2.cfg patterns/100Shapes.txt &
+./stock_cutting.out cfg/bonus3_set3.cfg patterns/100ShapesComplex.txt &

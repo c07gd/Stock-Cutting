@@ -100,4 +100,24 @@ Again, the Pareto fronts shown in Figure \ref{fig:cfg3_pareto} have few members,
 
 \section{Bonus 3}\label{sect:bonus3}
 
+Bonus 3 adds in another objective: edges (or glass-cut). Objective 1 was set to length as before and objective 2 was changed to edge length. This was achieved by counting the perimeter of each shape while discounting those edges that were shared with either the edge of the stock or another shape. In order to provide an objective to minimize, the first call to the edge calculating function stores its calculated value and subtracts all subsequent values from that. This works because our first generation is theoretically the most unfit with improvements occurring from there.
+
+The best fitnesses plot in Figure \ref{fig:bonus3_best} shows that the edge lengths were quite diverse across all test sets. This makes sense as the more complex sets are going to have longer edge lengths to start with. Unfortunately, this makes it quite difficult to observe any changes in length (objective 1). The table makes it clear that some improvements are still made, but the best lengths are considerably less than the control runs from earlier (see Figure \ref{fig:cfg1_best}). 
+
+The Pareto front plot in Figure \ref{fig:bonus3_pareto} is much more enlightening though. Whereas before, the choice of width as a second objective limited fronts to only a few values (as widths were never able to improve beyond 2), edge lengths are now much more varied, allowing for expanded Pareto fronts. Here, it is easy to see the diagonals that form the front for each data set.
+
+\begin{figure}[H]
+	\centering
+  \includegraphics[width=5in]{assn1d_bonus3_bestfitness.png}
+  \captionof{figure}{Bonus 3 Best Per-Objective Fitness}
+  \label{fig:bonus3_best}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+  \includegraphics[width=4in]{assn1d_bonus3_pareto.png}
+  \captionof{figure}{Bonus 3 Pareto Fronts}
+  \label{fig:bonus3_pareto}
+\end{figure}
+
 \end{document}

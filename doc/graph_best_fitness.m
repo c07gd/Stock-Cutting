@@ -2,7 +2,7 @@ clear;
 close all;
 
 % Configuration
-cfg = 2;
+cfg = 4;
 switch cfg
     case 1
         files(1,:) = 'cfg1_set1.txt        ';
@@ -31,6 +31,11 @@ switch cfg
         files(5,:) = 'cfg3_randreset_set2.txt';
         files(6,:) = 'cfg3_randreset_set3.txt';
         outputname = 'assn1d_cfg3_bestfitness.png';
+    case 4
+        files(1,:) = 'bonus3_set1.txt';
+        files(2,:) = 'bonus3_set2.txt';
+        files(3,:) = 'bonus3_set3.txt';
+        outputname = 'assn1d_bonus3_bestfitness.png';
     otherwise
         exit;
 end
