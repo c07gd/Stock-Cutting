@@ -1,0 +1,15 @@
+#!/bin/bash
+#SBATCH --array=1-24
+#SBATCH --job-name=Stock-Cutting
+#SBATCH --ntasks=1
+#SBATCH --time=0-01:00:00
+#SBATCH --mail-type=begin,end,fail,requeue
+#SBATCH --export=all
+#SBATCH --out=Stock-Cutting-%j.out
+
+ARGS=$(awk -v line=${SLURM_ARRAY_TASK_ID} '{if (NR == line) { print $0; };}' ./args.dat)
+
+cd ..
+module load gnu/4.9.2
+echo "Run command: stock_cutting.out $ARGS"
+./stock_cutting.out $ARGS
